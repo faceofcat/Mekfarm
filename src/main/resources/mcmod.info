@@ -1,0 +1,16 @@
+[
+{
+  "modid": "CatFirstMod",
+  "name": "Cat's First Mod",
+  "description": "Example placeholder mod.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Face_of_Cat"],
+  "credits": "The Forge and FML guys, for making this example",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": [ 'Mekanism' ]
+}
+]

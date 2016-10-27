@@ -1,0 +1,11 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "north": "mekfarm:blocks/farm/FarmFront",
+    "west": "mekfarm:blocks/farm/FarmRight",
+    "east": "mekfarm:blocks/farm/FarmLeft",
+    "south": "mekfarm:blocks/farm/FarmBack",
+    "up": "mekfarm:blocks/farm/FarmTop",
+    "down": "mekfarm:blocks/farm/FarmBottom"
+  }
+}
