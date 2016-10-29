@@ -9,11 +9,11 @@ public class OutcomingStackHandler extends FilteredStackHandler {
     public OutcomingStackHandler(int size) {
         super(size);
     }
-//
-//    @Override
-//    protected boolean acceptsStack(int slot, ItemStack stack, boolean internal) {
-//        return internal;
-//    }
+
+    @Override
+    protected boolean acceptsStack(int slot, ItemStack stack, boolean internal) {
+        return internal;
+    }
 
     public ItemStack insertItems(ItemStack stack, boolean simulate) {
         for (int i = 0; i < this.getSlots(); i++) {

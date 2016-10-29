@@ -107,6 +107,9 @@ public class FarmTileEntity extends TileEntity implements ITickable {
                 if ((stack != null) && (stack.stackSize > 0)) {
                     break;
                 }
+                else {
+                    MekfarmMod.logger.info("Empty slot: " + stack);
+                }
             }
             if ((stack != null) && (stack.stackSize > 0)) {
                 ItemStack finalStack = this.outStackHandler.insertItems(stack, false);
@@ -137,7 +140,7 @@ public class FarmTileEntity extends TileEntity implements ITickable {
             if (facing == EnumFacing.WEST) {
                 return (T)this.inStackHandler;
             }
-            else if (facing == EnumFacing.EAST) {
+            else if ((facing == EnumFacing.EAST) || (facing == EnumFacing.DOWN)) {
                 return (T)this.outStackHandler;
             }
             else if ((facing == null) || (facing == EnumFacing.UP)) {

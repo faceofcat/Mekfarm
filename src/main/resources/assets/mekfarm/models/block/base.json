@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "mekfarm:blocks/base-down",
+    "north": "mekfarm:blocks/base-front",
+    "west": "mekfarm:blocks/base-right",
+    "east": "mekfarm:blocks/base-left",
+    "south": "mekfarm:blocks/base-back",
+    "up": "mekfarm:blocks/base-up",
+    "down": "mekfarm:blocks/base-down"
+  }
+}

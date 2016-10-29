@@ -6,6 +6,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityLockable;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -41,7 +42,7 @@ public class FarmContainer extends Container {
 
         // Slots for the hotbar
         for (int row = 0; row < 9; ++row) {
-            int x = 9 + row * 18;
+            int x = 10 + row * 18;
             int y = 58 + 70;
             this.addSlotToContainer(new Slot(playerInventory, row, x, y));
         }
@@ -51,7 +52,7 @@ public class FarmContainer extends Container {
         IItemHandler itemHandler = this.te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
         // Add 'inputs'
-        int x = 63;
+        int x = 64;
         int y = 6;
         int slotIndex = 0;
         for (int i = 0; i < Math.min(3, itemHandler.getSlots()); i++) {
@@ -59,7 +60,7 @@ public class FarmContainer extends Container {
             slotIndex++;
             x += 18;
         }
-        x = 9;
+        x = 10;
         y = 42;
         for (int i = 3; i < itemHandler.getSlots(); i++) {
             addSlotToContainer(new SlotItemHandler(itemHandler, slotIndex, x, y));
@@ -68,33 +69,33 @@ public class FarmContainer extends Container {
         }
     }
 
-//    @Nullable
-//    @Override
-//    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
-//        ItemStack itemstack = null;
-//        Slot slot = this.inventorySlots.get(index);
-//
-//        if ((slot != null) && slot.getHasStack()) {
-//            ItemStack itemstack1 = slot.getStack();
-//            itemstack = itemstack1.copy();
-//
-//            if (index < FarmTileEntity.INVENTORY_SIZE) {
-//                if (!this.mergeItemStack(itemstack1, FarmTileEntity.INVENTORY_SIZE, this.inventorySlots.size(), true)) {
-//                    return null;
-//                }
-//            } else if (!this.mergeItemStack(itemstack1, 0, FarmTileEntity.INVENTORY_SIZE, false)) {
-//                return null;
-//            }
-//
-//            if (itemstack1.stackSize == 0) {
-//                slot.putStack(null);
-//            } else {
-//                slot.onSlotChanged();
-//            }
-//        }
-//
-//        return itemstack;
-//    }
+    @Nullable
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+        ItemStack itemstack = null;
+        Slot slot = this.inventorySlots.get(index);
+
+        if ((slot != null) && slot.getHasStack()) {
+            ItemStack itemstack1 = slot.getStack();
+            itemstack = itemstack1.copy();
+
+            if (index < FarmTileEntity.INVENTORY_SIZE) {
+                if (!this.mergeItemStack(itemstack1, FarmTileEntity.INVENTORY_SIZE, this.inventorySlots.size(), true)) {
+                    return null;
+                }
+            } else if (!this.mergeItemStack(itemstack1, 0, FarmTileEntity.INVENTORY_SIZE, false)) {
+                return null;
+            }
+
+            if (itemstack1.stackSize == 0) {
+                slot.putStack(null);
+            } else {
+                slot.onSlotChanged();
+            }
+        }
+
+        return itemstack;
+    }
 
     @Override
     public boolean canInteractWith(EntityPlayer playerIn) {
