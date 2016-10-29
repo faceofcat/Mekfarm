@@ -68,33 +68,33 @@ public class FarmContainer extends Container {
         }
     }
 
-    @Nullable
-    @Override
-    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
-        ItemStack itemstack = null;
-        Slot slot = this.inventorySlots.get(index);
-
-        if ((slot != null) && slot.getHasStack()) {
-            ItemStack itemstack1 = slot.getStack();
-            itemstack = itemstack1.copy();
-
-            if (index < FarmTileEntity.INVENTORY_SIZE) {
-                if (!this.mergeItemStack(itemstack1, FarmTileEntity.INVENTORY_SIZE, this.inventorySlots.size(), true)) {
-                    return null;
-                }
-            } else if (!this.mergeItemStack(itemstack1, 0, FarmTileEntity.INVENTORY_SIZE, false)) {
-                return null;
-            }
-
-            if (itemstack1.stackSize == 0) {
-                slot.putStack(null);
-            } else {
-                slot.onSlotChanged();
-            }
-        }
-
-        return itemstack;
-    }
+//    @Nullable
+//    @Override
+//    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+//        ItemStack itemstack = null;
+//        Slot slot = this.inventorySlots.get(index);
+//
+//        if ((slot != null) && slot.getHasStack()) {
+//            ItemStack itemstack1 = slot.getStack();
+//            itemstack = itemstack1.copy();
+//
+//            if (index < FarmTileEntity.INVENTORY_SIZE) {
+//                if (!this.mergeItemStack(itemstack1, FarmTileEntity.INVENTORY_SIZE, this.inventorySlots.size(), true)) {
+//                    return null;
+//                }
+//            } else if (!this.mergeItemStack(itemstack1, 0, FarmTileEntity.INVENTORY_SIZE, false)) {
+//                return null;
+//            }
+//
+//            if (itemstack1.stackSize == 0) {
+//                slot.putStack(null);
+//            } else {
+//                slot.onSlotChanged();
+//            }
+//        }
+//
+//        return itemstack;
+//    }
 
     @Override
     public boolean canInteractWith(EntityPlayer playerIn) {
