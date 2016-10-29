@@ -1,8 +1,10 @@
 package mekfarm.containers;
 
+import mekfarm.MekfarmMod;
 import mekfarm.entities.FarmTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -34,9 +36,9 @@ public class FarmContainer extends Container {
         // Slots for the main inventory
         for (int row = 0; row < 3; ++row) {
             for (int col = 0; col < 9; ++col) {
-                int x = 9 + col * 18;
+                int x = 10 + col * 18;
                 int y = row * 18 + 70;
-                this.addSlotToContainer(new Slot(playerInventory, col + row * 9 + 10, x, y));
+                this.addSlotToContainer(new Slot(playerInventory, col + row * 9 + 9, x, y));
             }
         }
 
@@ -74,16 +76,17 @@ public class FarmContainer extends Container {
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
         ItemStack itemstack = null;
         Slot slot = this.inventorySlots.get(index);
+        IItemHandler itemHandler = this.te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
         if ((slot != null) && slot.getHasStack()) {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
 
-            if (index < FarmTileEntity.INVENTORY_SIZE) {
-                if (!this.mergeItemStack(itemstack1, FarmTileEntity.INVENTORY_SIZE, this.inventorySlots.size(), true)) {
+            if (index < itemHandler.getSlots()) {
+                if (!this.mergeItemStack(itemstack1, itemHandler.getSlots(), this.inventorySlots.size(), true)) {
                     return null;
                 }
-            } else if (!this.mergeItemStack(itemstack1, 0, FarmTileEntity.INVENTORY_SIZE, false)) {
+            } else if (!this.mergeItemStack(itemstack1, 0, itemHandler.getSlots(), false)) {
                 return null;
             }
 

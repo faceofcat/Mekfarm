@@ -2,11 +2,14 @@ package mekfarm.entities;
 
 import com.sun.jna.platform.win32.WinUser;
 import mekfarm.MekfarmMod;
+import mekfarm.blocks.FarmBlock;
 import mekfarm.inventories.CombinedStackHandler;
 import mekfarm.inventories.IncomingStackHandler;
 import mekfarm.inventories.OutcomingStackHandler;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -14,9 +17,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.IFMLSidedHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -107,9 +112,6 @@ public class FarmTileEntity extends TileEntity implements ITickable {
                 if ((stack != null) && (stack.stackSize > 0)) {
                     break;
                 }
-                else {
-                    MekfarmMod.logger.info("Empty slot: " + stack);
-                }
             }
             if ((stack != null) && (stack.stackSize > 0)) {
                 ItemStack finalStack = this.outStackHandler.insertItems(stack, false);
@@ -118,6 +120,8 @@ public class FarmTileEntity extends TileEntity implements ITickable {
                 }
             }
         }
+
+        // MekfarmMod.logger.info("input slot 0: " + this.inStackHandler.getStackInSlot(0) + " : " + worldObj.isRemote);
     }
 
     public boolean canInteractWith(EntityPlayer playerIn) {

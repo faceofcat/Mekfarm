@@ -13,7 +13,7 @@ public class FilteredStackHandler extends ItemStackHandler {
 
     @Override
     public void setStackInSlot(int slot, ItemStack stack) {
-        if ((stack == null) || (stack.stackSize == 0) || (this.acceptsStack(slot, stack, true) == false)) {
+        if ((stack != null) && (this.acceptsStack(slot, stack, true) == false)) {
             return;
         }
 
