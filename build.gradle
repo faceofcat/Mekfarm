@@ -19,6 +19,16 @@ repositories {
 }
 dependencies { compile "net.darkhax.tesla:Tesla:1.10.2-1.2.1.49" }
 
+repositories {
+    maven {
+        name = "CB Repo"
+        url = "http://chickenbones.net/maven"
+    }
+}
+dependencies {
+    compile "codechicken:CodeChickenLib:1.10.2-2.4.3.127:deobf"
+}
+
 sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
 compileJava {
     sourceCompatibility = targetCompatibility = "1.8"

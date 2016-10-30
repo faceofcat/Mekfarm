@@ -17,5 +17,10 @@ public final class ItemRenderersRegistry {
                 0,
                 new ModelResourceLocation(ItemsRegistry.farmItem.getRegistryName(), "inventory")
         );
+        ModelLoader.setCustomModelResourceLocation(
+                ItemsRegistry.animalPackage,
+                0,
+                new ModelResourceLocation(ItemsRegistry.animalPackage.getRegistryName(), "inventory")
+        );
     }
 }

@@ -1,0 +1,34 @@
+{
+  "ambientocclusion": false,
+  "textures": {
+    "package": "mekfarm:items/animal_package",
+    "face" : "mekfarm:items/cow_face"
+  },
+  "elements": [
+    { "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "shade": false,
+      "faces": {
+        "down": { "texture": "#package" },
+        "up": { "texture": "#package" },
+        "north": { "texture": "#package" },
+        "south": { "texture": "#package" },
+        "west": { "texture": "#package" },
+        "east": { "texture": "#package" }
+      }
+    },
+    {
+      "from": [4, 4, 4],
+      "to": [12, 12, 12],
+      "shade": false,
+      "faces": {
+        "down": { "texture": "#face", "uv": [0, 0, 16, 16] },
+        "up": { "texture": "#face", "uv": [0, 0, 16, 16] },
+        "north": { "texture": "#face", "uv": [0, 0, 16, 16] },
+        "south": { "texture": "#face", "uv": [0, 0, 16, 16] },
+        "west": { "texture": "#face", "uv": [0, 0, 16, 16] },
+        "east": { "texture": "#face", "uv": [0, 0, 16, 16] }
+      }
+    }
+  ]
+}

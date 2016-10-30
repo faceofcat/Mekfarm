@@ -35,8 +35,6 @@ public class MekfarmMod
     public void init(FMLInitializationEvent e) {
         MekfarmMod.logger.info("MekfarmMod::init");
         proxy.init(e);
-
-
     }
 
     @Mod.EventHandler
