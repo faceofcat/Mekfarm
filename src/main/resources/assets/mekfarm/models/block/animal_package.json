@@ -1,0 +1,22 @@
+{
+  "parent": "block/block",
+  "ambientocclusion": false,
+  "textures": {
+    "package": "mekfarm:items/animal_package",
+    "face" : "mekfarm:items/cow_face"
+  },
+  "elements": [
+    { "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "shade": false,
+      "faces": {
+        "down": { "texture": "#package" },
+        "up": { "texture": "#package" },
+        "north": { "texture": "#package" },
+        "south": { "texture": "#package" },
+        "west": { "texture": "#package" },
+        "east": { "texture": "#package" }
+      }
+    }
+  ]
+}

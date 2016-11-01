@@ -1,4 +1,5 @@
 {
+  "parent": "block/block",
   "ambientocclusion": false,
   "textures": {
     "package": "mekfarm:items/animal_package",

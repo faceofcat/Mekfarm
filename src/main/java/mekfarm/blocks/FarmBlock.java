@@ -2,6 +2,7 @@ package mekfarm.blocks;
 
 import mekfarm.MekfarmMod;
 import mekfarm.entities.FarmTileEntity;
+import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
@@ -52,7 +53,9 @@ public class FarmBlock extends Block implements ITileEntityProvider {
                                     ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
             FarmTileEntity entity = this.getTE(world, pos);
-            player.addChatComponentMessage(new TextComponentString(TextFormatting.GREEN + "Hit on " + side.toString()));
+            if (entity != null) {
+                player.addChatComponentMessage(new TextComponentString(TextFormatting.GREEN + "Hit on " + side.toString() + ", energy: " + entity.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, side).getStoredPower()));
+            }
         }
 
         // Only execute on the server

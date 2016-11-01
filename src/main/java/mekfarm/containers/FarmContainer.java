@@ -2,6 +2,9 @@ package mekfarm.containers;
 
 import mekfarm.MekfarmMod;
 import mekfarm.entities.FarmTileEntity;
+import net.darkhax.tesla.lib.PowerBar;
+import net.darkhax.tesla.lib.TeslaUtils;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
@@ -54,7 +57,7 @@ public class FarmContainer extends Container {
         IItemHandler itemHandler = this.te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
         // Add 'inputs'
-        int x = 64;
+        int x = 118;
         int y = 6;
         int slotIndex = 0;
         for (int i = 0; i < Math.min(3, itemHandler.getSlots()); i++) {
@@ -62,7 +65,7 @@ public class FarmContainer extends Container {
             slotIndex++;
             x += 18;
         }
-        x = 10;
+        x = 118;
         y = 42;
         for (int i = 3; i < itemHandler.getSlots(); i++) {
             addSlotToContainer(new SlotItemHandler(itemHandler, slotIndex, x, y));

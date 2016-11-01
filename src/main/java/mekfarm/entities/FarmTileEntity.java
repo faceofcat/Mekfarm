@@ -4,20 +4,29 @@ import com.sun.jna.platform.win32.WinUser;
 import mekfarm.MekfarmMod;
 import mekfarm.blocks.FarmBlock;
 import mekfarm.inventories.CombinedStackHandler;
+import mekfarm.inventories.EnergyStorage;
 import mekfarm.inventories.IncomingStackHandler;
 import mekfarm.inventories.OutcomingStackHandler;
+import mekfarm.items.AnimalPackage;
+import mekfarm.net.ISimpleNBTMessageHandler;
+import mekfarm.net.SimpleNBTMessage;
+import net.darkhax.tesla.Tesla;
+import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.IFMLSidedHandler;
+import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -27,34 +36,30 @@ import java.util.List;
 /**
  * Created by CF on 2016-10-28.
  */
-public class FarmTileEntity extends TileEntity implements ITickable {
+public class FarmTileEntity extends TileEntity implements ITickable, ISimpleNBTMessageHandler {
     public static final int INPUT_SIZE = 3;
-    public static final int OUTPUT_SIZE = 9;
+    public static final int OUTPUT_SIZE = 3;
     public static final int INVENTORY_SIZE = INPUT_SIZE + OUTPUT_SIZE;
-    private int delayCounter = 20;
 
-//    private ItemStackHandler itemStackHandler = new ItemStackHandler(INVENTORY_SIZE) {
-//        @Override
-//        protected void onContentsChanged(int slot) {
-//            FarmTileEntity.this.markDirty();
-//        }
-//
-//        @Override
-//        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-//            MekfarmMod.logger.info("inventory insert: " + slot + " : " + stack.toString() + " : " + simulate);
-//            if (slot >= 3) {
-//                // cannot insert in 'output' inventory slots
-//                return stack;
-//            }
-//
-//            return super.insertItem(slot, stack, simulate);
-//        }
-//    };
+    private static final int SYNC_ON_TICK = 20;
+    private int syncTick = SYNC_ON_TICK;
+
+    private static final int WORK_ON_TICK = 20;
+    private int workTick = 0;
+
+    private EnergyStorage energyStorage = new EnergyStorage(500000) {
+        @Override
+        public void onChanged() {
+            FarmTileEntity.this.markDirty();
+            FarmTileEntity.this.forceSync();
+        }
+    };
 
     private IncomingStackHandler inStackHandler = new IncomingStackHandler(INPUT_SIZE) {
         @Override
         protected void onContentsChanged(int slot) {
             FarmTileEntity.this.markDirty();
+            FarmTileEntity.this.forceSync();
         }
     };
 
@@ -62,42 +67,77 @@ public class FarmTileEntity extends TileEntity implements ITickable {
         @Override
         protected void onContentsChanged(int slot) {
             FarmTileEntity.this.markDirty();
+            FarmTileEntity.this.forceSync();
         }
     };
 
     private CombinedStackHandler allStackHandler = new CombinedStackHandler(this.inStackHandler, this.outStackHandler);
 
+    private void forceSync() {
+        if (!this.worldObj.isRemote) {
+            this.syncTick = SYNC_ON_TICK;
+        }
+    }
+
+    public float getWorkProgress() {
+        return (float)Math.min(WORK_ON_TICK, Math.max(0, this.workTick)) / (float)WORK_ON_TICK;
+    }
+
+    private int getEntityTypeId() {
+        return 1;
+    }
+
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
         if (compound.hasKey("income")) {
-            // itemStackHandler.deserializeNBT((NBTTagCompound) compound.getTag("items"));
             this.inStackHandler.deserializeNBT(compound.getCompoundTag("income"));
         }
         if (compound.hasKey("outcome")) {
             this.outStackHandler.deserializeNBT(compound.getCompoundTag("outcome"));
         }
+        if (compound.hasKey("energy")) {
+            this.energyStorage.deserializeNBT(compound.getCompoundTag("energy"));
+        }
+        this.workTick = compound.getInteger("tick_work");
+        this.syncTick = compound.getInteger("tick_sync");
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
-        // compound.setTag("items", itemStackHandler.serializeNBT());
         compound.setTag("income", this.inStackHandler.serializeNBT());
         compound.setTag("outcome", this.outStackHandler.serializeNBT());
+        compound.setTag("energy", this.energyStorage.serializeNBT());
+        compound.setInteger("tick_work", this.workTick);
+        compound.setInteger("tick_sync", this.syncTick);
         return compound;
+    }
+
+    private NBTTagCompound writeToNBT() {
+        NBTTagCompound compound = new NBTTagCompound();
+        compound.setInteger("__tetId", this.getEntityTypeId());
+        return this.writeToNBT(compound);
+    }
+
+    @Override
+    public SimpleNBTMessage handleMessage(SimpleNBTMessage message) {
+//        MekfarmMod.logger.info("Message received: " + message.getCompound().toString());
+//        if (MekfarmMod.getSide() == Side.CLIENT) {
+        if (this.worldObj.isRemote) {
+            NBTTagCompound compound = (message == null) ? null : message.getCompound();
+            if (compound != null) {
+                int tetId = compound.getInteger("__tetId");
+                if (tetId == this.getEntityTypeId()) {
+                    this.readFromNBT(compound);
+                }
+            }
+        }
+        return null;
     }
 
     @Override
     public void update() {
-        // This method is called every tick (20 times per second normally)
-        this.delayCounter --;
-        if (this.delayCounter >= 0) {
-            return;
-        }
-        this.delayCounter = 10; // 100; // should be 5 seconds?
-
-        if (!worldObj.isRemote) {
 //            List<EntityAnimal> list = worldObj.getEntitiesWithinAABB(EntityAnimal.class, new AxisAlignedBB(
 //                    getPos().add(-10, -10, -10), getPos().add(10, 10, 10)));
 //            MekfarmMod.logger.info("There are " + list.size() + " entities around the farm.");
@@ -105,23 +145,43 @@ public class FarmTileEntity extends TileEntity implements ITickable {
 //                MekfarmMod.logger.info("  - " + thing.toString() + " : " + thing.getClass().getSimpleName() + " : " + thing.getAge() + " : " + thing.getGrowingAge());
 //            }
 
-            ItemStack stack = null;
-            int stackIndex = 0;
-            for(; stackIndex < this.inStackHandler.getSlots(); stackIndex++) {
-                stack = this.inStackHandler.extractItem(stackIndex, 1, false);
-                if ((stack != null) && (stack.stackSize > 0)) {
-                    break;
+        this.workTick++;
+        if (this.workTick > WORK_ON_TICK) {
+            this.workTick = 0;
+
+            if (!this.worldObj.isRemote) {
+                ItemStack stack = null;
+                int stackIndex = 0;
+                for (; stackIndex < this.inStackHandler.getSlots(); stackIndex++) {
+                    stack = this.inStackHandler.extractItem(stackIndex, 1, true);
+                    if ((stack != null) && (stack.stackSize > 0)) {
+                        break;
+                    }
                 }
-            }
-            if ((stack != null) && (stack.stackSize > 0)) {
-                ItemStack finalStack = this.outStackHandler.insertItems(stack, false);
-                if ((finalStack != null) && (finalStack.stackSize > 0)) {
-                    this.inStackHandler.insertItem(stackIndex, stack, false, true);
+                if ((stack != null) && (stack.stackSize > 0)) {
+                    int original = stack.stackSize;
+                    ItemStack stackCopy = stack.copy();
+                    if (stackCopy.getItem() instanceof AnimalPackage) {
+                        stackCopy.setTagInfo("hasAnimal", new NBTTagInt(1));
+                    }
+                    ItemStack finalStack = this.outStackHandler.insertItems(stackCopy, false);
+                    int inserted = original - ((finalStack == null) ? 0 : finalStack.stackSize);
+                    // if ((finalStack != null) && (finalStack.stackSize > 0)) {
+                    if (inserted > 0) {
+                        // this.inStackHandler.insertItem(stackIndex, stack, false, true);
+                        this.inStackHandler.extractItem(stackIndex, inserted, false);
+                    }
                 }
             }
         }
 
-        // MekfarmMod.logger.info("input slot 0: " + this.inStackHandler.getStackInSlot(0) + " : " + worldObj.isRemote);
+        if (!this.worldObj.isRemote) {
+            this.syncTick++;
+            if (this.syncTick >= SYNC_ON_TICK) {
+                MekfarmMod.network.send(new SimpleNBTMessage(this, this.writeToNBT()));
+                this.syncTick = 0;
+            }
+        }
     }
 
     public boolean canInteractWith(EntityPlayer playerIn) {
@@ -134,13 +194,16 @@ public class FarmTileEntity extends TileEntity implements ITickable {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return true;
         }
+        else if ((capability == TeslaCapabilities.CAPABILITY_HOLDER) || (capability == TeslaCapabilities.CAPABILITY_CONSUMER) || (capability == CapabilityEnergy.ENERGY)) {
+            return true;
+        }
         return super.hasCapability(capability, facing);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T>T getCapability(Capability<T> capability, EnumFacing facing) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            // return (T)itemStackHandler;
             if (facing == EnumFacing.WEST) {
                 return (T)this.inStackHandler;
             }
@@ -150,6 +213,10 @@ public class FarmTileEntity extends TileEntity implements ITickable {
             else if ((facing == null) || (facing == EnumFacing.UP)) {
                 return (T)this.allStackHandler;
             }
+        }
+        else if ((capability == TeslaCapabilities.CAPABILITY_HOLDER) || (capability == TeslaCapabilities.CAPABILITY_CONSUMER) || (capability == CapabilityEnergy.ENERGY)) {
+            // MekfarmMod.logger.info("getCapability: energy. " + capability.toString());
+            return (T)this.energyStorage;
         }
         return super.getCapability(capability, facing);
     }
