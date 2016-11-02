@@ -1,5 +1,5 @@
 {
-  "parent":"mekfarm:block/farm",
+  "parent":"mekfarm:block/animal_farm",
   "display": {
     "thirdperson": {
       "rotation": [ 10, -45, 170 ],

@@ -1,8 +1,6 @@
 package mekfarm.entities;
 
-import com.sun.jna.platform.win32.WinUser;
 import mekfarm.MekfarmMod;
-import mekfarm.blocks.FarmBlock;
 import mekfarm.inventories.CombinedStackHandler;
 import mekfarm.inventories.EnergyStorage;
 import mekfarm.inventories.IncomingStackHandler;
@@ -10,28 +8,17 @@ import mekfarm.inventories.OutcomingStackHandler;
 import mekfarm.items.AnimalPackage;
 import mekfarm.net.ISimpleNBTMessageHandler;
 import mekfarm.net.SimpleNBTMessage;
-import net.darkhax.tesla.Tesla;
 import net.darkhax.tesla.capability.TeslaCapabilities;
-import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.fml.common.IFMLSidedHandler;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * Created by CF on 2016-10-28.
@@ -191,7 +178,7 @@ public class FarmTileEntity extends TileEntity implements ITickable, ISimpleNBTM
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if ((capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) && (facing != EnumFacing.SOUTH) && (facing != EnumFacing.NORTH)) {
             return true;
         }
         else if ((capability == TeslaCapabilities.CAPABILITY_HOLDER) || (capability == TeslaCapabilities.CAPABILITY_CONSUMER) || (capability == CapabilityEnergy.ENERGY)) {

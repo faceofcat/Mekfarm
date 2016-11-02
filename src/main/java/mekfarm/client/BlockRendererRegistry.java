@@ -14,11 +14,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public final class BlockRendererRegistry {
     @SideOnly(Side.CLIENT)
     public static final void registerBlockRenderers() {
-        ModelLoader.setCustomModelResourceLocation(
-                Item.getItemFromBlock(BlocksRegistry.farmBlock),
-                0,
-                new ModelResourceLocation(BlocksRegistry.farmBlock.getRegistryName(), "inventory")
-        );
-        MekfarmMod.logger.info("Registered renderer for block: " + BlocksRegistry.farmBlock.getRegistryName().toString() + ".");
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(BlocksRegistry.farmBlock), 0, new ModelResourceLocation(BlocksRegistry.farmBlock.getRegistryName(), "inventory"));
     }
 }
