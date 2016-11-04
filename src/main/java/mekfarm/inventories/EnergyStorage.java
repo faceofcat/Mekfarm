@@ -77,8 +77,11 @@ public class EnergyStorage implements ITeslaConsumer, ITeslaHolder, IEnergyStora
 
     @Override
     public int extractEnergy(int maxExtract, boolean simulate) {
-        // MekfarmMod.logger.info("extract: " + maxExtract + " : " + simulate);
-        if (false == this.canExtract()) {
+        return this.extractEnergy(maxExtract, simulate, false);
+    }
+
+    public int extractEnergy(int maxExtract, boolean simulate, boolean force) {
+        if (!force && (false == this.canExtract())) {
             return 0;
         }
         int canExtract = Math.min(maxExtract, this.storedPower);

@@ -105,6 +105,6 @@ public class FarmContainer extends Container {
 
     @Override
     public boolean canInteractWith(EntityPlayer playerIn) {
-        return te.canInteractWith(playerIn);
+        return this.te.canInteractWith(playerIn);
     }
 }
