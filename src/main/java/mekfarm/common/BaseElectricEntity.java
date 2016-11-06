@@ -1,29 +1,34 @@
-package mekfarm.entities;
+package mekfarm.common;
 
 import mekfarm.MekfarmMod;
+import mekfarm.containers.IInitializableContainer;
 import mekfarm.inventories.CombinedStackHandler;
 import mekfarm.inventories.EnergyStorage;
 import mekfarm.inventories.IncomingStackHandler;
 import mekfarm.inventories.OutcomingStackHandler;
-import mekfarm.items.AnimalPackage;
 import mekfarm.net.ISimpleNBTMessageHandler;
 import mekfarm.net.SimpleNBTMessage;
 import net.darkhax.tesla.capability.TeslaCapabilities;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ITickable;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.CapabilityItemHandler;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * Created by CF on 2016-11-04.
  */
-public abstract class BaseElectricEntity extends TileEntity implements ITickable, ISimpleNBTMessageHandler {
+public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiContainer> extends TileEntity implements ITickable, ISimpleNBTMessageHandler, IContainerProvider, IInteractiveEntity, IWorkProgress {
     private static final int SYNC_ON_TICK = 20;
     private int syncTick = SYNC_ON_TICK;
 
@@ -37,7 +42,10 @@ public abstract class BaseElectricEntity extends TileEntity implements ITickable
 
     private int typeId; // used for message sync
 
-    protected BaseElectricEntity(int typeId, int energyMaxStorage, int inputSlots, int outputSlots) {
+    private Class<CT> containerClass;
+    private Class<CGT> guiContainerClass;
+
+    protected BaseElectricEntity(int typeId, int energyMaxStorage, int inputSlots, int outputSlots, Class<CT> containerClass, Class<CGT> guiContainerClass) {
         this.typeId = typeId;
 
         this.energyStorage = new EnergyStorage(energyMaxStorage) {
@@ -53,6 +61,11 @@ public abstract class BaseElectricEntity extends TileEntity implements ITickable
                 BaseElectricEntity.this.markDirty();
                 BaseElectricEntity.this.forceSync();
             }
+
+            @Override
+            protected boolean acceptsStack(int slot, ItemStack stack, boolean internal) {
+                return BaseElectricEntity.this.acceptsInputStack(slot, stack, internal);
+            }
         };
         this.outStackHandler = new OutcomingStackHandler(outputSlots) {
             @Override
@@ -62,6 +75,13 @@ public abstract class BaseElectricEntity extends TileEntity implements ITickable
             }
         };
         this.allStackHandler = new CombinedStackHandler(this.inStackHandler, this.outStackHandler);
+
+        this.containerClass = containerClass;
+        this.guiContainerClass = guiContainerClass;
+    }
+
+    protected boolean acceptsInputStack(int slot, ItemStack stack, boolean internal) {
+        return true;
     }
 
     private void forceSync() {
@@ -70,6 +90,7 @@ public abstract class BaseElectricEntity extends TileEntity implements ITickable
         }
     }
 
+    @Override
     public float getWorkProgress() {
         if (this.lastWorkTicks <= 0) {
             return 0;
@@ -205,4 +226,39 @@ public abstract class BaseElectricEntity extends TileEntity implements ITickable
         }
         return super.getCapability(capability, facing);
     }
+
+    @Override
+    public Container getContainer(IInventory playerInventory) {
+        try {
+            CT container = this.containerClass.newInstance();
+            if (container instanceof IInitializableContainer) {
+                ((IInitializableContainer)container).initialize(playerInventory, this);
+            }
+            return container;
+        } catch (InstantiationException e) {
+            MekfarmMod.logger.error(e);
+            return null;
+        } catch (IllegalAccessException e) {
+            MekfarmMod.logger.error(e);
+            return null;
+        }
+    }
+
+    @Override
+    public GuiContainer getContainerGUI(IInventory playerInventory) {
+        CGT gui = null;
+        try {
+            Constructor<CGT> c = this.guiContainerClass.getConstructor(TileEntity.class, Container.class);
+            if (c != null) {
+                Container container = this.getContainer(playerInventory);
+                if (container != null) {
+                    gui = c.newInstance(this, container);
+                }
+            }
+        } catch(NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            MekfarmMod.logger.error(e);
+        }
+        return gui;
+    }
+
 }

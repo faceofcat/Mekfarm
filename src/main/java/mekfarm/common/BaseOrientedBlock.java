@@ -1,8 +1,6 @@
-package mekfarm.blocks;
+package mekfarm.common;
 
 import mekfarm.MekfarmMod;
-import mekfarm.common.BlocksRegistry;
-import mekfarm.entities.FarmTileEntity;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.block.Block;
@@ -12,10 +10,12 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -25,7 +25,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -56,6 +59,14 @@ public abstract class BaseOrientedBlock<T extends TileEntity> extends Block impl
         GameRegistry.register(this);
         GameRegistry.register(new ItemBlock(this), this.getRegistryName());
         GameRegistry.registerTileEntity(this.teClass, this.getRegistryName() + "_tile");
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void registerRenderer() {
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this)
+                , 0
+                , new ModelResourceLocation(this.getRegistryName(), "inventory")
+        );
     }
 
     @Override

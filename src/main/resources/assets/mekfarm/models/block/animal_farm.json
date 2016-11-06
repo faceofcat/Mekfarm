@@ -1,6 +1,6 @@
 {
   "parent": "mekfarm:block/base",
   "textures": {
-    "north": "mekfarm:blocks/animal_farm/animal_farm-front"
+    "north": "mekfarm:blocks/farms/animal_farm-front"
   }
 }

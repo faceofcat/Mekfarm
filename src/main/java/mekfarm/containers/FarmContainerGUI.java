@@ -1,12 +1,15 @@
 package mekfarm.containers;
 
 import mekfarm.MekfarmMod;
-import mekfarm.entities.FarmTileEntity;
+import mekfarm.common.IWorkProgress;
+import mekfarm.farms.AnimalFarmEntity;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.darkhax.tesla.lib.PowerBar;
 import net.darkhax.tesla.lib.TeslaUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.Container;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -20,9 +23,10 @@ public class FarmContainerGUI extends GuiContainer {
 
     private static final ResourceLocation background = new ResourceLocation(MekfarmMod.MODID, "textures/gui/animal_farmer.png");
 
-    private FarmTileEntity te;
+    private TileEntity te;
 
-    public FarmContainerGUI(FarmTileEntity tileEntity, FarmContainer container) {
+    @SuppressWarnings("unused") // used from reflection
+    public FarmContainerGUI(TileEntity tileEntity, Container container) {
         super(container);
 
         super.xSize = WIDTH;
@@ -55,7 +59,9 @@ public class FarmContainerGUI extends GuiContainer {
         mc.getTextureManager().bindTexture(background);
         drawTexturedModalRect(super.guiLeft, super.guiTop, 0, 0, super.xSize, super.ySize);
 
-        drawTexturedModalRect(super.guiLeft + 117, super.guiTop + 23, 180, 0, Math.round(54.0f * this.te.getWorkProgress()), 5);
+        if (this.te instanceof IWorkProgress) {
+            drawTexturedModalRect(super.guiLeft + 117, super.guiTop + 23, 180, 0, Math.round(54.0f * ((IWorkProgress)this.te).getWorkProgress()), 5);
+        }
 
         ITeslaHolder tesla = this.te.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, null);
         if (tesla != null) {

@@ -1,0 +1,6 @@
+{
+  "parent": "mekfarm:block/base",
+  "textures": {
+    "north": "mekfarm:blocks/farms/animal_releaser-front"
+  }
+}

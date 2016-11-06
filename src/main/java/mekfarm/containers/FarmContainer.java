@@ -1,17 +1,12 @@
 package mekfarm.containers;
 
-import mekfarm.MekfarmMod;
-import mekfarm.entities.FarmTileEntity;
-import net.darkhax.tesla.lib.PowerBar;
-import net.darkhax.tesla.lib.TeslaUtils;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import mekfarm.common.IInteractiveEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityLockable;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -21,16 +16,17 @@ import javax.annotation.Nullable;
 /**
  * Created by CF on 2016-10-28.
  */
-public class FarmContainer extends Container {
+public class FarmContainer extends Container implements IInitializableContainer {
 
-    private FarmTileEntity te;
+    private TileEntity te;
 
-    public FarmContainer(IInventory playerInventory, FarmTileEntity te) {
+    public FarmContainer() {
+    }
+
+    @Override
+    public void initialize(IInventory playerInventory, TileEntity te) {
         this.te = te;
 
-        // This container references items out of our own inventory (the 9 slots we hold ourselves)
-        // as well as the slots from the player inventory so that the user can transfer items between
-        // both inventories. The two calls below make sure that slots are defined for both inventories.
         addOwnSlots();
         addPlayerSlots(playerInventory);
     }
@@ -105,6 +101,9 @@ public class FarmContainer extends Container {
 
     @Override
     public boolean canInteractWith(EntityPlayer playerIn) {
-        return this.te.canInteractWith(playerIn);
+        if (this.te instanceof IInteractiveEntity) {
+            return ((IInteractiveEntity)this.te).canInteractWith(playerIn);
+        }
+        return false;
     }
 }

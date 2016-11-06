@@ -1,16 +1,21 @@
-package mekfarm.entities;
+package mekfarm.farms;
 
+import mekfarm.common.BaseElectricEntity;
+import mekfarm.common.BaseOrientedBlock;
+import mekfarm.common.BlocksRegistry;
+import mekfarm.containers.FarmContainer;
+import mekfarm.containers.FarmContainerGUI;
 import mekfarm.items.AnimalPackage;
-import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 
 /**
- * Created by CF on 2016-10-28.
+ * Created by CF on 2016-11-04.
  */
-public class FarmTileEntity extends BaseElectricEntity {
-    public FarmTileEntity() {
-        super(1, 500000, 3, 3);
+public class AnimalReleaserEntity extends BaseElectricEntity<FarmContainer, FarmContainerGUI> {
+    public AnimalReleaserEntity() {
+        super(1, 500000, 3, 3, FarmContainer.class, FarmContainerGUI.class);
     }
 
     @Override
@@ -26,9 +31,13 @@ public class FarmTileEntity extends BaseElectricEntity {
         if ((stack != null) && (stack.stackSize > 0)) {
             int original = stack.stackSize;
             ItemStack stackCopy = stack.copy();
-            if (stackCopy.getItem() instanceof AnimalPackage) {
-                stackCopy.setTagInfo("hasAnimal", new NBTTagInt(1));
+            if ((stackCopy.getItem() instanceof AnimalPackage) && stackCopy.hasTagCompound()) {
+                stackCopy.getTagCompound().removeTag("hasAnimal");
+                if (stackCopy.getTagCompound().getSize() == 0) {
+                    stackCopy.setTagCompound(null);
+                }
             }
+
             ItemStack finalStack = this.outStackHandler.insertItems(stackCopy, false);
             int inserted = original - ((finalStack == null) ? 0 : finalStack.stackSize);
             if (inserted > 0) {

@@ -1,2 +1,5 @@
 Mekfarm_AnimalPackage.name=Animal Package
 Mekfarm_AnimalPackage_Full.name=Animal Package (full)
+
+tile.mekfarm.animal_farm.name=Animal Farm
+tile.mekfarm.animal_releaser.name=Animal Releaser
