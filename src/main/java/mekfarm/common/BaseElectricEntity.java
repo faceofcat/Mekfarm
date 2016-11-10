@@ -1,11 +1,9 @@
 package mekfarm.common;
 
 import mekfarm.MekfarmMod;
+import mekfarm.capabilities.MekfarmCapabilities;
 import mekfarm.containers.IInitializableContainer;
-import mekfarm.inventories.CombinedStackHandler;
-import mekfarm.inventories.EnergyStorage;
-import mekfarm.inventories.IncomingStackHandler;
-import mekfarm.inventories.OutcomingStackHandler;
+import mekfarm.inventories.*;
 import mekfarm.net.ISimpleNBTMessageHandler;
 import mekfarm.net.SimpleNBTMessage;
 import net.darkhax.tesla.capability.TeslaCapabilities;
@@ -40,12 +38,14 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
     protected OutcomingStackHandler outStackHandler;
     protected CombinedStackHandler allStackHandler;
 
+    protected FiltersStackHandler filtersHandler;
+
     private int typeId; // used for message sync
 
     private Class<CT> containerClass;
     private Class<CGT> guiContainerClass;
 
-    protected BaseElectricEntity(int typeId, int energyMaxStorage, int inputSlots, int outputSlots, Class<CT> containerClass, Class<CGT> guiContainerClass) {
+    protected BaseElectricEntity(int typeId, int energyMaxStorage, int inputSlots, int outputSlots, int filterSlots, Class<CT> containerClass, Class<CGT> guiContainerClass) {
         this.typeId = typeId;
 
         this.energyStorage = new EnergyStorage(energyMaxStorage) {
@@ -75,6 +75,14 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
             }
         };
         this.allStackHandler = new CombinedStackHandler(this.inStackHandler, this.outStackHandler);
+
+        this.filtersHandler = (filterSlots <= 0) ? null : new FiltersStackHandler(filterSlots) {
+            @Override
+            public boolean acceptsFilter(int slot, ItemStack filter) {
+                // TODO: maybe add more stuff to this
+                return super.acceptsFilter(slot, filter);
+            }
+        };
 
         this.containerClass = containerClass;
         this.guiContainerClass = guiContainerClass;
@@ -120,6 +128,9 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
         if (compound.hasKey("energy")) {
             this.energyStorage.deserializeNBT(compound.getCompoundTag("energy"));
         }
+        if (compound.hasKey("filters") && (this.filtersHandler != null)) {
+            this.filtersHandler.deserializeNBT(compound.getCompoundTag("filters"));
+        }
         this.lastWorkTicks = compound.getInteger("tick_lastWork");
         this.workTick = compound.getInteger("tick_work");
         this.syncTick = compound.getInteger("tick_sync");
@@ -131,6 +142,9 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
         compound.setTag("income", this.inStackHandler.serializeNBT());
         compound.setTag("outcome", this.outStackHandler.serializeNBT());
         compound.setTag("energy", this.energyStorage.serializeNBT());
+        if (this.filtersHandler != null) {
+            compound.setTag("filters", this.filtersHandler.serializeNBT());
+        }
         compound.setInteger("tick_work", this.workTick);
         compound.setInteger("tick_lastWork", this.lastWorkTicks);
         compound.setInteger("tick_sync", this.syncTick);
@@ -197,10 +211,17 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if ((capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) && (facing != EnumFacing.SOUTH) && (facing != EnumFacing.NORTH)) {
+        EnumFacing machineFacing = BlocksRegistry.animalFarmBlock.getStateFromMeta(this.getBlockMetadata())
+                .getValue(BlocksRegistry.animalFarmBlock.FACING);
+        Boolean isFront = (machineFacing == facing);
+
+        if ((capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) && !isFront) {
             return true;
         }
-        else if ((capability == TeslaCapabilities.CAPABILITY_HOLDER) || (capability == TeslaCapabilities.CAPABILITY_CONSUMER) || (capability == CapabilityEnergy.ENERGY)) {
+        else if (!isFront && ((capability == TeslaCapabilities.CAPABILITY_HOLDER) || (capability == TeslaCapabilities.CAPABILITY_CONSUMER) || (capability == CapabilityEnergy.ENERGY))) {
+            return true;
+        }
+        else if ((this.filtersHandler != null) && (capability == MekfarmCapabilities.CAPABILITY_FILTERS_HANDLER)) {
             return true;
         }
         return super.hasCapability(capability, facing);
@@ -209,20 +230,18 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
     @Override
     @SuppressWarnings("unchecked")
     public <T>T getCapability(Capability<T> capability, EnumFacing facing) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if (facing == EnumFacing.WEST) {
-                return (T)this.inStackHandler;
-            }
-            else if ((facing == EnumFacing.EAST) || (facing == EnumFacing.DOWN)) {
-                return (T)this.outStackHandler;
-            }
-            else if ((facing == null) || (facing == EnumFacing.UP)) {
-                return (T)this.allStackHandler;
-            }
+        EnumFacing machineFacing = BlocksRegistry.animalFarmBlock.getStateFromMeta(this.getBlockMetadata())
+                .getValue(BlocksRegistry.animalFarmBlock.FACING);
+        Boolean isFront = (machineFacing == facing);
+
+        if (!isFront && (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)) {
+            return (T)this.allStackHandler;
         }
-        else if ((capability == TeslaCapabilities.CAPABILITY_HOLDER) || (capability == TeslaCapabilities.CAPABILITY_CONSUMER) || (capability == CapabilityEnergy.ENERGY)) {
-            // MekfarmMod.logger.info("getCapability: energy. " + capability.toString());
+        else if (!isFront && ((capability == TeslaCapabilities.CAPABILITY_HOLDER) || (capability == TeslaCapabilities.CAPABILITY_CONSUMER) || (capability == CapabilityEnergy.ENERGY))) {
             return (T)this.energyStorage;
+        }
+        else if ((this.filtersHandler != null) && (capability == MekfarmCapabilities.CAPABILITY_FILTERS_HANDLER)) {
+            return (T)this.filtersHandler;
         }
         return super.getCapability(capability, facing);
     }
@@ -260,5 +279,4 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
         }
         return gui;
     }
-
 }

@@ -2,6 +2,7 @@ package mekfarm.client;
 
 import mekfarm.common.ItemsRegistry;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -12,15 +13,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public final class ItemRenderersRegistry {
     @SideOnly(Side.CLIENT)
     public static final void registerItemRenderers() {
-        ModelLoader.setCustomModelResourceLocation(
-                ItemsRegistry.farmItem,
-                0,
-                new ModelResourceLocation(ItemsRegistry.farmItem.getRegistryName(), "inventory")
-        );
-        ModelLoader.setCustomModelResourceLocation(
-                ItemsRegistry.animalPackage,
-                0,
-                new ModelResourceLocation(ItemsRegistry.animalPackage.getRegistryName(), "inventory")
-        );
+        ItemRenderersRegistry.registerItemRenderer(ItemsRegistry.animalPackage);
+        ItemRenderersRegistry.registerItemRenderer(ItemsRegistry.animalFilter);
+        ItemRenderersRegistry.registerItemRenderer(ItemsRegistry.animalAgeBabyFilter);
+        ItemRenderersRegistry.registerItemRenderer(ItemsRegistry.animalAgeAdultFilter);
+        ItemRenderersRegistry.registerItemRenderer(ItemsRegistry.baseFilterItem);
+    }
+
+    private static void registerItemRenderer(Item item) {
+        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
     }
 }

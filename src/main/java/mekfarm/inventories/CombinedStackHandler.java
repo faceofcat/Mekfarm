@@ -1,6 +1,5 @@
 package mekfarm.inventories;
 
-import mekfarm.MekfarmMod;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -8,7 +7,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 /**
  * Created by CF on 2016-10-29.
  */
-public class CombinedStackHandler implements IItemHandlerModifiable {
+public class CombinedStackHandler implements IItemHandlerModifiable, IInternalItemHandler {
     private IItemHandler income, outcome;
 
     public CombinedStackHandler(IItemHandler income, IItemHandler outcome) {
@@ -22,18 +21,34 @@ public class CombinedStackHandler implements IItemHandlerModifiable {
             if (this.income instanceof IItemHandlerModifiable) {
                 ((IItemHandlerModifiable)this.income).setStackInSlot(slot, stack);
             }
-            else {
-                MekfarmMod.logger.warn("CombinedStackHandler::setStackInSlot : Incoming item handler is not modifiable.");
-            }
         }
         else {
             if (this.outcome instanceof IItemHandlerModifiable) {
                 ((IItemHandlerModifiable)this.outcome).setStackInSlot(slot - this.getIncomeSlots(), stack);
             }
-            else {
-                MekfarmMod.logger.warn("CombinedStackHandler::setStackInSlot : Outgoing item handler is not modifiable.");
+        }
+    }
+
+    @Override
+    public void setStackInSlot(int slot, ItemStack stack, boolean internal) {
+        if (slot < this.getIncomeSlots()) {
+            if (this.income instanceof IInternalItemHandler) {
+                ((IInternalItemHandler)this.income).setStackInSlot(slot, stack, internal);
+                return;
             }
         }
+        else {
+            if (this.outcome instanceof IInternalItemHandler) {
+                ((IInternalItemHandler)this.outcome).setStackInSlot(slot - this.getIncomeSlots(), stack, internal);
+                return;
+            }
+        }
+        this.setStackInSlot(slot, stack);
+    }
+
+    @Override
+    public int getSlots() {
+        return this.getIncomeSlots() + this.getOutcomeSlots();
     }
 
     private int getIncomeSlots() {
@@ -42,11 +57,6 @@ public class CombinedStackHandler implements IItemHandlerModifiable {
 
     private int getOutcomeSlots() {
         return (this.outcome != null) ? this.outcome.getSlots() : 0;
-    }
-
-    @Override
-    public int getSlots() {
-        return this.getIncomeSlots() + this.getOutcomeSlots();
     }
 
     @Override
@@ -60,6 +70,20 @@ public class CombinedStackHandler implements IItemHandlerModifiable {
     }
 
     @Override
+    public ItemStack getStackInSlot(int slot, boolean internal) {
+        if (slot < this.getIncomeSlots()) {
+            if (this.income instanceof IInternalItemHandler) {
+                return ((IInternalItemHandler) this.income).getStackInSlot(slot, internal);
+            }
+        } else {
+            if (this.outcome instanceof IInternalItemHandler) {
+                return ((IInternalItemHandler) this.outcome).getStackInSlot(slot - this.getIncomeSlots(), internal);
+            }
+        }
+        return this.getStackInSlot(slot);
+    }
+
+    @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         if (slot < this.getIncomeSlots()) {
             return this.income.insertItem(slot, stack, simulate);
@@ -70,6 +94,20 @@ public class CombinedStackHandler implements IItemHandlerModifiable {
     }
 
     @Override
+    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate, boolean internal) {
+        if (slot < this.getIncomeSlots()) {
+            if (this.income instanceof IInternalItemHandler) {
+                return ((IInternalItemHandler) this.income).insertItem(slot, stack, simulate, internal);
+            }
+        } else {
+            if (this.outcome instanceof IInternalItemHandler) {
+                return ((IInternalItemHandler) this.outcome).insertItem(slot - this.getIncomeSlots(), stack, simulate, internal);
+            }
+        }
+        return this.insertItem(slot, stack, simulate);
+    }
+
+    @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (slot < this.getIncomeSlots()) {
             return this.income.extractItem(slot, amount, simulate);
@@ -77,5 +115,19 @@ public class CombinedStackHandler implements IItemHandlerModifiable {
         else {
             return this.outcome.extractItem(slot - this.getIncomeSlots(), amount, simulate);
         }
+    }
+
+    @Override
+    public ItemStack extractItem(int slot, int amount, boolean simulate, boolean internal) {
+        if (slot < this.getIncomeSlots()) {
+            if (this.income instanceof IInternalItemHandler) {
+                return ((IInternalItemHandler) this.income).extractItem(slot, amount, simulate, internal);
+            }
+        } else {
+            if (this.outcome instanceof IInternalItemHandler) {
+                return ((IInternalItemHandler) this.outcome).extractItem(slot - this.getIncomeSlots(), amount, simulate, internal);
+            }
+        }
+        return this.extractItem(slot, amount, simulate);
     }
 }

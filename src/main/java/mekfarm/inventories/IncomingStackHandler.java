@@ -7,4 +7,9 @@ public class IncomingStackHandler extends FilteredStackHandler {
     public IncomingStackHandler(int size) {
         super(size);
     }
+
+    @Override
+    protected boolean canExtract(int slot, int amount, boolean internal) {
+        return internal;
+    }
 }

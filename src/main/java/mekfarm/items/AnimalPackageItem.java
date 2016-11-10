@@ -1,12 +1,9 @@
 package mekfarm.items;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
-import mekfarm.MekfarmMod;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.IItemPropertyGetter;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -20,13 +17,9 @@ import java.util.List;
 /**
  * Created by CF on 2016-10-30.
  */
-public class AnimalPackage extends Item {
-    public AnimalPackage() {
-        super();
-
-        this.setRegistryName("animal_package");
-        this.setUnlocalizedName(MekfarmMod.MODID + ".animal_package");
-        this.setCreativeTab(CreativeTabs.FOOD);
+public class AnimalPackageItem extends BaseItem {
+    public AnimalPackageItem() {
+        super("animal_package");
 
         this.addPropertyOverride(new ResourceLocation("hasAnimal"), new IItemPropertyGetter()
         {
@@ -45,14 +38,14 @@ public class AnimalPackage extends Item {
     @Override
     public String getUnlocalizedName()
     {
-        return "Mekfarm_AnimalPackage";
+        return "item.mekfarm_animal_package";
     }
 
     @Override
     public String getUnlocalizedName(ItemStack stack)
     {
         if (this.hasAnimal(stack) == true) {
-            return "Mekfarm_AnimalPackage_Full";
+            return "item.mekfarm_animal_package_full";
         }
         return this.getUnlocalizedName();
     }

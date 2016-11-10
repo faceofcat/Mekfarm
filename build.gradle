@@ -12,7 +12,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = "1.0"
 group = "com.faceofcat.mekfarm" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "Mekfarm"
+archivesBaseName = "mekfarm"
 
 repositories {
    maven { url 'http://maven.epoxide.xyz' }

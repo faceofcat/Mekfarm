@@ -1,5 +1,7 @@
 package mekfarm.containers;
 
+import mekfarm.capabilities.IFilterHandler;
+import mekfarm.capabilities.MekfarmCapabilities;
 import mekfarm.common.IInteractiveEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -36,7 +38,7 @@ public class FarmContainer extends Container implements IInitializableContainer 
         for (int row = 0; row < 3; ++row) {
             for (int col = 0; col < 9; ++col) {
                 int x = 10 + col * 18;
-                int y = row * 18 + 70;
+                int y = row * 18 + 88;
                 this.addSlotToContainer(new Slot(playerInventory, col + row * 9 + 9, x, y));
             }
         }
@@ -44,7 +46,7 @@ public class FarmContainer extends Container implements IInitializableContainer 
         // Slots for the hotbar
         for (int row = 0; row < 9; ++row) {
             int x = 10 + row * 18;
-            int y = 58 + 70;
+            int y = 58 + 88;
             this.addSlotToContainer(new Slot(playerInventory, row, x, y));
         }
     }
@@ -55,18 +57,21 @@ public class FarmContainer extends Container implements IInitializableContainer 
         // Add 'inputs'
         int x = 118;
         int y = 6;
-        int slotIndex = 0;
         for (int i = 0; i < Math.min(3, itemHandler.getSlots()); i++) {
-            addSlotToContainer(new SlotItemHandler(itemHandler, slotIndex, x, y));
-            slotIndex++;
+            addSlotToContainer(new InternalSlot(itemHandler, i, x, y));
             x += 18;
         }
-        x = 118;
-        y = 42;
+//        x = 118;
+//        y = 42;
         for (int i = 3; i < itemHandler.getSlots(); i++) {
-            addSlotToContainer(new SlotItemHandler(itemHandler, slotIndex, x, y));
-            slotIndex++;
-            x += 18;
+            x = 118 + ((i - 3) % 3) * 18;
+            y = 42 + Math.floorDiv(i - 3, 3) * 18;
+            addSlotToContainer(new InternalSlot(itemHandler, i, x, y));
+        }
+
+        IFilterHandler filterHandler = this.te.getCapability(MekfarmCapabilities.CAPABILITY_FILTERS_HANDLER, null);
+        if (filterHandler != null) {
+            addSlotToContainer(new SlotItemHandler(filterHandler, 0, 188, 6));
         }
     }
 

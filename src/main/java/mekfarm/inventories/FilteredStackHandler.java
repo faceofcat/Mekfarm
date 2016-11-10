@@ -6,14 +6,19 @@ import net.minecraftforge.items.ItemStackHandler;
 /**
  * Created by CF on 2016-10-29.
  */
-public class FilteredStackHandler extends ItemStackHandler {
+public class FilteredStackHandler extends ItemStackHandler implements IInternalItemHandler {
     FilteredStackHandler(int size) {
         super(size);
     }
 
     @Override
     public void setStackInSlot(int slot, ItemStack stack) {
-        if ((stack != null) && (this.acceptsStack(slot, stack, true) == false)) {
+        this.setStackInSlot(slot, stack, false);
+    }
+
+    @Override
+    public void setStackInSlot(int slot, ItemStack stack, boolean internal) {
+        if ((stack != null) && (this.acceptsStack(slot, stack, internal) == false)) {
             return;
         }
 
@@ -21,10 +26,16 @@ public class FilteredStackHandler extends ItemStackHandler {
     }
 
     @Override
+    public ItemStack getStackInSlot(int slot, boolean internal) {
+        return super.getStackInSlot(slot);
+    }
+
+    @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         return this.insertItem(slot, stack, simulate, false);
     }
 
+    @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate, boolean internal) {
         if ((stack == null) || (stack.stackSize == 0)) {
             return null;
@@ -37,7 +48,21 @@ public class FilteredStackHandler extends ItemStackHandler {
         return super.insertItem(slot, stack, simulate);
     }
 
+    @Override
+    public ItemStack extractItem(int slot, int amount, boolean simulate){
+        return this.extractItem(slot, amount, simulate, false);
+    }
+
+    @Override
+    public ItemStack extractItem(int slot, int amount, boolean simulate, boolean internal) {
+        if (this.canExtract(slot, amount, internal))
+            return super.extractItem(slot, amount, simulate);
+        return null;
+    }
+
     protected boolean acceptsStack(int slot, ItemStack stack, boolean internal) {
         return true;
     }
+
+    protected boolean canExtract(int slot, int amount, boolean internal) { return true; }
 }

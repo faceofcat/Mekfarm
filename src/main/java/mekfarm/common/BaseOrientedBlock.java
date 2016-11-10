@@ -50,7 +50,7 @@ public abstract class BaseOrientedBlock<T extends TileEntity> extends Block impl
 
         this.setRegistryName(blockId);
         this.setUnlocalizedName(MekfarmMod.MODID + "." + blockId);
-        this.setCreativeTab(CreativeTabs.FOOD);
+        this.setCreativeTab(MekfarmMod.creativeTab);
 
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
     }
