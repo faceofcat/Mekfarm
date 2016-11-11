@@ -7,7 +7,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 /**
  * Created by CF on 2016-10-29.
  */
-public class CombinedStackHandler implements IItemHandlerModifiable, IInternalItemHandler {
+public class CombinedStackHandler implements IItemHandlerModifiable, IInternalItemHandler, IInputOutputItemHandler {
     private IItemHandler income, outcome;
 
     public CombinedStackHandler(IItemHandler income, IItemHandler outcome) {
@@ -129,5 +129,15 @@ public class CombinedStackHandler implements IItemHandlerModifiable, IInternalIt
             }
         }
         return this.extractItem(slot, amount, simulate);
+    }
+
+    @Override
+    public int getInputSlots() {
+        return (this.income == null) ? 0 : this.income.getSlots();
+    }
+
+    @Override
+    public int getOutputSlots() {
+        return (this.outcome == null) ? 0 : this.outcome.getSlots();
     }
 }

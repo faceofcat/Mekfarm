@@ -12,5 +12,6 @@ final class BlockRendererRegistry {
     static void registerBlockRenderers() {
         BlocksRegistry.animalFarmBlock.registerRenderer();
         BlocksRegistry.animalReleaserBlock.registerRenderer();
+        BlocksRegistry.electricButcherBlock.registerRenderer();
     }
 }

@@ -1,4 +1,4 @@
-package mekfarm.containers;
+package mekfarm.ui;
 
 /**
  * Created by CF on 2016-11-06.

@@ -1,0 +1,6 @@
+{
+  "parent": "mekfarm:block/base_processor",
+  "textures": {
+    "north": "mekfarm:blocks/processors/electric_butcher-front"
+  }
+}

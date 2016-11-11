@@ -1,7 +1,7 @@
 package mekfarm.common;
 
 import mekfarm.MekfarmMod;
-import mekfarm.containers.MekfarmGuiProxy;
+import mekfarm.ui.MekfarmGuiProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;

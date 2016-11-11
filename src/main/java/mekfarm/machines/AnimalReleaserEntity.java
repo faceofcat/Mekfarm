@@ -1,11 +1,10 @@
-package mekfarm.farms;
+package mekfarm.machines;
 
 import mekfarm.MekfarmMod;
-import mekfarm.common.BaseElectricEntity;
-import mekfarm.common.BaseOrientedBlock;
 import mekfarm.common.BlocksRegistry;
+import mekfarm.common.ItemsRegistry;
 import mekfarm.containers.FarmContainer;
-import mekfarm.containers.FarmContainerGUI;
+import mekfarm.ui.AnimalReleaserContainerGUI;
 import mekfarm.items.AnimalPackageItem;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.item.ItemStack;
@@ -17,9 +16,21 @@ import net.minecraft.world.World;
 /**
  * Created by CF on 2016-11-04.
  */
-public class AnimalReleaserEntity extends BaseElectricEntity<FarmContainer, FarmContainerGUI> {
+public class AnimalReleaserEntity extends BaseElectricEntity<FarmContainer, AnimalReleaserContainerGUI> {
     public AnimalReleaserEntity() {
-        super(1, 500000, 3, 3, 0, FarmContainer.class, FarmContainerGUI.class);
+        super(2, 500000, 3, 3, 0, FarmContainer.class, AnimalReleaserContainerGUI.class);
+    }
+
+    @Override
+    protected boolean acceptsInputStack(int slot, ItemStack stack, boolean internal) {
+        if (stack == null)
+            return true;
+
+        // test for animal package
+        if (stack.getItem().getRegistryName().equals(ItemsRegistry.animalPackage.getRegistryName())) {
+            return ItemsRegistry.animalPackage.hasAnimal(stack);
+        }
+        return false;
     }
 
     @Override

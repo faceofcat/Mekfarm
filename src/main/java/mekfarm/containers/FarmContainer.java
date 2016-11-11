@@ -3,6 +3,8 @@ package mekfarm.containers;
 import mekfarm.capabilities.IFilterHandler;
 import mekfarm.capabilities.MekfarmCapabilities;
 import mekfarm.common.IInteractiveEntity;
+import mekfarm.inventories.IInputOutputItemHandler;
+import mekfarm.ui.InternalSlot;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -18,15 +20,11 @@ import javax.annotation.Nullable;
 /**
  * Created by CF on 2016-10-28.
  */
-public class FarmContainer extends Container implements IInitializableContainer {
+public class FarmContainer extends Container {
 
     private TileEntity te;
 
-    public FarmContainer() {
-    }
-
-    @Override
-    public void initialize(IInventory playerInventory, TileEntity te) {
+    public FarmContainer(IInventory playerInventory, TileEntity te) {
         this.te = te;
 
         addOwnSlots();
@@ -53,25 +51,43 @@ public class FarmContainer extends Container implements IInitializableContainer 
 
     private void addOwnSlots() {
         IItemHandler itemHandler = this.te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+        int inputs;
+        // int outputs;
+        if (itemHandler instanceof IInputOutputItemHandler) {
+            inputs = ((IInputOutputItemHandler)itemHandler).getInputSlots();
+            // outputs = ((IInputOutputItemHandler)itemHandler).getOutputSlots();
+        }
+        else {
+            inputs = Math.min(3, itemHandler.getSlots());
+            // outputs = Math.max(0, itemHandler.getSlots() - inputs);
+        }
 
-        // Add 'inputs'
-        int x = 118;
-        int y = 6;
-        for (int i = 0; i < Math.min(3, itemHandler.getSlots()); i++) {
-            addSlotToContainer(new InternalSlot(itemHandler, i, x, y));
-            x += 18;
-        }
-//        x = 118;
-//        y = 42;
-        for (int i = 3; i < itemHandler.getSlots(); i++) {
-            x = 118 + ((i - 3) % 3) * 18;
-            y = 42 + Math.floorDiv(i - 3, 3) * 18;
-            addSlotToContainer(new InternalSlot(itemHandler, i, x, y));
-        }
+        this.addInputSlots(itemHandler, inputs);
+        this.addOutputSlots(itemHandler, inputs);
 
         IFilterHandler filterHandler = this.te.getCapability(MekfarmCapabilities.CAPABILITY_FILTERS_HANDLER, null);
-        if (filterHandler != null) {
-            addSlotToContainer(new SlotItemHandler(filterHandler, 0, 188, 6));
+        if ((filterHandler != null) && (filterHandler.getSlots() > 0)) {
+            for(int i = 0; i < Math.min(3, filterHandler.getSlots()); i++) {
+                addSlotToContainer(new SlotItemHandler(filterHandler, i, 188, 6 + (i * 18)));
+            }
+        }
+    }
+
+    protected void addInputSlots(IItemHandler itemHandler, int inputs) {
+        int x, y;
+        for (int i = 0; i < inputs; i++) {
+            x = 118 + (i * 18);
+            y = 6;
+            addSlotToContainer(new InternalSlot(itemHandler, i, x, y));
+        }
+    }
+
+    protected void addOutputSlots(IItemHandler itemHandler, int inputs) {
+        int x, y;
+        for (int i = inputs; i < itemHandler.getSlots(); i++) {
+            x = 118 + ((i - inputs) % 3) * 18;
+            y = 42 + Math.floorDiv(i - inputs, 3) * 18;
+            addSlotToContainer(new InternalSlot(itemHandler, i, x, y));
         }
     }
 

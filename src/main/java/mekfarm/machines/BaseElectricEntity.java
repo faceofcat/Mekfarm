@@ -1,8 +1,12 @@
-package mekfarm.common;
+package mekfarm.machines;
 
 import mekfarm.MekfarmMod;
+import mekfarm.capabilities.IMachineInfo;
 import mekfarm.capabilities.MekfarmCapabilities;
-import mekfarm.containers.IInitializableContainer;
+import mekfarm.common.BlocksRegistry;
+import mekfarm.common.IContainerProvider;
+import mekfarm.common.IInteractiveEntity;
+import mekfarm.common.IWorkProgress;
 import mekfarm.inventories.*;
 import mekfarm.net.ISimpleNBTMessageHandler;
 import mekfarm.net.SimpleNBTMessage;
@@ -26,7 +30,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * Created by CF on 2016-11-04.
  */
-public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiContainer> extends TileEntity implements ITickable, ISimpleNBTMessageHandler, IContainerProvider, IInteractiveEntity, IWorkProgress {
+public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiContainer> extends TileEntity implements ITickable, ISimpleNBTMessageHandler, IContainerProvider, IInteractiveEntity, IWorkProgress, IMachineInfo {
     private static final int SYNC_ON_TICK = 20;
     private int syncTick = SYNC_ON_TICK;
 
@@ -225,6 +229,9 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
         else if ((this.filtersHandler != null) && (capability == MekfarmCapabilities.CAPABILITY_FILTERS_HANDLER)) {
             return true;
         }
+        else if (capability == MekfarmCapabilities.CAPABILITY_MACHINE_INFO) {
+            return true;
+        }
         return super.hasCapability(capability, facing);
     }
 
@@ -244,24 +251,24 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
         else if ((this.filtersHandler != null) && (capability == MekfarmCapabilities.CAPABILITY_FILTERS_HANDLER)) {
             return (T)this.filtersHandler;
         }
+        else if (capability == MekfarmCapabilities.CAPABILITY_MACHINE_INFO) {
+            return (T)this;
+        }
         return super.getCapability(capability, facing);
     }
 
     @Override
     public Container getContainer(IInventory playerInventory) {
+        CT container = null;
         try {
-            CT container = this.containerClass.newInstance();
-            if (container instanceof IInitializableContainer) {
-                ((IInitializableContainer)container).initialize(playerInventory, this);
+            Constructor<CT> c = this.containerClass.getConstructor(IInventory.class, TileEntity.class);
+            if (c != null) {
+                container = c.newInstance(playerInventory, this);
             }
-            return container;
-        } catch (InstantiationException e) {
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             MekfarmMod.logger.error(e);
-            return null;
-        } catch (IllegalAccessException e) {
-            MekfarmMod.logger.error(e);
-            return null;
         }
+        return container;
     }
 
     @Override
@@ -279,5 +286,10 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
             MekfarmMod.logger.error(e);
         }
         return gui;
+    }
+
+    @Override
+    public String getUnlocalizedMachineName(){
+        return this.getBlockType().getUnlocalizedName() + ".name";
     }
 }

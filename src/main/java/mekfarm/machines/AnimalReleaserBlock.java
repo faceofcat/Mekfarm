@@ -1,8 +1,6 @@
-package mekfarm.farms;
+package mekfarm.machines;
 
-import mekfarm.common.BaseOrientedBlock;
 import mekfarm.common.BlocksRegistry;
-import mekfarm.farms.AnimalFarmEntity;
 
 /**
  * Created by CF on 2016-11-04.

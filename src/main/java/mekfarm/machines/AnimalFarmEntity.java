@@ -1,27 +1,20 @@
-package mekfarm.farms;
+package mekfarm.machines;
 
 import com.google.common.collect.Lists;
-import com.mojang.authlib.GameProfileRepository;
-import mekfarm.common.BaseElectricEntity;
 import mekfarm.common.BlocksRegistry;
 import mekfarm.common.ItemsRegistry;
 import mekfarm.containers.FarmContainer;
-import mekfarm.containers.FarmContainerGUI;
+import mekfarm.ui.AnimalFarmContainerGUI;
 import mekfarm.items.AnimalPackageItem;
 import mekfarm.items.BaseAnimalFilterItem;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.passive.*;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +22,7 @@ import java.util.List;
 /**
  * Created by CF on 2016-10-28.
  */
-public class AnimalFarmEntity extends BaseElectricEntity<FarmContainer, FarmContainerGUI> {
+public class AnimalFarmEntity extends BaseElectricEntity<FarmContainer, AnimalFarmContainerGUI> {
     private static ArrayList<String> foodItems = new ArrayList<>();
 
     static {
@@ -40,7 +33,7 @@ public class AnimalFarmEntity extends BaseElectricEntity<FarmContainer, FarmCont
     }
 
     public AnimalFarmEntity() {
-        super(1, 500000, 3, 6, 1, FarmContainer.class, FarmContainerGUI.class);
+        super(1, 500000, 3, 6, 1, FarmContainer.class, AnimalFarmContainerGUI.class);
     }
 
     @Override
@@ -50,7 +43,7 @@ public class AnimalFarmEntity extends BaseElectricEntity<FarmContainer, FarmCont
 
         if (slot == 0) {
             // test for animal package
-            if (stack.getItem() == ItemsRegistry.animalPackage) {
+            if (stack.getItem().getRegistryName().equals(ItemsRegistry.animalPackage.getRegistryName())) {
                 return (false == ItemsRegistry.animalPackage.hasAnimal(stack));
             }
         }

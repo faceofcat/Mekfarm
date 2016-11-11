@@ -12,6 +12,6 @@ public class AnimalAgeAdultFilterItem extends BaseAnimalFilterItem {
 
     @Override
     public boolean shouldHandle(EntityAnimal animal) {
-        return ((animal != null) && (animal.getGrowingAge() >= 0));
+        return ((animal != null) && (animal.isChild() == false));
     }
 }

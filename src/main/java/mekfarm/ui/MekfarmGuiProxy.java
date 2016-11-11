@@ -1,7 +1,6 @@
-package mekfarm.containers;
+package mekfarm.ui;
 
 import mekfarm.common.IContainerProvider;
-import mekfarm.farms.AnimalFarmEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -30,10 +29,6 @@ public class MekfarmGuiProxy implements IGuiHandler {
         if (te instanceof IContainerProvider) {
             return ((IContainerProvider)te).getContainerGUI(player.inventory);
         }
-//        if (te instanceof AnimalFarmEntity) {
-//            AnimalFarmEntity containerTileEntity = (AnimalFarmEntity) te;
-//            return new FarmContainerGUI(containerTileEntity, new FarmContainer(player.inventory, containerTileEntity));
-//        }
         return null;
     }
 }

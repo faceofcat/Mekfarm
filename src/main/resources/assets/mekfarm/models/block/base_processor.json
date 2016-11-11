@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "mekfarm:blocks/processors/base-front",
+    "north": "mekfarm:blocks/processors/base-front",
+    "west": "mekfarm:blocks/processors/base-right",
+    "east": "mekfarm:blocks/processors/base-left",
+    "south": "mekfarm:blocks/processors/base-back",
+    "up": "mekfarm:blocks/processors/base-top",
+    "down": "mekfarm:blocks/base-bottom"
+  }
+}

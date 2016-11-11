@@ -1,4 +1,4 @@
-package mekfarm.common;
+package mekfarm.machines;
 
 import mekfarm.MekfarmMod;
 import net.darkhax.tesla.api.ITeslaHolder;

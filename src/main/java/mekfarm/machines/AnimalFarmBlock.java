@@ -1,6 +1,5 @@
-package mekfarm.farms;
+package mekfarm.machines;
 
-import mekfarm.common.BaseOrientedBlock;
 import mekfarm.common.BlocksRegistry;
 
 /**
