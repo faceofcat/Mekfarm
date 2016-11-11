@@ -175,7 +175,7 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
         this.readFromNBT(compound);
     }
 
-    protected abstract boolean performWork();
+    protected abstract float performWork();
 
     @Override
     public void update() {
@@ -187,8 +187,9 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
             if (!this.worldObj.isRemote) {
                 int energy = this.getEnergyForWork();
                 if (this.energyStorage.getEnergyStored() >= energy) {
-                    if (this.performWork()) {
-                        this.energyStorage.extractEnergy(energy, false, true);
+                    float work = this.performWork();
+                    if (work > 0) {
+                        this.energyStorage.extractEnergy(Math.round(energy * work), false, true);
                         this.forceSync();
                     }
                 }

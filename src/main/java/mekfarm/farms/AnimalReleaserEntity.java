@@ -23,7 +23,7 @@ public class AnimalReleaserEntity extends BaseElectricEntity<FarmContainer, Farm
     }
 
     @Override
-    protected boolean performWork() {
+    protected float performWork() {
         ItemStack stack = null;
         int stackIndex = 0;
         for (; stackIndex < this.inStackHandler.getSlots(); stackIndex++) {
@@ -64,7 +64,7 @@ public class AnimalReleaserEntity extends BaseElectricEntity<FarmContainer, Farm
                             if (inserted > 0) {
                                 this.inStackHandler.extractItem(stackIndex, inserted, false, true);
                                 this.worldObj.spawnEntityInWorld(ea);
-                                return true;
+                                return 1.0f;
                             }
                         }
                     }
@@ -74,6 +74,6 @@ public class AnimalReleaserEntity extends BaseElectricEntity<FarmContainer, Farm
                 }
             }
         }
-        return false;
+        return 0.0f;
     }
 }
