@@ -13,7 +13,9 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import java.util.List;
@@ -77,7 +79,8 @@ public class ElectricButcherEntity extends BaseElectricEntity<ElectricButcherCon
                     player.setItemInUse(stack.copy());
                     player.attackTargetEntityWithCurrentItem(animalToHurt);
 
-                    // TODO: damage item in input slot
+                    ItemStack weapon = player.getHeldItem(EnumHand.MAIN_HAND);
+                    this.inStackHandler.setStackInSlot(0, (weapon == null) ? null : weapon.copy(), true);
 
                     player.setItemInUse(null);
                     result += .9f;
