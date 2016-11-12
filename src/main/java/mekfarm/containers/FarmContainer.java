@@ -4,7 +4,6 @@ import mekfarm.capabilities.IFilterHandler;
 import mekfarm.capabilities.MekfarmCapabilities;
 import mekfarm.common.IInteractiveEntity;
 import mekfarm.inventories.IInputOutputItemHandler;
-import mekfarm.ui.InternalSlot;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -78,8 +77,12 @@ public class FarmContainer extends Container {
         for (int i = 0; i < inputs; i++) {
             x = 118 + (i * 18);
             y = 6;
-            addSlotToContainer(new InternalSlot(itemHandler, i, x, y));
+            addSlotToContainer(this.createInputSlot(itemHandler, i, x, y));
         }
+    }
+
+    protected Slot createInputSlot(IItemHandler itemHandler, int slotIndex, int xPosition, int yPosition) {
+        return new InternalSlot(itemHandler, slotIndex, xPosition, yPosition);
     }
 
     protected void addOutputSlots(IItemHandler itemHandler, int inputs) {

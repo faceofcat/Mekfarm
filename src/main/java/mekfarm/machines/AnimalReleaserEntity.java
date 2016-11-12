@@ -5,9 +5,10 @@ import mekfarm.common.BlockCube;
 import mekfarm.common.BlockPosUtils;
 import mekfarm.common.BlocksRegistry;
 import mekfarm.common.ItemsRegistry;
+import mekfarm.containers.AnimalReleaserContainer;
 import mekfarm.containers.FarmContainer;
-import mekfarm.ui.AnimalReleaserContainerGUI;
 import mekfarm.items.AnimalPackageItem;
+import mekfarm.ui.FarmContainerGUI;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,9 +19,9 @@ import net.minecraft.world.World;
 /**
  * Created by CF on 2016-11-04.
  */
-public class AnimalReleaserEntity extends BaseElectricEntity<FarmContainer, AnimalReleaserContainerGUI> {
+public class AnimalReleaserEntity extends BaseElectricEntity<AnimalReleaserContainer, FarmContainerGUI> {
     public AnimalReleaserEntity() {
-        super(2, 500000, 3, 3, 0, FarmContainer.class, AnimalReleaserContainerGUI.class);
+        super(2, 500000, 3, 3, 0, AnimalReleaserContainer.class, FarmContainerGUI.class);
     }
 
     @Override

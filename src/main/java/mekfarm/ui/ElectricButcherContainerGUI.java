@@ -16,6 +16,7 @@ public class ElectricButcherContainerGUI extends FarmContainerGUI {
         super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
 
         mc.getTextureManager().bindTexture(FarmContainerGUI.MACHINE_BACKGROUND);
-        drawTexturedModalRect(super.guiLeft + 117, super.guiTop + 5, 117, 208, 54, 18);
+        drawTexturedModalRect(super.guiLeft + 117, super.guiTop + 5, 117, 208, 18, 18);
+        drawTexturedModalRect(super.guiLeft + 153, super.guiTop + 5, 117, 208, 18, 18);
     }
 }

@@ -5,6 +5,7 @@ import mekfarm.MekfarmMod;
 import mekfarm.capabilities.IMachineInfo;
 import mekfarm.capabilities.MekfarmCapabilities;
 import mekfarm.common.IWorkProgress;
+import mekfarm.containers.TexturedSlot;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.darkhax.tesla.lib.PowerBar;
@@ -97,6 +98,11 @@ public class FarmContainerGUI extends GuiContainer {
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         mc.getTextureManager().bindTexture(MACHINE_BACKGROUND);
         drawTexturedModalRect(super.guiLeft, super.guiTop, 0, 0, super.xSize, super.ySize);
+
+        this.inventorySlots.inventorySlots
+                .stream()
+                .filter(slot -> slot instanceof TexturedSlot)
+                .forEach(slot -> ((TexturedSlot) slot).draw(super.guiLeft, super.guiTop, this));
 
         if (this.te.hasCapability(MekfarmCapabilities.CAPABILITY_FILTERS_HANDLER, null)) {
             drawTexturedModalRect(super.guiLeft + 187, super.guiTop + 5, 212, 5, 18, 54);

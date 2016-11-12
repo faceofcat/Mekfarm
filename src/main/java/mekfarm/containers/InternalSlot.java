@@ -1,4 +1,4 @@
-package mekfarm.ui;
+package mekfarm.containers;
 
 import mekfarm.inventories.IInternalItemHandler;
 import net.minecraft.item.ItemStack;

@@ -1,7 +1,7 @@
 package mekfarm.containers;
 
-import mekfarm.ui.InternalSlot;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.IItemHandler;
 
@@ -19,7 +19,12 @@ public class ElectricButcherContainer extends FarmContainer {
             super.addInputSlots(itemHandler, inputs);
         }
         else {
-            addSlotToContainer(new InternalSlot(itemHandler, 0, 118 + 18, 6));
+            addSlotToContainer(this.createInputSlot(itemHandler, 0, 118 + 18, 6));
         }
+    }
+
+    @Override
+    protected Slot createInputSlot(IItemHandler itemHandler, int slotIndex, int xPosition, int yPosition) {
+        return new TexturedSlot(itemHandler, slotIndex, xPosition, yPosition, 135, 208, 1);
     }
 }
