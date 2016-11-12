@@ -12,8 +12,8 @@ public class AnimalFarmContainerGUI extends FarmContainerGUI {
     private int uiFakeTick1 = 0;
     private int uiFakeTick2 = FAKE_TICKS / 2;
 
-    private boolean drawShears1 = false;
-    private boolean drawShears2 = false;
+    private int drawInputSlot1 = 0;
+    private int drawInputSlot2 = 1;
 
     public AnimalFarmContainerGUI(TileEntity tileEntity, Container container) {
         super(tileEntity, container);
@@ -28,18 +28,14 @@ public class AnimalFarmContainerGUI extends FarmContainerGUI {
 
         if (this.uiFakeTick1++ > FAKE_TICKS) {
             this.uiFakeTick1 = 0;
-            this.drawShears1 = !this.drawShears1;
+            this.drawInputSlot1 = (this.drawInputSlot1 + 1) % 4;
         }
         if (this.uiFakeTick2++ > FAKE_TICKS) {
             this.uiFakeTick2 = 0;
-            this.drawShears2 = !this.drawShears2;
+            this.drawInputSlot2 = (this.drawInputSlot2 + 1) % 4;
         }
 
-        if (this.drawShears1) {
-            super.drawTexturedModalRect(super.guiLeft + 136, super.guiTop + 6, 172, 173, 16, 16);
-        }
-        if (this.drawShears2) {
-            super.drawTexturedModalRect(super.guiLeft + 154, super.guiTop + 6, 172, 173, 16, 16);
-        }
+        super.drawTexturedModalRect(super.guiLeft + 135, super.guiTop + 5, 135 + this.drawInputSlot1 * 18, 172, 18, 18);
+        super.drawTexturedModalRect(super.guiLeft + 153, super.guiTop + 5, 135 + this.drawInputSlot2 * 18, 172, 18, 18);
     }
 }

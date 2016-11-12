@@ -1,15 +1,20 @@
 package mekfarm.items;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
+import mekfarm.common.ItemsRegistry;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -33,6 +38,15 @@ public class AnimalPackageItem extends BaseItem {
                 return 0;
             }
         });
+    }
+
+    @Override
+    protected IRecipe getRecipe() {
+        return new ShapedOreRecipe(new ItemStack(this, 1),
+                "xyx", "yzy", "xyx",
+                'x', Blocks.PLANKS,
+                'y', Blocks.IRON_BARS,
+                'z', Items.REDSTONE);
     }
 
     @Override

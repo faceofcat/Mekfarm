@@ -1,6 +1,5 @@
 package mekfarm.machines;
 
-import com.google.common.collect.Multimap;
 import mekfarm.MekfarmMod;
 import mekfarm.common.BlockCube;
 import mekfarm.common.BlockPosUtils;
@@ -10,17 +9,12 @@ import mekfarm.containers.ElectricButcherContainer;
 import mekfarm.items.BaseAnimalFilterItem;
 import mekfarm.ui.ElectricButcherContainerGUI;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.common.util.FakePlayerFactory;
 
 import java.util.List;
 
@@ -80,14 +74,13 @@ public class ElectricButcherEntity extends BaseElectricEntity<ElectricButcherCon
             if (animalToHurt != null) {
                 FakeMekPlayer player = MekfarmMod.getFakePlayer(this.getWorld());
                 if (player != null) {
-                    player.setItemInHand(stack.copy());
-                    player.setItemInUse(player.getHeldItemMainhand(), 72000);
-                    player.onUpdate();
+                    player.setItemInUse(stack.copy());
                     player.attackTargetEntityWithCurrentItem(animalToHurt);
-                    // TODO: damage item in input slot
-                    player.setItemInHand(null);
 
-                    result = .9f;
+                    // TODO: damage item in input slot
+
+                    player.setItemInUse(null);
+                    result += .9f;
                 }
             }
         }
@@ -97,17 +90,23 @@ public class ElectricButcherEntity extends BaseElectricEntity<ElectricButcherCon
         //region collect loot
 
         List<EntityItem> items = this.getWorld().getEntitiesWithinAABB(EntityItem.class, aabb);
+        boolean pickedUpLoot = false;
         if (items.isEmpty() == false) {
             for (EntityItem item: items) {
                 ItemStack original = item.getEntityItem();
                 ItemStack remaining = this.outStackHandler.insertItems(original, false);
                 if ((remaining == null) || (remaining.stackSize == 0)) {
                     this.getWorld().removeEntity(item);
+                    pickedUpLoot = true;
                 }
                 else if (remaining.stackSize != original.stackSize) {
                     item.setEntityItemStack(remaining);
+                    pickedUpLoot = true;
                 }
             }
+        }
+        if (pickedUpLoot) {
+            result += .1f;
         }
 
         //endregion

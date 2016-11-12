@@ -61,15 +61,9 @@ public class AnimalReleaserEntity extends BaseElectricEntity<FarmContainer, Anim
                             ea.readEntityFromNBT(animal);
 
                             EnumFacing facing = BlocksRegistry.animalReleaserBlock.getStateFromMeta(this.getBlockMetadata())
-                                    .getValue(BaseOrientedBlock.FACING)
+                                    .getValue(BlocksRegistry.animalReleaserBlock.FACING)
                                     .getOpposite();
-//                            EnumFacing left = facing.rotateYCCW();
-//                            EnumFacing right = facing.rotateY();
-//                            BlockPos pos = this.getPos()
-//                                    .offset(left, 3)
-//                                    .offset(right, Math.round((float)Math.random() * 7))
-//                                    .offset(facing, 1 + Math.round((float)Math.random() * 7));
-                            BlockCube cube = BlockPosUtils.getCube(this.getPos(), facing, 3, 1);
+                            BlockCube cube = BlockPosUtils.getCube(this.getPos().offset(facing, 1), facing, 2, 1);
                             BlockPos pos = cube.getRandomInside(this.getWorld().rand);
                             ea.setPosition(pos.getX(), pos.getY(), pos.getZ());
 

@@ -6,6 +6,7 @@ item.mekfarm_base_filter.name=Base Filter
 item.mekfarm_animal_filter.name=Animal Filter
 item.mekfarm_animal_age_filter_adult.name=Animal Filter (adults)
 item.mekfarm_animal_age_filter_baby.name=Animal Filter (baby)
+item.mekfarm_machine_case.name=Machine Case
 
 tile.mekfarm.animal_farm.name=Animal Farm
 tile.mekfarm.animal_releaser.name=Animal Releaser

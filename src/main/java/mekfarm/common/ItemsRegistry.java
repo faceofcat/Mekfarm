@@ -8,16 +8,20 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  */
 public final class ItemsRegistry {
     public static AnimalPackageItem animalPackage;
+    public static BaseFilterItem baseFilterItem;
     public static AnimalFilterItem animalFilter;
     public static AnimalAgeAdultFilterItem animalAgeAdultFilter;
     public static AnimalAgeBabyFilterItem animalAgeBabyFilter;
-    public static BaseFilterItem baseFilterItem;
+
+    public static MachineCaseItem machineCase;
 
     public static final void createItems() {
         GameRegistry.register(ItemsRegistry.animalPackage = new AnimalPackageItem());
+        GameRegistry.register(ItemsRegistry.baseFilterItem = new BaseFilterItem());
         GameRegistry.register(ItemsRegistry.animalFilter = new AnimalFilterItem());
         GameRegistry.register(ItemsRegistry.animalAgeAdultFilter = new AnimalAgeAdultFilterItem());
         GameRegistry.register(ItemsRegistry.animalAgeBabyFilter = new AnimalAgeBabyFilterItem());
-        GameRegistry.register(ItemsRegistry.baseFilterItem = new BaseFilterItem());
+
+        GameRegistry.register(ItemsRegistry.machineCase = new MachineCaseItem());
     }
 }

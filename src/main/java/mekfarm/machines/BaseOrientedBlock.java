@@ -1,8 +1,6 @@
 package mekfarm.machines;
 
 import mekfarm.MekfarmMod;
-import net.darkhax.tesla.api.ITeslaHolder;
-import net.darkhax.tesla.capability.TeslaCapabilities;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
@@ -17,12 +15,12 @@ import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -58,6 +56,11 @@ public abstract class BaseOrientedBlock<T extends TileEntity> extends Block impl
         GameRegistry.register(this);
         GameRegistry.register(new ItemBlock(this), this.getRegistryName());
         GameRegistry.registerTileEntity(this.teClass, this.getRegistryName() + "_tile");
+
+        IRecipe recipe = this.getRecipe();
+        if (recipe != null) {
+            CraftingManager.getInstance().addRecipe(recipe);
+        }
     }
 
     @SideOnly(Side.CLIENT)
@@ -66,6 +69,10 @@ public abstract class BaseOrientedBlock<T extends TileEntity> extends Block impl
                 , 0
                 , new ModelResourceLocation(this.getRegistryName(), "inventory")
         );
+    }
+
+    protected IRecipe getRecipe() {
+        return null;
     }
 
     @Override
@@ -95,16 +102,6 @@ public abstract class BaseOrientedBlock<T extends TileEntity> extends Block impl
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
                                     ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-//        if (!world.isRemote) {
-//            T entity = this.getTileEntity(world, pos);
-//            if (entity != null) {
-//                ITeslaHolder tesla = entity.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, side);
-//                if (tesla != null) {
-//                    player.addChatMessage(new TextComponentString(TextFormatting.GREEN + "Stored Energy: " + tesla.getStoredPower()));
-//                }
-//            }
-//        }
-
         // Only execute on the server
         if (!world.isRemote && (this.guiId > 0)) {
             player.openGui(MekfarmMod.instance, this.guiId, world, pos.getX(), pos.getY(), pos.getZ());

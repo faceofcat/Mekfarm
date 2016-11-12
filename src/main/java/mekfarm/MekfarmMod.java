@@ -71,11 +71,11 @@ public class MekfarmMod
 
             if (world instanceof  WorldServer) {
                 FakeMekPlayer player = new FakeMekPlayer((WorldServer) world);
-                BlockPos spawn = world.getSpawnPoint();
-                if (spawn == null) {
-                    spawn = new BlockPos(0, 0, 0);
-                }
-                player.setPosition(spawn.getX(), spawn.getY(), spawn.getZ());
+//                BlockPos spawn = world.getSpawnPoint();
+//                if (spawn == null) {
+//                    spawn = new BlockPos(0, 0, 0);
+//                }
+//                player.setPosition(spawn.getX(), spawn.getY(), spawn.getZ());
                 fakePlayers.putIfAbsent(key, player);
                 return player;
             }

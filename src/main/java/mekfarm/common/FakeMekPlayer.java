@@ -2,10 +2,12 @@ package mekfarm.common;
 
 import java.util.UUID;
 import com.mojang.authlib.GameProfile;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.stats.StatBase;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -26,34 +28,30 @@ public class FakeMekPlayer extends FakePlayer {
         this.onGround = true;
     }
 
-    public void setItemInHand(ItemStack m_item) {
-        this.inventory.currentItem = 0;
-        this.inventory.setInventorySlotContents(0, m_item);
+    public void setItemInHand(ItemStack stack) {
+        super.setHeldItem(EnumHand.MAIN_HAND, stack);
     }
 
-    public void setItemInHand(int slot) {
-        this.inventory.currentItem = slot;
-    }
-
-    public void setItemInUse(ItemStack heldItemMainhand, int i) {
-        this.ticksSinceLastSwing = (int)this.getCooldownPeriod() + 1;
+    public void setItemInUse(ItemStack stack) {
+        this.setItemInHand(stack);
+        super.ticksSinceLastSwing = Math.round(super.getCooldownPeriod()) + 1;
+        this.onUpdate();
     }
 
     @Override
     public void onUpdate() {
         ItemStack itemStackOld = this.previousItem;
-        ItemStack itemStackCurrent = getHeldItemMainhand();
+        ItemStack itemStackCurrent = super.getHeldItemMainhand();
 
-        if (!ItemStack.areItemStacksEqual(itemStackCurrent, itemStackOld)) {
+        if (ItemStack.areItemStacksEqual(itemStackCurrent, itemStackOld) == false) {
             if (itemStackOld != null) {
-                getAttributeMap().removeAttributeModifiers(itemStackOld.getAttributeModifiers(null));
+                super.getAttributeMap().removeAttributeModifiers(itemStackOld.getAttributeModifiers(EntityEquipmentSlot.MAINHAND));
             }
             if (itemStackCurrent != null) {
-                getAttributeMap().applyAttributeModifiers(itemStackCurrent.getAttributeModifiers(null));
+                super.getAttributeMap().applyAttributeModifiers(itemStackCurrent.getAttributeModifiers(EntityEquipmentSlot.MAINHAND));
             }
-            // this.myName = "[MEK]" + (itemStackCurrent != null ? " using " + itemStackCurrent.getDisplayName() : "");
+            this.previousItem = (itemStackCurrent == null) ? null : itemStackCurrent.copy();
         }
-        this.previousItem = itemStackCurrent == null ? null : itemStackCurrent.copy();
     }
 
     //region DISABLE STUFF
@@ -103,10 +101,6 @@ public class FakeMekPlayer extends FakePlayer {
     @Override
     public void openGui(Object mod, int modGuiId, World world, int x, int y, int z) {
     }
-
-	public boolean isEntityInvulnerable() {
-		return true;
-	}
 
     @Override
     public void onDeath(DamageSource source) {

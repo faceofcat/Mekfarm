@@ -30,10 +30,13 @@ public class AnimalFarmEntity extends BaseElectricEntity<FarmContainer, AnimalFa
     private static ArrayList<String> foodItems = new ArrayList<>();
 
     static {
+        AnimalFarmEntity.foodItems.add("minecraft:shears");
+        // ^^ not really food :D
+
         AnimalFarmEntity.foodItems.add("minecraft:wheat");
         AnimalFarmEntity.foodItems.add("minecraft:carrot");
         AnimalFarmEntity.foodItems.add("minecraft:potato");
-        AnimalFarmEntity.foodItems.add("minecraft:seeds");
+        AnimalFarmEntity.foodItems.add("minecraft:wheat_seeds");
     }
 
     public AnimalFarmEntity() {
@@ -70,18 +73,6 @@ public class AnimalFarmEntity extends BaseElectricEntity<FarmContainer, AnimalFa
         EnumFacing facing = BlocksRegistry.animalFarmBlock.getStateFromMeta(this.getBlockMetadata())
                 .getValue(BlocksRegistry.animalFarmBlock.FACING)
                 .getOpposite();
-//        EnumFacing left = facing.rotateYCCW();
-//        EnumFacing right = facing.rotateY();
-//        BlockPos pos1 = this.getPos()
-//                .offset(left, ((left == EnumFacing.EAST) || (left == EnumFacing.SOUTH)) ? 4 : 3);
-//        if ((facing == EnumFacing.SOUTH) || (facing == EnumFacing.EAST)) {
-//            pos1 = pos1.offset(facing);
-//        }
-//        BlockPos pos2 = this.getPos()
-//                .offset(right, ((right == EnumFacing.EAST) || (right == EnumFacing.SOUTH)) ? 4 : 3)
-//                .offset(facing, ((facing == EnumFacing.EAST) || (facing == EnumFacing.SOUTH)) ? 8 : 7)
-//                .offset(EnumFacing.UP);
-//        AxisAlignedBB aabb = new AxisAlignedBB(pos1, pos2);
         BlockCube cube = BlockPosUtils.getCube(this.getPos(), facing, 3, 1);
         AxisAlignedBB aabb = cube.getBoundingBox();
 

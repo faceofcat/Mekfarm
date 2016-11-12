@@ -46,9 +46,9 @@ public class BlockCube {
             rnd = new Random();
         }
         return new BlockPos(
-                this.southEast.getX() + Math.round(rnd.nextFloat() * x),
-                this.southEast.getY() + Math.round(rnd.nextFloat() * y),
-                this.southEast.getZ() + Math.round(rnd.nextFloat() * z)
+                this.northWest.getX() + Math.round(rnd.nextFloat() * x),
+                this.northWest.getY() + Math.round(rnd.nextFloat() * y),
+                this.northWest.getZ() + Math.round(rnd.nextFloat() * z)
         );
     }
 
