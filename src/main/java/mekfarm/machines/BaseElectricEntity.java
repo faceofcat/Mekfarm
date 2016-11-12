@@ -1,5 +1,6 @@
 package mekfarm.machines;
 
+import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekfarm.MekfarmMod;
 import mekfarm.capabilities.IMachineInfo;
 import mekfarm.capabilities.MekfarmCapabilities;
@@ -22,6 +23,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import java.lang.reflect.Constructor;
@@ -220,10 +223,12 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
                 .getValue(BlocksRegistry.animalFarmBlock.FACING);
         Boolean isFront = (machineFacing == facing);
 
+//        MekfarmMod.logger.info("Tested for capability: " + capability.getName());
+
         if ((capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) && !isFront) {
             return true;
         }
-        else if (!isFront && ((capability == TeslaCapabilities.CAPABILITY_HOLDER) || (capability == TeslaCapabilities.CAPABILITY_CONSUMER) || (capability == CapabilityEnergy.ENERGY))) {
+        else if (!isFront && (capability == CapabilityEnergy.ENERGY)) {
             return true;
         }
         else if ((this.filtersHandler != null) && (capability == MekfarmCapabilities.CAPABILITY_FILTERS_HANDLER)) {
@@ -232,7 +237,23 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
         else if (capability == MekfarmCapabilities.CAPABILITY_MACHINE_INFO) {
             return true;
         }
+
+        if (Loader.isModLoaded("tesla") && this.hasTeslaCapability(capability, facing, isFront)) {
+            return true;
+        }
+        if (Loader.isModLoaded("Mekanism") && !isFront && (capability.getName() == "mekanism.api.energy.IStrictEnergyAcceptor")) {
+            return true; // TODO: not sure if this is the best way :S
+        }
+
         return super.hasCapability(capability, facing);
+    }
+
+    @Optional.Method(modid = "tesla")
+    private boolean hasTeslaCapability(Capability<?> capability, EnumFacing facing, boolean isFront) {
+        if (!isFront && ((capability == TeslaCapabilities.CAPABILITY_HOLDER) || (capability == TeslaCapabilities.CAPABILITY_CONSUMER))) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -242,10 +263,12 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
                 .getValue(BlocksRegistry.animalFarmBlock.FACING);
         Boolean isFront = (machineFacing == facing);
 
+//        MekfarmMod.logger.info("Asked for capability: " + capability.getName());
+
         if (!isFront && (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)) {
             return (T)this.allStackHandler;
         }
-        else if (!isFront && ((capability == TeslaCapabilities.CAPABILITY_HOLDER) || (capability == TeslaCapabilities.CAPABILITY_CONSUMER) || (capability == CapabilityEnergy.ENERGY))) {
+        else if (!isFront && (capability == CapabilityEnergy.ENERGY)) {
             return (T)this.energyStorage;
         }
         else if ((this.filtersHandler != null) && (capability == MekfarmCapabilities.CAPABILITY_FILTERS_HANDLER)) {
@@ -254,7 +277,26 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
         else if (capability == MekfarmCapabilities.CAPABILITY_MACHINE_INFO) {
             return (T)this;
         }
+
+        if (Loader.isModLoaded("tesla")) {
+            Object teslaThing = this.getTeslaCapability(capability, facing, isFront);
+            if (teslaThing != null) {
+                return (T) teslaThing;
+            }
+        }
+        if (Loader.isModLoaded("Mekanism") && !isFront && (capability.getName() == "mekanism.api.energy.IStrictEnergyAcceptor")) {
+            return (T)this.energyStorage;
+        }
+
         return super.getCapability(capability, facing);
+    }
+
+    @Optional.Method(modid = "tesla")
+    private <T>T getTeslaCapability(Capability<T> capability, EnumFacing facing, boolean isFront) {
+        if (!isFront && ((capability == TeslaCapabilities.CAPABILITY_HOLDER) || (capability == TeslaCapabilities.CAPABILITY_CONSUMER))) {
+            return (T)this.energyStorage;
+        }
+        return null;
     }
 
     @Override
@@ -266,7 +308,7 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
                 container = c.newInstance(playerInventory, this);
             }
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            MekfarmMod.logger.error(e);
+            MekfarmMod.logger.error("Error getting container", e);
         }
         return container;
     }
@@ -283,7 +325,7 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
                 }
             }
         } catch(NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            MekfarmMod.logger.error(e);
+            MekfarmMod.logger.error("Error getting container gui", e);
         }
         return gui;
     }

@@ -1,22 +1,31 @@
 package mekfarm.inventories;
 
-import mekfarm.MekfarmMod;
+import mekanism.api.energy.IStrictEnergyAcceptor;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fml.common.Optional;
 
 /**
  * Created by CF on 2016-10-31.
  */
-public class EnergyStorage implements ITeslaConsumer, ITeslaHolder, IEnergyStorage, INBTSerializable<NBTTagCompound> {
+@Optional.InterfaceList({
+        @Optional.Interface(iface = "net.darkhax.tesla.api.ITeslaConsumer", modid = "tesla"),
+        @Optional.Interface(iface = "net.darkhax.tesla.api.ITeslaHolder", modid = "tesla"),
+        @Optional.Interface(iface = "mekanism.api.energy.IStrictEnergyAcceptor", modid = "Mekanism")
+})
+public class EnergyStorage implements ITeslaConsumer, ITeslaHolder, IStrictEnergyAcceptor, IEnergyStorage, INBTSerializable<NBTTagCompound> {
     private int storedPower = 0;
     private int maxPower = 1000000;
 
     public EnergyStorage(int maxStoredEnergy) {
         this.maxPower = maxStoredEnergy;
     }
+
+    //region ITeslaHolder
 
     @Override
     public long getStoredPower() {
@@ -28,38 +37,68 @@ public class EnergyStorage implements ITeslaConsumer, ITeslaHolder, IEnergyStora
         return this.getMaxEnergyStored();
     }
 
+    //endregion
+    //region ITeslaConsumer
+
     @Override
     public long givePower(long power, boolean simulated) {
         return this.receiveEnergy((int)power, simulated);
     }
 
+    //endregion
+    //region IStrictEnergyAcceptor
+
+    @Override
+    public double getEnergy() {
+        return this.getEnergyStored();
+    }
+
+    @Override
+    public void setEnergy(double energy) {
+        // TODO: ??
+    }
+
+    @Override
+    public double getMaxEnergy() {
+        return this.getMaxEnergyStored();
+    }
+
+    @Override
+    public double transferEnergyToAcceptor(EnumFacing side, double amount) {
+        int tesla = Math.round((float)amount * .4f);
+        tesla = this.receiveEnergy(tesla, false);
+        return tesla / .4;
+    }
+
+    @Override
+    public boolean canReceiveEnergy(EnumFacing side) {
+        return this.canReceive();
+    }
+
+    //endregion
+
     @Override
     public boolean canExtract() {
-        // MekfarmMod.logger.info("can extract: false");
         return false;
     }
 
     @Override
     public boolean canReceive() {
-        // MekfarmMod.logger.info("can receive: true");
         return true;
     }
 
     @Override
     public int getEnergyStored() {
-        // MekfarmMod.logger.info("stored energy: " + this.storedPower);
         return this.storedPower;
     }
 
     @Override
     public int getMaxEnergyStored() {
-        // MekfarmMod.logger.info("max energy: " + this.maxPower);
         return this.maxPower;
     }
 
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate) {
-        // MekfarmMod.logger.info("receive: " + maxReceive + " : " + simulate);
         if (false == this.canReceive()) {
             return 0;
         }
@@ -67,7 +106,6 @@ public class EnergyStorage implements ITeslaConsumer, ITeslaHolder, IEnergyStora
         if (canReceive > 0) {
             if (false == simulate) {
                 this.storedPower += canReceive;
-                // MekfarmMod.logger.info("Received power: " + canReceive + " / " + this.storedPower);
                 this.onChanged();
             }
             return canReceive;
@@ -88,7 +126,6 @@ public class EnergyStorage implements ITeslaConsumer, ITeslaHolder, IEnergyStora
         if (canExtract > 0) {
             if (false == simulate) {
                 this.storedPower -= canExtract;
-                // MekfarmMod.logger.info("Extracted power: " + canExtract);
                 this.onChanged();
             }
             return canExtract;

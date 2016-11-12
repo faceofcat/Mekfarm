@@ -88,16 +88,16 @@ public abstract class BaseOrientedBlock<T extends TileEntity> extends Block impl
         }
     }
 
-    protected T getTileEntity(World world, BlockPos pos) {
-        TileEntity entity = world.getTileEntity(pos);
-        try {
-            return this.teClass.cast(entity);
-        }
-        catch (ClassCastException ex) {
-            MekfarmMod.logger.warn("Error trying to get tile entity at position: " + pos.toString() + ". [" + ex.getMessage() + "]");
-            return null;
-        }
-    }
+//    protected T getTileEntity(World world, BlockPos pos) {
+//        TileEntity entity = world.getTileEntity(pos);
+//        try {
+//            return this.teClass.cast(entity);
+//        }
+//        catch (ClassCastException ex) {
+//            MekfarmMod.logger.warn("Error trying to get tile entity at position: " + pos.toString() + ". [" + ex.getMessage() + "]");
+//            return null;
+//        }
+//    }
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
