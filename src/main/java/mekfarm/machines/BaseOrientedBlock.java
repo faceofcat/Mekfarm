@@ -11,7 +11,6 @@ import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryHelper;
@@ -96,15 +95,15 @@ public abstract class BaseOrientedBlock<T extends TileEntity> extends Block impl
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
                                     ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-        if (!world.isRemote) {
-            T entity = this.getTileEntity(world, pos);
-            if (entity != null) {
-                ITeslaHolder tesla = entity.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, side);
-                if (tesla != null) {
-                    player.addChatMessage(new TextComponentString(TextFormatting.GREEN + "Stored Energy: " + tesla.getStoredPower()));
-                }
-            }
-        }
+//        if (!world.isRemote) {
+//            T entity = this.getTileEntity(world, pos);
+//            if (entity != null) {
+//                ITeslaHolder tesla = entity.getCapability(TeslaCapabilities.CAPABILITY_HOLDER, side);
+//                if (tesla != null) {
+//                    player.addChatMessage(new TextComponentString(TextFormatting.GREEN + "Stored Energy: " + tesla.getStoredPower()));
+//                }
+//            }
+//        }
 
         // Only execute on the server
         if (!world.isRemote && (this.guiId > 0)) {

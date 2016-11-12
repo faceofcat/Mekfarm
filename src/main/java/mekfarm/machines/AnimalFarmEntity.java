@@ -1,6 +1,9 @@
 package mekfarm.machines;
 
 import com.google.common.collect.Lists;
+import mekfarm.MekfarmMod;
+import mekfarm.common.BlockCube;
+import mekfarm.common.BlockPosUtils;
 import mekfarm.common.BlocksRegistry;
 import mekfarm.common.ItemsRegistry;
 import mekfarm.containers.FarmContainer;
@@ -8,6 +11,7 @@ import mekfarm.ui.AnimalFarmContainerGUI;
 import mekfarm.items.AnimalPackageItem;
 import mekfarm.items.BaseAnimalFilterItem;
 import net.minecraft.entity.passive.*;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
@@ -66,18 +70,20 @@ public class AnimalFarmEntity extends BaseElectricEntity<FarmContainer, AnimalFa
         EnumFacing facing = BlocksRegistry.animalFarmBlock.getStateFromMeta(this.getBlockMetadata())
                 .getValue(BlocksRegistry.animalFarmBlock.FACING)
                 .getOpposite();
-        EnumFacing left = facing.rotateYCCW();
-        EnumFacing right = facing.rotateY();
-        BlockPos pos1 = this.getPos()
-                .offset(left, ((left == EnumFacing.EAST) || (left == EnumFacing.SOUTH)) ? 4 : 3);
-        if ((facing == EnumFacing.SOUTH) || (facing == EnumFacing.EAST)) {
-            pos1 = pos1.offset(facing);
-        }
-        BlockPos pos2 = this.getPos()
-                .offset(right, ((right == EnumFacing.EAST) || (right == EnumFacing.SOUTH)) ? 4 : 3)
-                .offset(facing, ((facing == EnumFacing.EAST) || (facing == EnumFacing.SOUTH)) ? 8 : 7)
-                .offset(EnumFacing.UP);
-        AxisAlignedBB aabb = new AxisAlignedBB(pos1, pos2);
+//        EnumFacing left = facing.rotateYCCW();
+//        EnumFacing right = facing.rotateY();
+//        BlockPos pos1 = this.getPos()
+//                .offset(left, ((left == EnumFacing.EAST) || (left == EnumFacing.SOUTH)) ? 4 : 3);
+//        if ((facing == EnumFacing.SOUTH) || (facing == EnumFacing.EAST)) {
+//            pos1 = pos1.offset(facing);
+//        }
+//        BlockPos pos2 = this.getPos()
+//                .offset(right, ((right == EnumFacing.EAST) || (right == EnumFacing.SOUTH)) ? 4 : 3)
+//                .offset(facing, ((facing == EnumFacing.EAST) || (facing == EnumFacing.SOUTH)) ? 8 : 7)
+//                .offset(EnumFacing.UP);
+//        AxisAlignedBB aabb = new AxisAlignedBB(pos1, pos2);
+        BlockCube cube = BlockPosUtils.getCube(this.getPos(), facing, 3, 1);
+        AxisAlignedBB aabb = cube.getBoundingBox();
 
         // find animal
         List<EntityAnimal> list = worldObj.getEntitiesWithinAABB(EntityAnimal.class, aabb);
@@ -172,8 +178,8 @@ public class AnimalFarmEntity extends BaseElectricEntity<FarmContainer, AnimalFa
                                 // food found!
                                 this.inStackHandler.extractItem(slotA, 1, false, true);
                                 this.inStackHandler.extractItem(slotB, 1, false, true);
-                                a.setInLove(null);
-                                b.setInLove(null);
+                                a.setInLove(MekfarmMod.getFakePlayer(this.getWorld()));
+                                b.setInLove(MekfarmMod.getFakePlayer(this.getWorld()));
                                 result += .1f;
                                 breed = true;
                                 break;
