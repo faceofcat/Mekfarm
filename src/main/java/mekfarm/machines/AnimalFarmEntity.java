@@ -15,14 +15,19 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.datafix.walkers.ItemStackData;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.IShearable;
+import net.minecraftforge.fml.common.asm.transformers.ItemStackTransformer;
+import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -240,7 +245,9 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
                                 }
                             }
 
-                            // TODO: apply damage to shears
+                            if (stack.attemptDamageItem(1, this.getWorld().rand)) {
+                                this.inStackHandler.setStackInSlot(i, null);
+                            }
 
                             result += ENERGY_SHEAR;
                             break;
