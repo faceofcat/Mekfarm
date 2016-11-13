@@ -28,6 +28,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Objects;
 
 /**
  * Created by CF on 2016-11-04.
@@ -144,7 +145,8 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-        super.writeToNBT(compound);
+        compound = super.writeToNBT(compound);
+
         compound.setTag("income", this.inStackHandler.serializeNBT());
         compound.setTag("outcome", this.outStackHandler.serializeNBT());
         compound.setTag("energy", this.energyStorage.serializeNBT());
@@ -219,7 +221,7 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
         EnumFacing machineFacing = BlocksRegistry.animalFarmBlock.getStateFromMeta(this.getBlockMetadata())
-                .getValue(BlocksRegistry.animalFarmBlock.FACING);
+                .getValue(AnimalFarmBlock.FACING);
         Boolean isFront = (machineFacing == facing);
 
 //        MekfarmMod.logger.info("Tested for capability: " + capability.getName());
@@ -240,7 +242,7 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
         if (Loader.isModLoaded("tesla") && this.hasTeslaCapability(capability, facing, isFront)) {
             return true;
         }
-        if (Loader.isModLoaded("Mekanism") && !isFront && (capability.getName() == "mekanism.api.energy.IStrictEnergyAcceptor")) {
+        if (Loader.isModLoaded("Mekanism") && !isFront && Objects.equals(capability.getName(), "mekanism.api.energy.IStrictEnergyAcceptor")) {
             return true; // TODO: not sure if this is the best way :S
         }
 
@@ -259,7 +261,7 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
     @SuppressWarnings("unchecked")
     public <T>T getCapability(Capability<T> capability, EnumFacing facing) {
         EnumFacing machineFacing = BlocksRegistry.animalFarmBlock.getStateFromMeta(this.getBlockMetadata())
-                .getValue(BlocksRegistry.animalFarmBlock.FACING);
+                .getValue(AnimalFarmBlock.FACING);
         Boolean isFront = (machineFacing == facing);
 
 //        MekfarmMod.logger.info("Asked for capability: " + capability.getName());
@@ -283,7 +285,7 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
                 return (T) teslaThing;
             }
         }
-        if (Loader.isModLoaded("Mekanism") && !isFront && (capability.getName() == "mekanism.api.energy.IStrictEnergyAcceptor")) {
+        if (Loader.isModLoaded("Mekanism") && !isFront && Objects.equals(capability.getName(), "mekanism.api.energy.IStrictEnergyAcceptor")) {
             return (T)this.energyStorage;
         }
 

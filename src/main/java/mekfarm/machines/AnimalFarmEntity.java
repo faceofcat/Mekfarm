@@ -10,14 +10,19 @@ import mekfarm.containers.AnimalFarmContainer;
 import mekfarm.items.AnimalPackageItem;
 import mekfarm.items.BaseAnimalFilterItem;
 import mekfarm.ui.FarmContainerGUI;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.EntityCow;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.IShearable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +44,11 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
         AnimalFarmEntity.foodItems.add("minecraft:wheat_seeds");
     }
 
+    private final float ENERGY_PACKAGE = .9f;
+    private final float ENERGY_FEED = .1f;
+    private final float ENERGY_SHEAR = .3f;
+    private final float ENERGY_MILK = .3f;
+
     public AnimalFarmEntity() {
         super(1, 500000, 3, 6, 1, AnimalFarmContainer.class, FarmContainerGUI.class);
     }
@@ -53,11 +63,7 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
             return (false == ItemsRegistry.animalPackage.hasAnimal(stack));
         }
 
-        if (AnimalFarmEntity.foodItems.contains(stack.getItem().getRegistryName().toString())) {
-            return true;
-        }
-
-        return false;
+        return AnimalFarmEntity.foodItems.contains(stack.getItem().getRegistryName().toString());
     }
 
     @Override
@@ -68,27 +74,40 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
         //region find animals
 
         EnumFacing facing = BlocksRegistry.animalFarmBlock.getStateFromMeta(this.getBlockMetadata())
-                .getValue(BlocksRegistry.animalFarmBlock.FACING)
+                .getValue(AnimalFarmBlock.FACING)
                 .getOpposite();
         BlockCube cube = BlockPosUtils.getCube(this.getPos(), facing, 3, 1);
         AxisAlignedBB aabb = cube.getBoundingBox();
 
         // find animal
-        List<EntityAnimal> list = worldObj.getEntitiesWithinAABB(EntityAnimal.class, aabb);
+        List<EntityAnimal> animals = worldObj.getEntitiesWithinAABB(EntityAnimal.class, aabb);
+        List<IShearable> shearables = Lists.newArrayList();
+        List<EntityCow> adultCows = Lists.newArrayList();
         ItemStack filterStack = this.filtersHandler.getStackInSlot(0, true);
         BaseAnimalFilterItem filter = ((filterStack != null) && (filterStack.getItem() instanceof BaseAnimalFilterItem))
                 ? (BaseAnimalFilterItem) filterStack.getItem()
                 : null;
         EntityAnimal animalToPackage = null;
-        if ((list != null) && (list.size() > 0)) {
-            for(int i = 0; i < list.size(); i++) {
-                EntityAnimal thingy = list.get(i);
+        if ((animals != null) && (animals.size() > 0)) {
+            for(int i = 0; i < animals.size(); i++) {
+                EntityAnimal thingy = animals.get(i);
 
                 if ((animalToPackage == null) && ((filter == null) || filter.shouldHandle(thingy))) {
                     animalToPackage = thingy;
                 }
-                else if (this.canBreed(thingy) == true) {
+                else if (this.canBreed(thingy)) {
                     breedable.add(thingy);
+                }
+
+                if (thingy instanceof IShearable) {
+                    shearables.add((IShearable)thingy);
+                }
+
+                if (thingy instanceof EntityCow) {
+                    EntityCow cow = (EntityCow)thingy;
+                    if (!cow.isChild()) {
+                        adultCows.add(cow);
+                    }
                 }
             }
         }
@@ -123,7 +142,7 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
                     this.worldObj.removeEntity(animalToPackage);
                     this.inStackHandler.extractItem(packageSlot, inserted, false, true);
                     animalToPackage = null;
-                    result += 0.9f;
+                    result += ENERGY_PACKAGE;
                 }
             }
         }
@@ -136,7 +155,7 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
 
         //region process food
 
-        if (breedable.size() >= 2) {
+        if ((breedable.size() >= 2) && ((1.0f - result) >= ENERGY_FEED)) {
             ItemStack food0 = this.inStackHandler.extractItem(0, 2, true, true);
             ItemStack food1 = this.inStackHandler.extractItem(1, 2, true, true);
             ItemStack food2 = this.inStackHandler.extractItem(2, 2, true, true);
@@ -185,13 +204,13 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
                                 this.inStackHandler.extractItem(slotB, 1, false, true);
                                 a.setInLove(MekfarmMod.getFakePlayer(this.getWorld()));
                                 b.setInLove(MekfarmMod.getFakePlayer(this.getWorld()));
-                                result += .1f;
+                                result += ENERGY_FEED;
                                 breed = true;
                                 break;
                             }
                         }
                     }
-                    if (breed == true) {
+                    if (breed) {
                         break;
                     }
                 }
@@ -202,9 +221,56 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
 
         //region process shears
 
+        if ((shearables.size() > 0) && ((1 - result) >= ENERGY_SHEAR)) {
+            for(int i = 0; i < this.inStackHandler.getSlots(); i++) {
+                ItemStack stack = this.inStackHandler.getStackInSlot(i, true);
+                if ((stack == null) || !stack.getItem().getRegistryName().equals(Items.SHEARS.getRegistryName())) {
+                    continue;
+                }
+
+                for(IShearable shearable : shearables) {
+                    if ((shearable != null) && shearable.isShearable(stack, this.getWorld(), this.getPos())) {
+                        List<ItemStack> loot = shearable.onSheared(stack, this.getWorld(), this.getPos(), 0);
+                        if ((loot != null) && (loot.size() > 0)) {
+                            for(int j = 0; j < loot.size(); j++) {
+                                ItemStack stillThere = this.outStackHandler.insertItems(loot.get(j), false);
+                                if ((stillThere != null) && (stillThere.stackSize > 0)) {
+                                    BlockPos pos = ((Entity)shearable).getPosition();
+                                    this.getWorld().spawnEntityInWorld(new EntityItem(this.getWorld(), pos.getX(), pos.getY(), pos.getZ(), stillThere));
+                                }
+                            }
+
+                            // TODO: apply damage to shears
+
+                            result += ENERGY_SHEAR;
+                            break;
+                        }
+                    }
+                }
+
+                break;
+            }
+        }
+
         //endregion
 
         //region process bucket
+
+        if ((adultCows.size() > 0) && ((1 - result) > ENERGY_MILK)) {
+            for(int i = 0; i < this.inStackHandler.getSlots(); i++) {
+                ItemStack stack = this.inStackHandler.extractItem(i, 1, true, true);
+                if ((stack != null) && (stack.stackSize == 1) && stack.getItem().getRegistryName().equals(Items.BUCKET.getRegistryName())) {
+                    ItemStack milk = new ItemStack(Items.MILK_BUCKET, 1);
+                    milk = this.outStackHandler.insertItems(milk, false);
+                    if ((milk == null) || (milk.stackSize == 0)) {
+                        this.inStackHandler.extractItem(i, 1, false, true);
+
+                        result += ENERGY_MILK;
+                        break;
+                    }
+                }
+            }
+        }
 
         //endregion
 
