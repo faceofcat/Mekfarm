@@ -56,7 +56,7 @@ public class ElectricButcherEntity extends BaseElectricEntity<ElectricButcherCon
         ItemStack stack = this.inStackHandler.getStackInSlot(0, true);
         if ((stack != null) && (stack.stackSize > 0)) {
             // find animal
-            List<EntityAnimal> list = worldObj.getEntitiesWithinAABB(EntityAnimal.class, aabb);
+            List<EntityAnimal> list = this.getWorld().getEntitiesWithinAABB(EntityAnimal.class, aabb);
             ItemStack filterStack = this.filtersHandler.getStackInSlot(0, true);
             BaseAnimalFilterItem filter = ((filterStack != null) && (filterStack.getItem() instanceof BaseAnimalFilterItem))
                     ? (BaseAnimalFilterItem) filterStack.getItem()

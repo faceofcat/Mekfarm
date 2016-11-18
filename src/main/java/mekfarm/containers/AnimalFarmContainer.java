@@ -15,6 +15,6 @@ public class AnimalFarmContainer extends FarmContainer {
 
     @Override
     protected Slot createInputSlot(IItemHandler itemHandler, int slotIndex, int xPosition, int yPosition) {
-        return new TexturedSlot(itemHandler, slotIndex, xPosition, yPosition, 117, 172, 6);
+        return new TexturedSlot(itemHandler, slotIndex, xPosition, yPosition, 117, 172, 7);
     }
 }

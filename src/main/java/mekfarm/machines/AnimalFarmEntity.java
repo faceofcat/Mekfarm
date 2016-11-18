@@ -14,20 +14,16 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityCow;
+import net.minecraft.entity.passive.EntityMooshroom;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.datafix.walkers.ItemStackData;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.IShearable;
-import net.minecraftforge.fml.common.asm.transformers.ItemStackTransformer;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +37,7 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
     static {
         AnimalFarmEntity.foodItems.add("minecraft:shears");
         AnimalFarmEntity.foodItems.add("minecraft:bucket");
+        AnimalFarmEntity.foodItems.add("minecraft:bowl");
         // ^^ not really food :D
 
         AnimalFarmEntity.foodItems.add("minecraft:wheat");
@@ -85,7 +82,7 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
         AxisAlignedBB aabb = cube.getBoundingBox();
 
         // find animal
-        List<EntityAnimal> animals = worldObj.getEntitiesWithinAABB(EntityAnimal.class, aabb);
+        List<EntityAnimal> animals = this.getWorld().getEntitiesWithinAABB(EntityAnimal.class, aabb);
         List<IShearable> shearables = Lists.newArrayList();
         List<EntityCow> adultCows = Lists.newArrayList();
         ItemStack filterStack = this.filtersHandler.getStackInSlot(0, true);
@@ -144,7 +141,7 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
                 ItemStack finalStack = this.outStackHandler.insertItems(stackCopy, false);
                 int inserted = packageStack.stackSize - ((finalStack == null) ? 0 : finalStack.stackSize);
                 if (inserted > 0) {
-                    this.worldObj.removeEntity(animalToPackage);
+                    this.getWorld().removeEntity(animalToPackage);
                     this.inStackHandler.extractItem(packageSlot, inserted, false, true);
                     animalToPackage = null;
                     result += ENERGY_PACKAGE;
@@ -274,6 +271,34 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
 
                         result += ENERGY_MILK;
                         break;
+                    }
+                }
+            }
+        }
+
+        //endregion
+
+        //region process bowl
+
+        if ((adultCows.size() > 0) && ((1 - result) > ENERGY_MILK)) {
+            int mooshrooms = 0;
+            for(EntityCow cow: adultCows) {
+                if (cow instanceof EntityMooshroom) {
+                    mooshrooms++;
+                }
+            }
+            if (mooshrooms > 0) {
+                for (int i = 0; i < this.inStackHandler.getSlots(); i++) {
+                    ItemStack stack = this.inStackHandler.extractItem(i, 1, true, true);
+                    if ((stack != null) && (stack.stackSize == 1) && stack.getItem().getRegistryName().equals(Items.BOWL.getRegistryName())) {
+                        ItemStack stew = new ItemStack(Items.MUSHROOM_STEW, 1);
+                        stew = this.outStackHandler.insertItems(stew, false);
+                        if ((stew == null) || (stew.stackSize == 0)) {
+                            this.inStackHandler.extractItem(i, 1, false, true);
+
+                            result += ENERGY_MILK;
+                            break;
+                        }
                     }
                 }
             }

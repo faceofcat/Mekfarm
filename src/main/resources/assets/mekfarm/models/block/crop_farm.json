@@ -1,0 +1,6 @@
+{
+  "parent": "mekfarm:block/base_farm",
+  "textures": {
+    "north": "mekfarm:blocks/farms/crop_farm-front"
+  }
+}

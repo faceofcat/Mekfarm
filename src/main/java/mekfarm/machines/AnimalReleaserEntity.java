@@ -6,7 +6,6 @@ import mekfarm.common.BlockPosUtils;
 import mekfarm.common.BlocksRegistry;
 import mekfarm.common.ItemsRegistry;
 import mekfarm.containers.AnimalReleaserContainer;
-import mekfarm.containers.FarmContainer;
 import mekfarm.items.AnimalPackageItem;
 import mekfarm.ui.FarmContainerGUI;
 import net.minecraft.entity.passive.EntityAnimal;
@@ -56,7 +55,7 @@ public class AnimalReleaserEntity extends BaseElectricEntity<AnimalReleaserConta
                     String animalClass = compound.getString("animalClass");
                     try {
                         Class cea = Class.forName(animalClass);
-                        Object thing = cea.getConstructor(World.class).newInstance(this.worldObj);
+                        Object thing = cea.getConstructor(World.class).newInstance(this.getWorld());
                         if (thing instanceof EntityAnimal) {
                             EntityAnimal ea = (EntityAnimal)thing;
                             ea.readEntityFromNBT(animal);
@@ -73,7 +72,7 @@ public class AnimalReleaserEntity extends BaseElectricEntity<AnimalReleaserConta
                             int inserted = stack.stackSize - ((finalStack == null) ? 0 : finalStack.stackSize);
                             if (inserted > 0) {
                                 this.inStackHandler.extractItem(stackIndex, inserted, false, true);
-                                this.worldObj.spawnEntityInWorld(ea);
+                                this.getWorld().spawnEntityInWorld(ea);
                                 return 1.0f;
                             }
                         }
