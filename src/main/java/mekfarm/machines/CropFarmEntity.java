@@ -53,7 +53,7 @@ public class CropFarmEntity extends BaseElectricEntity<CropFarmContainer, CropFa
         if (stack == null)
             return true;
 
-        // test for weapon
+        // test for hoe
         if (stack.getItem() instanceof ItemHoe) {
             return true;
         }
@@ -211,12 +211,26 @@ public class CropFarmEntity extends BaseElectricEntity<CropFarmContainer, CropFa
 
                     //endregion
                 }
-                else if ((state.getBlock() == Blocks.GRASS) || (state.getBlock() == Blocks.DIRT)) {
+                else if ((state.getBlock() == Blocks.GRASS) || (state.getBlock() == Blocks.DIRT) || (state.getBlock() == Blocks.GRASS_PATH)) {
                     IBlockState above = this.getWorld().getBlockState(pos);
-                    if ((above != null) && (above.getBlock() == Blocks.AIR)) {
-                        // TODO: test for power and tool
-                        this.getWorld().setBlockState(landPos, Blocks.FARMLAND.getDefaultState());
+                    if ((above != null) && (above.getBlock() == Blocks.AIR) && (result <= 0.7f)) {
+                        int hoeSlot = -1;
 
+                        for(int i = 0; i < this.inStackHandler.getSlots(); i++) {
+                            ItemStack stack = this.inStackHandler.getStackInSlot(i, true);
+                            if ((stack != null) && (stack.getItem() instanceof  ItemHoe)) {
+                                hoeSlot = i;
+                                break;
+                            }
+                        }
+
+                        if (hoeSlot >= 0) {
+                            this.getWorld().setBlockState(landPos, Blocks.FARMLAND.getDefaultState());
+                            if (this.inStackHandler.getStackInSlot(hoeSlot, true).attemptDamageItem(1, this.getWorld().rand)) {
+                                this.inStackHandler.setStackInSlot(hoeSlot, null);
+                            }
+                            result += 0.3f;
+                        }
                     }
                 }
             }
