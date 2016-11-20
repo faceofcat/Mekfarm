@@ -4,12 +4,13 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
+import java.util.Iterator;
 import java.util.Random;
 
 /**
  * Created by CF on 2016-11-12.
  */
-public class BlockCube {
+public class BlockCube implements Iterable<BlockPos> {
     private BlockPos southEast;
     private BlockPos northWest;
 
@@ -60,5 +61,52 @@ public class BlockCube {
                 this.southEast.getX() + 1,
                 this.southEast.getY() + 1,
                 this.southEast.getZ() + 1);
+    }
+
+    @Override
+    public Iterator<BlockPos> iterator() {
+        return new BlockPosIterator(this);
+    }
+
+    private class BlockPosIterator implements Iterator<BlockPos> {
+        private int position = 0;
+        private int minX;
+        private int minY;
+        private int minZ;
+        private int maxX;
+        private int maxY;
+        private int maxZ;
+
+        private int xSize;
+        private int ySize;
+        private int zSize;
+
+        public BlockPosIterator(BlockCube cube) {
+            this.minX = cube.northWest.getX();
+            this.minY = cube.northWest.getY();
+            this.minZ = cube.northWest.getZ();
+            this.maxX = cube.southEast.getX();
+            this.maxY = cube.southEast.getY();
+            this.maxZ = cube.southEast.getZ();
+
+            this.xSize = this.maxX - this.minX + 1;
+            this.ySize = this.maxY - this.minY + 1;
+            this.zSize = this.maxZ - this.minZ + 1;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return position < (this.xSize * this.ySize * this.zSize);
+        }
+
+        @Override
+        public BlockPos next() {
+            int plane = position % (this.xSize * this.zSize);
+            int y = position / (this.xSize * this.zSize);
+            int x = plane % this.zSize;
+            int z = plane / this.zSize;
+            position++;
+            return new BlockPos(this.minX + x, this.minY + y, this.minZ + z);
+        }
     }
 }

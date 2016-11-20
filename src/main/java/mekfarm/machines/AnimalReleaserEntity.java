@@ -68,7 +68,7 @@ public class AnimalReleaserEntity extends BaseElectricEntity<AnimalReleaserConta
                             ea.setPosition(pos.getX(), pos.getY(), pos.getZ());
 
                             stackCopy.setTagCompound(null);
-                            ItemStack finalStack = this.outStackHandler.insertItems(stackCopy, false);
+                            ItemStack finalStack = this.outStackHandler.distributeItems(stackCopy, false);
                             int inserted = stack.stackSize - ((finalStack == null) ? 0 : finalStack.stackSize);
                             if (inserted > 0) {
                                 this.inStackHandler.extractItem(stackIndex, inserted, false, true);

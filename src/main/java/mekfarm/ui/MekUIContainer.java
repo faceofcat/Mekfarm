@@ -25,8 +25,13 @@ public abstract class MekUIContainer extends GuiContainer {
         this.te = te;
     }
 
-    public int getGuiLeft() { return this.guiLeft; }
-    public int getGuiTop() { return this.guiTop; }
+    public int getGuiLeft() {
+        return this.guiLeft;
+    }
+
+    public int getGuiTop() {
+        return this.guiTop;
+    }
 
     protected void addMekUIElement(MekUIElement element) {
         this.elements.add(element);
@@ -46,7 +51,7 @@ public abstract class MekUIContainer extends GuiContainer {
         this.processMouseMove(mouseX, mouseY);
 
         this.bindDefaultTexture();
-        for(MekUIElement element: this.elements) {
+        for (MekUIElement element : this.elements) {
             if (element != null) {
                 element.renderForeground(mouseX, mouseY);
             }
@@ -54,14 +59,15 @@ public abstract class MekUIContainer extends GuiContainer {
 
         this.drawGuiContainerForeground(mouseX + this.guiLeft, mouseY + this.guiTop);
 
-        for(MekUIElement element: this.elements) {
+        for (MekUIElement element : this.elements) {
             if (element != null) {
                 element.renderTopLayer(mouseX, mouseY);
             }
         }
     }
 
-    protected void drawGuiContainerForeground(int mouseX, int mouseY) { }
+    protected void drawGuiContainerForeground(int mouseX, int mouseY) {
+    }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
@@ -88,7 +94,7 @@ public abstract class MekUIContainer extends GuiContainer {
             this.lastHoverElement = null;
         }
 
-        for(MekUIElement element: this.elements) {
+        for (MekUIElement element : this.elements) {
             if (this.isInside(element, mouseX, mouseY)) {
                 this.lastHoverElement = element;
                 this.lastHoverElement.onMouseEnter(mouseX - super.guiLeft, mouseY - super.guiTop);
@@ -116,4 +122,9 @@ public abstract class MekUIContainer extends GuiContainer {
     public void bindDefaultTexture() {
         this.mc.getTextureManager().bindTexture(MACHINE_BACKGROUND);
     }
+
+//    @Override
+//    protected void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) {
+//        super.handleMouseClick(slotIn, slotId, mouseButton, type);
+//    }
 }

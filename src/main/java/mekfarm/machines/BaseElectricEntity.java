@@ -99,7 +99,7 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
         return true;
     }
 
-    private void forceSync() {
+    protected void forceSync() {
         if (!this.getWorld().isRemote) {
             this.syncTick = SYNC_ON_TICK;
         }

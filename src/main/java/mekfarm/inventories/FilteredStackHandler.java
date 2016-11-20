@@ -11,16 +11,16 @@ public class FilteredStackHandler extends ItemStackHandler implements IInternalI
         super(size);
     }
 
-    @Override
-    public void setStackInSlot(int slot, ItemStack stack) {
-        this.setStackInSlot(slot, stack, false);
-    }
+//    @Override
+//    public final void setStackInSlot(int slot, ItemStack stack) {
+//        this.setStackInSlot(slot, stack, false);
+//    }
 
     @Override
     public void setStackInSlot(int slot, ItemStack stack, boolean internal) {
-        if ((stack != null) && (this.acceptsStack(slot, stack, internal) == false)) {
-            return;
-        }
+//        if ((stack != null) && (this.acceptsStack(slot, stack, internal) == false)) {
+//            return;
+//        }
 
         super.setStackInSlot(slot, stack);
     }
@@ -31,7 +31,7 @@ public class FilteredStackHandler extends ItemStackHandler implements IInternalI
     }
 
     @Override
-    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+    public final ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         return this.insertItem(slot, stack, simulate, false);
     }
 
@@ -49,7 +49,7 @@ public class FilteredStackHandler extends ItemStackHandler implements IInternalI
     }
 
     @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate){
+    public final ItemStack extractItem(int slot, int amount, boolean simulate){
         return this.extractItem(slot, amount, simulate, false);
     }
 
@@ -65,4 +65,20 @@ public class FilteredStackHandler extends ItemStackHandler implements IInternalI
     }
 
     protected boolean canExtract(int slot, int amount, boolean internal) { return true; }
+
+    public final ItemStack distributeItems(ItemStack stack, boolean simulate) {
+        return this.distributeItems(stack, simulate, false);
+    }
+
+    public ItemStack distributeItems(ItemStack stack, boolean simulate, boolean ignoreEmptySlots) {
+        for (int i = 0; i < this.getSlots(); i++) {
+            if (!ignoreEmptySlots || (this.getStackInSlot(i, true) != null)) {
+                stack = this.insertItem(i, stack, simulate, true);
+                if ((stack == null) || (stack.stackSize == 0)) {
+                    break;
+                }
+            }
+        }
+        return stack;
+    }
 }
