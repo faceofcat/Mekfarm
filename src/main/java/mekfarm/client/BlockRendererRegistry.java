@@ -13,5 +13,6 @@ final class BlockRendererRegistry {
         BlocksRegistry.animalFarmBlock.registerRenderer();
         BlocksRegistry.animalReleaserBlock.registerRenderer();
         BlocksRegistry.electricButcherBlock.registerRenderer();
+        BlocksRegistry.cropFarmBlock.registerRenderer();
     }
 }

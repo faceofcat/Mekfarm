@@ -6,7 +6,6 @@ import mekfarm.common.BlockPosUtils;
 import mekfarm.common.BlocksRegistry;
 import mekfarm.common.ItemsRegistry;
 import mekfarm.containers.AnimalReleaserContainer;
-import mekfarm.containers.FarmContainer;
 import mekfarm.items.AnimalPackageItem;
 import mekfarm.ui.FarmContainerGUI;
 import net.minecraft.entity.passive.EntityAnimal;
@@ -42,11 +41,11 @@ public class AnimalReleaserEntity extends BaseElectricEntity<AnimalReleaserConta
         int stackIndex = 0;
         for (; stackIndex < this.inStackHandler.getSlots(); stackIndex++) {
             stack = this.inStackHandler.extractItem(stackIndex, 1, true, true);
-            if ((stack != null) && (stack.getCount() > 0)) {
+            if ((stack != null) && (stack.stackSize > 0)) {
                 break;
             }
         }
-        if ((stack != null) && (stack.getCount() > 0)) {
+        if ((stack != null) && (stack.stackSize > 0)) {
             ItemStack stackCopy = stack.copy();
             if ((stackCopy.getItem() instanceof AnimalPackageItem) && stackCopy.hasTagCompound()) {
                 NBTTagCompound compound = stackCopy.getTagCompound();
@@ -69,11 +68,11 @@ public class AnimalReleaserEntity extends BaseElectricEntity<AnimalReleaserConta
                             ea.setPosition(pos.getX(), pos.getY(), pos.getZ());
 
                             stackCopy.setTagCompound(null);
-                            ItemStack finalStack = this.outStackHandler.insertItems(stackCopy, false);
-                            int inserted = stack.getCount() - ((finalStack == null) ? 0 : finalStack.getCount());
+                            ItemStack finalStack = this.outStackHandler.distributeItems(stackCopy, false);
+                            int inserted = stack.stackSize - ((finalStack == null) ? 0 : finalStack.stackSize);
                             if (inserted > 0) {
                                 this.inStackHandler.extractItem(stackIndex, inserted, false, true);
-                                this.getWorld().spawnEntity(ea);
+                                this.getWorld().spawnEntityInWorld(ea);
                                 return 1.0f;
                             }
                         }

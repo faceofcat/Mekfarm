@@ -1,31 +1,44 @@
 package mekfarm.common;
 
-import java.util.UUID;
 import com.mojang.authlib.GameProfile;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.client.CPacketClientSettings;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.stats.StatBase;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+
+import java.util.UUID;
 
 /**
  * Created by CF on 2016-11-12.
  *
  * Inspired from: CoFHCore/src/main/java/cofh/core/entity/CoFHFakePlayer.java
+ * not using FakePlayer as base class because of 'roots' mod and someone asking for me to allow automating that.
+ * TODO: figure out if not using FakePlayer is a bad idea in general
  */
-public class FakeMekPlayer extends FakePlayer {
+public class FakeMekPlayer extends EntityPlayerMP {
     public ItemStack previousItem = null;
-//    public String myName = "[MEK]";
 
-    public FakeMekPlayer(WorldServer world) {
-        super(world, new GameProfile(UUID.randomUUID(), ""));
+    public FakeMekPlayer(WorldServer world, GameProfile name)
+    {
+        super(FMLCommonHandler.instance().getMinecraftServerInstance(), world, name, new PlayerInteractionManager(world));
         this.addedToChunk = false;
         this.onGround = true;
+    }
+
+    public FakeMekPlayer(WorldServer world) {
+        this(world, new GameProfile(UUID.randomUUID(), "[Mekfarm Fake Player]"));
     }
 
     public void setItemInHand(ItemStack stack) {
@@ -56,58 +69,24 @@ public class FakeMekPlayer extends FakePlayer {
 
     //region DISABLE STUFF
 
-    @Override
-    public boolean isSneaking() {
-        return false;
-    }
+    @Override public Vec3d getPositionVector(){ return new Vec3d(0, 0, 0); }
+    @Override public boolean isEntityInvulnerable(DamageSource source){ return true; }
+    @Override public boolean canAttackPlayer(EntityPlayer player){ return false; }
+    @Override public Entity changeDimension(int dim){ return this; }
+    @Override public void handleClientSettings(CPacketClientSettings pkt){ return; }
 
-    @Override
-    public boolean canUseCommand(int var1, String var2) {
-        return false;
-    }
-
-    @Override
-    public boolean isSprinting() {
-        return false;
-    }
-
-    @Override
-    public float getEyeHeight() {
-        return 1.1F;
-    }
-
-    @Override
-    public double getDistanceSq(double x, double y, double z) {
-        return 0f;
-    }
-
-    @Override
-    public double getDistance(double x, double y, double z) {
-        return 0f;
-    }
-
-    @Override
-    public void sendMessage(ITextComponent chatmessagecomponent) { }
-
-    @Override
-    public void sendStatusMessage(ITextComponent chatmessagecomponent, boolean type) { }
-
-    @Override
-    public void addStat(StatBase par1StatBase, int par2) {
-    }
-
-    @Override
-    public void openGui(Object mod, int modGuiId, World world, int x, int y, int z) {
-    }
-
-    @Override
-    public void onDeath(DamageSource source) {
-        return;
-    }
-
-    @Override
-    public void addPotionEffect(PotionEffect p_70690_1_) {
-    }
+    @Override public boolean isSneaking() { return false; }
+    @Override public boolean canCommandSenderUseCommand(int var1, String var2) { return false; }
+    @Override public boolean isSprinting() { return false; }
+    @Override public float getEyeHeight() { return 1.1F; }
+    @Override public double getDistanceSq(double x, double y, double z) { return 0f; }
+    @Override public double getDistance(double x, double y, double z) { return 0f; }
+    @Override public void addChatMessage(ITextComponent chatmessagecomponent) { }
+    @Override public void addChatComponentMessage(ITextComponent chatmessagecomponent) { }
+    @Override public void addStat(StatBase par1StatBase, int par2) { }
+    @Override public void openGui(Object mod, int modGuiId, World world, int x, int y, int z) { }
+    @Override public void onDeath(DamageSource source) { return; }
+    @Override public void addPotionEffect(PotionEffect p_70690_1_) { }
 
     //endregion
 }

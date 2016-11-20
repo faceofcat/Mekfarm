@@ -23,6 +23,9 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -101,12 +104,33 @@ public abstract class BaseOrientedBlock<T extends TileEntity> extends Block impl
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
-                                    EnumFacing heldItem, float side, float hitX, float hitY) {
+                                    ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+        TileEntity te = world.getTileEntity(pos);
+        if (te != null) {
+            if (te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
+                IFluidHandler tank = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+                ItemStack bucket  = player.getHeldItem(hand);
+                if ((bucket != null) && (bucket.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))) {
+                    IFluidHandler handler = bucket.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+                    FluidStack fluid = (handler != null) ? handler.drain(1000, false) : null;
+                    if ((fluid != null) && (fluid.amount > 0)) {
+                        int filled = tank.fill(fluid, true);
+                        if (filled > 0) {
+                            handler.drain(filled, true);
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
         // Only execute on the server
         if (!world.isRemote && (this.guiId > 0)) {
             player.openGui(MekfarmMod.instance, this.guiId, world, pos.getX(), pos.getY(), pos.getZ());
+            return true;
         }
-        return true;
+
+        return super.onBlockActivated(world, pos, state, player, hand, heldItem, side, hitX, hitY, hitZ);
     }
 
     @Override
@@ -145,7 +169,7 @@ public abstract class BaseOrientedBlock<T extends TileEntity> extends Block impl
             if (handler != null) {
                 for (int i = 0; i < handler.getSlots(); ++i) {
                     ItemStack stack = handler.getStackInSlot(i);
-                    if ((stack != null) && (stack.getCount() > 0))
+                    if ((stack != null) && (stack.stackSize > 0))
                         InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), handler.getStackInSlot(i));
                 }
             }

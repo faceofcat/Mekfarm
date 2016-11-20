@@ -14,6 +14,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityCow;
+import net.minecraft.entity.passive.EntityMooshroom;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -36,6 +37,7 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
     static {
         AnimalFarmEntity.foodItems.add("minecraft:shears");
         AnimalFarmEntity.foodItems.add("minecraft:bucket");
+        AnimalFarmEntity.foodItems.add("minecraft:bowl");
         // ^^ not really food :D
 
         AnimalFarmEntity.foodItems.add("minecraft:wheat");
@@ -121,7 +123,7 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
             int packageSlot = 0;
             for(int ti = 0; ti < this.inStackHandler.getSlots(); ti++) {
                 packageStack = this.inStackHandler.extractItem(ti, 1, true, true);
-                if ((packageStack != null) && (packageStack.getCount() > 0) && (packageStack.getItem() instanceof AnimalPackageItem) && !ItemsRegistry.animalPackage.hasAnimal(packageStack)) {
+                if ((packageStack != null) && (packageStack.stackSize > 0) && (packageStack.getItem() instanceof AnimalPackageItem) && !ItemsRegistry.animalPackage.hasAnimal(packageStack)) {
                     packageSlot = ti;
                     break;
                 }
@@ -136,8 +138,8 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
                 stackCopy.setTagInfo("animal", animalCompound);
                 stackCopy.setTagInfo("animalClass", new NBTTagString(animalToPackage.getClass().getName()));
 
-                ItemStack finalStack = this.outStackHandler.insertItems(stackCopy, false);
-                int inserted = packageStack.getCount() - ((finalStack == null) ? 0 : finalStack.getCount());
+                ItemStack finalStack = this.outStackHandler.distributeItems(stackCopy, false);
+                int inserted = packageStack.stackSize - ((finalStack == null) ? 0 : finalStack.stackSize);
                 if (inserted > 0) {
                     this.getWorld().removeEntity(animalToPackage);
                     this.inStackHandler.extractItem(packageSlot, inserted, false, true);
@@ -168,9 +170,9 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
                         if ((a != null) && (b != null) && (a.getClass().equals(b.getClass()))) {
                             int slotA = -1;
                             int slotB = -1;
-                            int size0 = (food0 != null) ? food0.getCount() : 0;
-                            int size1 = (food1 != null) ? food1.getCount() : 0;
-                            int size2 = (food2 != null) ? food2.getCount() : 0;
+                            int size0 = (food0 != null) ? food0.stackSize : 0;
+                            int size1 = (food1 != null) ? food1.stackSize : 0;
+                            int size2 = (food2 != null) ? food2.stackSize : 0;
 
                             if ((size0 > 0) && a.isBreedingItem(food0)) {
                                 slotA = 0;
@@ -233,14 +235,16 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
                         List<ItemStack> loot = shearable.onSheared(stack, this.getWorld(), this.getPos(), 0);
                         if ((loot != null) && (loot.size() > 0)) {
                             for(int j = 0; j < loot.size(); j++) {
-                                ItemStack stillThere = this.outStackHandler.insertItems(loot.get(j), false);
-                                if ((stillThere != null) && (stillThere.getCount() > 0)) {
+                                ItemStack stillThere = this.outStackHandler.distributeItems(loot.get(j), false);
+                                if ((stillThere != null) && (stillThere.stackSize > 0)) {
                                     BlockPos pos = ((Entity)shearable).getPosition();
-                                    this.getWorld().spawnEntity(new EntityItem(this.getWorld(), pos.getX(), pos.getY(), pos.getZ(), stillThere));
+                                    this.getWorld().spawnEntityInWorld(new EntityItem(this.getWorld(), pos.getX(), pos.getY(), pos.getZ(), stillThere));
                                 }
                             }
 
-                            // TODO: apply damage to shears
+                            if (stack.attemptDamageItem(1, this.getWorld().rand)) {
+                                this.inStackHandler.setStackInSlot(i, null);
+                            }
 
                             result += ENERGY_SHEAR;
                             break;
@@ -259,14 +263,42 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
         if ((adultCows.size() > 0) && ((1 - result) > ENERGY_MILK)) {
             for(int i = 0; i < this.inStackHandler.getSlots(); i++) {
                 ItemStack stack = this.inStackHandler.extractItem(i, 1, true, true);
-                if ((stack != null) && (stack.getCount() == 1) && stack.getItem().getRegistryName().equals(Items.BUCKET.getRegistryName())) {
+                if ((stack != null) && (stack.stackSize == 1) && stack.getItem().getRegistryName().equals(Items.BUCKET.getRegistryName())) {
                     ItemStack milk = new ItemStack(Items.MILK_BUCKET, 1);
-                    milk = this.outStackHandler.insertItems(milk, false);
-                    if ((milk == null) || (milk.getCount() == 0)) {
+                    milk = this.outStackHandler.distributeItems(milk, false);
+                    if ((milk == null) || (milk.stackSize == 0)) {
                         this.inStackHandler.extractItem(i, 1, false, true);
 
                         result += ENERGY_MILK;
                         break;
+                    }
+                }
+            }
+        }
+
+        //endregion
+
+        //region process bowl
+
+        if ((adultCows.size() > 0) && ((1 - result) > ENERGY_MILK)) {
+            int mooshrooms = 0;
+            for(EntityCow cow: adultCows) {
+                if (cow instanceof EntityMooshroom) {
+                    mooshrooms++;
+                }
+            }
+            if (mooshrooms > 0) {
+                for (int i = 0; i < this.inStackHandler.getSlots(); i++) {
+                    ItemStack stack = this.inStackHandler.extractItem(i, 1, true, true);
+                    if ((stack != null) && (stack.stackSize == 1) && stack.getItem().getRegistryName().equals(Items.BOWL.getRegistryName())) {
+                        ItemStack stew = new ItemStack(Items.MUSHROOM_STEW, 1);
+                        stew = this.outStackHandler.distributeItems(stew, false);
+                        if ((stew == null) || (stew.stackSize == 0)) {
+                            this.inStackHandler.extractItem(i, 1, false, true);
+
+                            result += ENERGY_MILK;
+                            break;
+                        }
                     }
                 }
             }
