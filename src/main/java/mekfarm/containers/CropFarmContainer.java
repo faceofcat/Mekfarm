@@ -1,6 +1,7 @@
 package mekfarm.containers;
 
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.IItemHandler;
 
@@ -12,8 +13,9 @@ public class CropFarmContainer extends FarmContainer {
         super(playerInventory, te);
     }
 
+
     @Override
-    protected void addInputSlots(IItemHandler itemHandler, int inputs) {
-        super.addInputSlots(itemHandler, inputs);
+    protected Slot createInputSlot(IItemHandler itemHandler, int slotIndex, int xPosition, int yPosition) {
+        return new TexturedSlot(itemHandler, slotIndex, xPosition, yPosition, 117, 226, 5);
     }
 }
