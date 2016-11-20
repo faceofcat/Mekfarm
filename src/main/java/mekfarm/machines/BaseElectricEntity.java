@@ -99,8 +99,8 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
         return true;
     }
 
-    private void forceSync() {
-        if (!this.worldObj.isRemote) {
+    protected void forceSync() {
+        if (!this.getWorld().isRemote) {
             this.syncTick = SYNC_ON_TICK;
         }
     }
@@ -167,7 +167,7 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
 
     @Override
     public SimpleNBTMessage handleMessage(SimpleNBTMessage message) {
-        if (this.worldObj.isRemote) {
+        if (this.getWorld().isRemote) {
             NBTTagCompound compound = (message == null) ? null : message.getCompound();
             if (compound != null) {
                 int tetId = compound.getInteger("__tetId");
@@ -192,7 +192,7 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
             this.lastWorkTicks = this.getWorkTicks();
             this.workTick = 0;
 
-            if (!this.worldObj.isRemote) {
+            if (!this.getWorld().isRemote) {
                 int energy = this.getEnergyForWork();
                 if (this.energyStorage.getEnergyStored() >= energy) {
                     float work = this.performWork();
@@ -204,7 +204,7 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
             }
         }
 
-        if (!this.worldObj.isRemote) {
+        if (!this.getWorld().isRemote) {
             this.syncTick++;
             if (this.syncTick >= SYNC_ON_TICK) {
                 MekfarmMod.network.send(new SimpleNBTMessage(this, this.writeToNBT()));

@@ -2,8 +2,6 @@
 /.idea
 /build
 /classes
-/gradle
 /libs
-/gradlew.bat
 /build.bat
 /run

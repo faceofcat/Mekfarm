@@ -6,15 +6,16 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.IItemHandler;
 
 /**
- * Created by CF on 2016-11-12.
+ * Created by CF on 2016-11-16.
  */
-public class AnimalFarmContainer extends FarmContainer {
-    public AnimalFarmContainer(IInventory playerInventory, TileEntity entity) {
-        super(playerInventory, entity);
+public class CropFarmContainer extends FarmContainer {
+    public CropFarmContainer(IInventory playerInventory, TileEntity te) {
+        super(playerInventory, te);
     }
+
 
     @Override
     protected Slot createInputSlot(IItemHandler itemHandler, int slotIndex, int xPosition, int yPosition) {
-        return new TexturedSlot(itemHandler, slotIndex, xPosition, yPosition, 117, 172, 7);
+        return new TexturedSlot(itemHandler, slotIndex, xPosition, yPosition, 117, 226, 5);
     }
 }

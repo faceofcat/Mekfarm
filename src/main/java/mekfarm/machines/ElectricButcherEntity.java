@@ -1,5 +1,6 @@
 package mekfarm.machines;
 
+import com.google.common.collect.Multimap;
 import mekfarm.MekfarmMod;
 import mekfarm.common.BlockCube;
 import mekfarm.common.BlockPosUtils;
@@ -9,6 +10,7 @@ import mekfarm.containers.ElectricButcherContainer;
 import mekfarm.items.BaseAnimalFilterItem;
 import mekfarm.ui.ElectricButcherContainerGUI;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -17,6 +19,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -34,8 +37,15 @@ public class ElectricButcherEntity extends BaseElectricEntity<ElectricButcherCon
 
         if (slot == 0) {
             // test for weapon
-            return stack.getAttributeModifiers(EntityEquipmentSlot.MAINHAND)
-                    .containsKey(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName());
+            Multimap<String, AttributeModifier> map = stack.getAttributeModifiers(EntityEquipmentSlot.MAINHAND);
+            if (map.containsKey(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName())) {
+                Collection<AttributeModifier> modifiers = map.get(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName());
+                for(AttributeModifier modifier : modifiers) {
+                    if (modifier.getAmount() > 0) {
+                        return true;
+                    }
+                }
+            }
         }
 
         return false;
@@ -56,7 +66,7 @@ public class ElectricButcherEntity extends BaseElectricEntity<ElectricButcherCon
         ItemStack stack = this.inStackHandler.getStackInSlot(0, true);
         if ((stack != null) && (stack.stackSize > 0)) {
             // find animal
-            List<EntityAnimal> list = worldObj.getEntitiesWithinAABB(EntityAnimal.class, aabb);
+            List<EntityAnimal> list = this.getWorld().getEntitiesWithinAABB(EntityAnimal.class, aabb);
             ItemStack filterStack = this.filtersHandler.getStackInSlot(0, true);
             BaseAnimalFilterItem filter = ((filterStack != null) && (filterStack.getItem() instanceof BaseAnimalFilterItem))
                     ? (BaseAnimalFilterItem) filterStack.getItem()
@@ -96,7 +106,7 @@ public class ElectricButcherEntity extends BaseElectricEntity<ElectricButcherCon
         if (items.isEmpty() == false) {
             for (EntityItem item: items) {
                 ItemStack original = item.getEntityItem();
-                ItemStack remaining = this.outStackHandler.insertItems(original, false);
+                ItemStack remaining = this.outStackHandler.distributeItems(original, false);
                 if ((remaining == null) || (remaining.stackSize == 0)) {
                     this.getWorld().removeEntity(item);
                     pickedUpLoot = true;
