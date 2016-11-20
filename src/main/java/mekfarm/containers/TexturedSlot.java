@@ -35,7 +35,7 @@ public class TexturedSlot extends InternalSlot {
 
         if (this.getHasStack() == false) {
             gui.drawTexturedModalRect(
-                    guiLeft + this.xDisplayPosition - 1, guiTop + this.yDisplayPosition - 1,
+                    guiLeft + this.xPos - 1, guiTop + this.yPos - 1,
                     this.textureX + textureIndex * 18, this.textureY,
                     18, 18);
         }

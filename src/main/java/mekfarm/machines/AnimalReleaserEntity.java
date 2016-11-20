@@ -42,11 +42,11 @@ public class AnimalReleaserEntity extends BaseElectricEntity<AnimalReleaserConta
         int stackIndex = 0;
         for (; stackIndex < this.inStackHandler.getSlots(); stackIndex++) {
             stack = this.inStackHandler.extractItem(stackIndex, 1, true, true);
-            if ((stack != null) && (stack.stackSize > 0)) {
+            if ((stack != null) && (stack.getCount() > 0)) {
                 break;
             }
         }
-        if ((stack != null) && (stack.stackSize > 0)) {
+        if ((stack != null) && (stack.getCount() > 0)) {
             ItemStack stackCopy = stack.copy();
             if ((stackCopy.getItem() instanceof AnimalPackageItem) && stackCopy.hasTagCompound()) {
                 NBTTagCompound compound = stackCopy.getTagCompound();
@@ -56,7 +56,7 @@ public class AnimalReleaserEntity extends BaseElectricEntity<AnimalReleaserConta
                     String animalClass = compound.getString("animalClass");
                     try {
                         Class cea = Class.forName(animalClass);
-                        Object thing = cea.getConstructor(World.class).newInstance(this.worldObj);
+                        Object thing = cea.getConstructor(World.class).newInstance(this.getWorld());
                         if (thing instanceof EntityAnimal) {
                             EntityAnimal ea = (EntityAnimal)thing;
                             ea.readEntityFromNBT(animal);
@@ -70,10 +70,10 @@ public class AnimalReleaserEntity extends BaseElectricEntity<AnimalReleaserConta
 
                             stackCopy.setTagCompound(null);
                             ItemStack finalStack = this.outStackHandler.insertItems(stackCopy, false);
-                            int inserted = stack.stackSize - ((finalStack == null) ? 0 : finalStack.stackSize);
+                            int inserted = stack.getCount() - ((finalStack == null) ? 0 : finalStack.getCount());
                             if (inserted > 0) {
                                 this.inStackHandler.extractItem(stackIndex, inserted, false, true);
-                                this.worldObj.spawnEntityInWorld(ea);
+                                this.getWorld().spawnEntity(ea);
                                 return 1.0f;
                             }
                         }

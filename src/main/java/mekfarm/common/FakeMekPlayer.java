@@ -62,7 +62,7 @@ public class FakeMekPlayer extends FakePlayer {
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(int var1, String var2) {
+    public boolean canUseCommand(int var1, String var2) {
         return false;
     }
 
@@ -87,12 +87,10 @@ public class FakeMekPlayer extends FakePlayer {
     }
 
     @Override
-    public void addChatMessage(ITextComponent chatmessagecomponent) {
-    }
+    public void sendMessage(ITextComponent chatmessagecomponent) { }
 
     @Override
-    public void addChatComponentMessage(ITextComponent chatmessagecomponent) {
-    }
+    public void sendStatusMessage(ITextComponent chatmessagecomponent, boolean type) { }
 
     @Override
     public void addStat(StatBase par1StatBase, int par2) {

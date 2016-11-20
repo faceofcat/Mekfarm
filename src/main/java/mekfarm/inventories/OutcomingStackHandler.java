@@ -18,7 +18,7 @@ public class OutcomingStackHandler extends FilteredStackHandler {
     public ItemStack insertItems(ItemStack stack, boolean simulate) {
         for (int i = 0; i < this.getSlots(); i++) {
             stack = super.insertItem(i, stack, simulate, true);
-            if ((stack == null) || (stack.stackSize == 0)) {
+            if ((stack == null) || (stack.getCount() == 0)) {
                 break;
             }
         }

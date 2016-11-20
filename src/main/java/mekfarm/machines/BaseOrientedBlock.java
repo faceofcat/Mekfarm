@@ -101,7 +101,7 @@ public abstract class BaseOrientedBlock<T extends TileEntity> extends Block impl
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
-                                    ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+                                    EnumFacing heldItem, float side, float hitX, float hitY) {
         // Only execute on the server
         if (!world.isRemote && (this.guiId > 0)) {
             player.openGui(MekfarmMod.instance, this.guiId, world, pos.getX(), pos.getY(), pos.getZ());
@@ -145,7 +145,7 @@ public abstract class BaseOrientedBlock<T extends TileEntity> extends Block impl
             if (handler != null) {
                 for (int i = 0; i < handler.getSlots(); ++i) {
                     ItemStack stack = handler.getStackInSlot(i);
-                    if ((stack != null) && (stack.stackSize > 0))
+                    if ((stack != null) && (stack.getCount() > 0))
                         InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), handler.getStackInSlot(i));
                 }
             }

@@ -52,9 +52,8 @@ public class MekfarmMod
         }
 
         @Override
-        public Item getTabIconItem()
-        {
-            return ItemsRegistry.animalPackage;
+        public ItemStack getTabIconItem() {
+            return this.getIconItemStack();
         }
     };
 

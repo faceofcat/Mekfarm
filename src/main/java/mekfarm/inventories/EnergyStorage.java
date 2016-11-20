@@ -49,21 +49,25 @@ public class EnergyStorage implements ITeslaConsumer, ITeslaHolder, IStrictEnerg
     //region IStrictEnergyAcceptor
 
     @Override
+    @Optional.Method(modid = "Mekanism")
     public double getEnergy() {
         return this.getEnergyStored();
     }
 
     @Override
+    @Optional.Method(modid = "Mekanism")
     public void setEnergy(double energy) {
         // TODO: ??
     }
 
     @Override
+    @Optional.Method(modid = "Mekanism")
     public double getMaxEnergy() {
         return this.getMaxEnergyStored();
     }
 
     @Override
+    @Optional.Method(modid = "Mekanism")
     public double transferEnergyToAcceptor(EnumFacing side, double amount) {
         int tesla = Math.round((float)amount * .4f);
         tesla = this.receiveEnergy(tesla, false);
@@ -71,6 +75,7 @@ public class EnergyStorage implements ITeslaConsumer, ITeslaHolder, IStrictEnerg
     }
 
     @Override
+    @Optional.Method(modid = "Mekanism")
     public boolean canReceiveEnergy(EnumFacing side) {
         return this.canReceive();
     }

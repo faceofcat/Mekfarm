@@ -37,7 +37,7 @@ public class FilteredStackHandler extends ItemStackHandler implements IInternalI
 
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate, boolean internal) {
-        if ((stack == null) || (stack.stackSize == 0)) {
+        if ((stack == null) || (stack.getCount() == 0)) {
             return null;
         }
 

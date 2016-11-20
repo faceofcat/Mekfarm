@@ -35,7 +35,7 @@ public class ElectricButcherEntity extends BaseElectricEntity<ElectricButcherCon
         if (slot == 0) {
             // test for weapon
             return stack.getAttributeModifiers(EntityEquipmentSlot.MAINHAND)
-                    .containsKey(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName());
+                    .containsKey(SharedMonsterAttributes.ATTACK_DAMAGE.getName()); // .getAttributeUnlocalizedName());
         }
 
         return false;
@@ -54,9 +54,9 @@ public class ElectricButcherEntity extends BaseElectricEntity<ElectricButcherCon
         //region attack animal
 
         ItemStack stack = this.inStackHandler.getStackInSlot(0, true);
-        if ((stack != null) && (stack.stackSize > 0)) {
+        if ((stack != null) && (stack.getCount() > 0)) {
             // find animal
-            List<EntityAnimal> list = worldObj.getEntitiesWithinAABB(EntityAnimal.class, aabb);
+            List<EntityAnimal> list = this.getWorld().getEntitiesWithinAABB(EntityAnimal.class, aabb);
             ItemStack filterStack = this.filtersHandler.getStackInSlot(0, true);
             BaseAnimalFilterItem filter = ((filterStack != null) && (filterStack.getItem() instanceof BaseAnimalFilterItem))
                     ? (BaseAnimalFilterItem) filterStack.getItem()
@@ -97,11 +97,11 @@ public class ElectricButcherEntity extends BaseElectricEntity<ElectricButcherCon
             for (EntityItem item: items) {
                 ItemStack original = item.getEntityItem();
                 ItemStack remaining = this.outStackHandler.insertItems(original, false);
-                if ((remaining == null) || (remaining.stackSize == 0)) {
+                if ((remaining == null) || (remaining.getCount() == 0)) {
                     this.getWorld().removeEntity(item);
                     pickedUpLoot = true;
                 }
-                else if (remaining.stackSize != original.stackSize) {
+                else if (remaining.getCount() != original.getCount()) {
                     item.setEntityItemStack(remaining);
                     pickedUpLoot = true;
                 }

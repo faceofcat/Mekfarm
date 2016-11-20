@@ -1,4 +1,4 @@
-buildscript {
+    buildscript {
     repositories {
         jcenter()
         maven { url "http://files.minecraftforge.net/maven" }
@@ -10,24 +10,24 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the nessasary things for Forge to be setup.
 
-version = "0.0.1"
+version = "0.0.3"
 group = "com.faceofcat.mekfarm" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "mekfarm"
 
-repositories {
-   maven { url 'http://maven.epoxide.xyz' }
-}
-dependencies { compile "net.darkhax.tesla:Tesla:1.10.2-1.2.1.49" }
+//repositories {
+//   maven { url 'http://maven.epoxide.xyz' }
+//}
+//dependencies { compile "net.darkhax.tesla:Tesla:1.10.2-1.2.1.50" }
 
-repositories {
-    maven {
-        name = "CB Repo"
-        url = "http://chickenbones.net/maven"
-    }
-}
-dependencies {
-    compile "codechicken:CodeChickenLib:1.10.2-2.4.3.127:deobf"
-}
+//repositories {
+//    maven {
+//        name = "CB Repo"
+//        url = "http://chickenbones.net/maven"
+//    }
+//}
+//dependencies {
+//    compile "codechicken:CodeChickenLib:1.11-3.0.0.150:deobf"
+//}
 
 sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
 compileJava {
@@ -35,16 +35,11 @@ compileJava {
 }
 
 minecraft {
-    version = "1.10.2-12.18.2.2107"
+    version = "1.11-13.19.0.2153"
     runDir = "run"
 
-    // the mappings can be changed at any time, and must be in the following format.
-    // snapshot_YYYYMMDD   snapshot are built nightly.
-    // stable_#            stables are built at the discretion of the MCP team.
-    // Use non-default mappings at your own risk. they may not allways work.
-    // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20160518"
-    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    mappings = "snapshot_20161118"
+    makeObfSourceJar = false
 }
 
 dependencies {
