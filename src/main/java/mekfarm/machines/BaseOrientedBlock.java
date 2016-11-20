@@ -104,12 +104,12 @@ public abstract class BaseOrientedBlock<T extends TileEntity> extends Block impl
 
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
-                                    ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+                                    EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntity te = world.getTileEntity(pos);
         if (te != null) {
             if (te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
                 IFluidHandler tank = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
-                ItemStack bucket  = player.getHeldItem(hand);
+                ItemStack bucket = player.getHeldItem(hand);
                 if ((bucket != null) && (bucket.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))) {
                     IFluidHandler handler = bucket.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
                     FluidStack fluid = (handler != null) ? handler.drain(1000, false) : null;
@@ -130,7 +130,7 @@ public abstract class BaseOrientedBlock<T extends TileEntity> extends Block impl
             return true;
         }
 
-        return super.onBlockActivated(world, pos, state, player, hand, heldItem, side, hitX, hitY, hitZ);
+        return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
     }
 
     @Override
@@ -169,7 +169,7 @@ public abstract class BaseOrientedBlock<T extends TileEntity> extends Block impl
             if (handler != null) {
                 for (int i = 0; i < handler.getSlots(); ++i) {
                     ItemStack stack = handler.getStackInSlot(i);
-                    if ((stack != null) && (stack.stackSize > 0))
+                    if ((stack != null) && (stack.getCount() > 0))
                         InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), handler.getStackInSlot(i));
                 }
             }

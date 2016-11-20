@@ -141,14 +141,14 @@ public class CropFarmEntity extends BaseElectricEntity<CropFarmContainer, CropFa
                 if (this.acceptsInputStack(0, remaining, false)) {
                     remaining = this.inStackHandler.distributeItems(remaining, false);
                 }
-                if ((remaining != null) && (remaining.stackSize > 0)) {
+                if ((remaining != null) && (remaining.getCount() > 0)) {
                     remaining = this.outStackHandler.distributeItems(remaining, false);
                 }
-                if ((remaining == null) || (remaining.stackSize == 0)) {
+                if ((remaining == null) || (remaining.getCount() == 0)) {
                     this.getWorld().removeEntity(item);
                     pickedUpLoot = true;
                 }
-                else if (remaining.stackSize != original.stackSize) {
+                else if (remaining.getCount() != original.getCount()) {
                     item.setEntityItemStack(remaining);
                     pickedUpLoot = true;
                 }
@@ -176,7 +176,7 @@ public class CropFarmEntity extends BaseElectricEntity<CropFarmContainer, CropFa
                         int inputSlot = -1;
                         for (int i = 0; i < this.inStackHandler.getSlots(); i++) {
                             ItemStack temp = this.inStackHandler.getStackInSlot(i, true);
-                            if ((temp != null) && (temp.stackSize > 0)) {
+                            if ((temp != null) && (temp.getCount() > 0)) {
                                 Item tempItem = temp.getItem();
                                 if ((tempItem instanceof IPlantable) && (((IPlantable) tempItem).getPlantType(this.getWorld(), pos) == EnumPlantType.Crop)) {
                                     plant = ((IPlantable) tempItem).getPlant(this.getWorld(), pos);

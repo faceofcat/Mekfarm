@@ -76,13 +76,13 @@ public class FakeMekPlayer extends EntityPlayerMP {
     @Override public void handleClientSettings(CPacketClientSettings pkt){ return; }
 
     @Override public boolean isSneaking() { return false; }
-    @Override public boolean canCommandSenderUseCommand(int var1, String var2) { return false; }
+    @Override public boolean canUseCommand(int var1, String var2) { return false; }
     @Override public boolean isSprinting() { return false; }
     @Override public float getEyeHeight() { return 1.1F; }
     @Override public double getDistanceSq(double x, double y, double z) { return 0f; }
     @Override public double getDistance(double x, double y, double z) { return 0f; }
-    @Override public void addChatMessage(ITextComponent chatmessagecomponent) { }
-    @Override public void addChatComponentMessage(ITextComponent chatmessagecomponent) { }
+    @Override public void sendMessage(ITextComponent chatmessagecomponent) { }
+    @Override public void sendStatusMessage(ITextComponent chatmessagecomponent, boolean bp) { }
     @Override public void addStat(StatBase par1StatBase, int par2) { }
     @Override public void openGui(Object mod, int modGuiId, World world, int x, int y, int z) { }
     @Override public void onDeath(DamageSource source) { return; }
