@@ -1,7 +1,6 @@
 package mekfarm.items;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
-import mekfarm.common.ItemsRegistry;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;

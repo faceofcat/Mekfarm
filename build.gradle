@@ -10,7 +10,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the nessasary things for Forge to be setup.
 
-version = "1.10.2-0.0.3"
+version = "1.10.2-0.0.4"
 group = "com.faceofcat.mekfarm" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "mekfarm"
 
@@ -35,7 +35,7 @@ compileJava {
 }
 
 minecraft {
-    version = "1.10.2-12.18.2.2147"
+    version = "1.10.2-12.18.2.2151"
     runDir = "run"
     mappings = "snapshot_20161111"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.

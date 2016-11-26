@@ -7,6 +7,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
+import java.util.List;
+
 /**
  * Created by CF on 2016-11-10.
  * mekfarm.capabilities.MekfarmCapabilities <-- that sounds like the worst namespace / class name combination ever
@@ -44,6 +46,11 @@ public class MekfarmCapabilities {
         @Override
         public String getUnlocalizedMachineName() {
             return "mekfarm.machine";
+        }
+
+        @Override
+        public List<ColoredTextLine> getHUDLines() {
+            return null;
         }
     }
 

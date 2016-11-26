@@ -1,0 +1,22 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "mekfarm:crop_cloner-base"
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}],
+    "state": {
+      "0": { "submodel": "mekfarm:crop_cloner-dirt" },
+      "1": { "submodel": "mekfarm:crop_cloner-farm" }
+    },
+    "facing": {
+      "north": {},
+      "south": { "y": 180 },
+      "west": { "y": 270 },
+      "east": { "y": 90 },
+      "up": { },
+      "down": { }
+    }
+  }
+}

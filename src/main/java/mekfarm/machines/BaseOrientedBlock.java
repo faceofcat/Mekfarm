@@ -1,6 +1,7 @@
 package mekfarm.machines;
 
 import mekfarm.MekfarmMod;
+import mekfarm.client.HUDSpecialRenderer;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
@@ -9,6 +10,7 @@ import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryHelper;
@@ -26,6 +28,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -35,7 +38,7 @@ import net.minecraftforge.items.IItemHandler;
 /**
  * Created by CF on 2016-11-02.
  */
-public abstract class BaseOrientedBlock<T extends TileEntity> extends Block implements ITileEntityProvider {
+public abstract class BaseOrientedBlock<T extends BaseElectricEntity> extends Block implements ITileEntityProvider {
     public static final PropertyDirection FACING = BlockHorizontal.FACING;
 
     private String blockId;
@@ -43,7 +46,11 @@ public abstract class BaseOrientedBlock<T extends TileEntity> extends Block impl
     private int guiId;
 
     protected BaseOrientedBlock(String blockId, Class<T> teClass, int guiId) {
-        super(Material.ROCK);
+        this(blockId,  teClass, guiId, Material.IRON);
+    }
+
+    protected BaseOrientedBlock(String blockId, Class<T> teClass, int guiId, Material material) {
+        super(material);
         this.blockId = blockId;
         this.teClass = teClass;
         this.guiId = guiId;
@@ -52,7 +59,8 @@ public abstract class BaseOrientedBlock<T extends TileEntity> extends Block impl
         this.setUnlocalizedName(MekfarmMod.MODID + "." + blockId);
         this.setCreativeTab(MekfarmMod.creativeTab);
 
-        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+        this.setDefaultState(this.blockState.getBaseState()
+                .withProperty(FACING, EnumFacing.NORTH));
     }
 
     public void register() {
@@ -72,6 +80,15 @@ public abstract class BaseOrientedBlock<T extends TileEntity> extends Block impl
                 , 0
                 , new ModelResourceLocation(this.getRegistryName(), "inventory")
         );
+
+        TileEntitySpecialRenderer<T> renderer = this.getSpecialRenderer();
+        if (renderer != null) {
+            ClientRegistry.bindTileEntitySpecialRenderer(this.teClass, renderer);
+        }
+    }
+
+    protected TileEntitySpecialRenderer<T> getSpecialRenderer() {
+        return new HUDSpecialRenderer<T>();
     }
 
     protected IRecipe getRecipe() {
@@ -106,19 +123,20 @@ public abstract class BaseOrientedBlock<T extends TileEntity> extends Block impl
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
                                     ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntity te = world.getTileEntity(pos);
-        if (te != null) {
-            if (te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
-                IFluidHandler tank = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
-                ItemStack bucket  = player.getHeldItem(hand);
-                if ((bucket != null) && (bucket.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))) {
-                    IFluidHandler handler = bucket.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
-                    FluidStack fluid = (handler != null) ? handler.drain(1000, false) : null;
-                    if ((fluid != null) && (fluid.amount > 0)) {
-                        int filled = tank.fill(fluid, true);
-                        if (filled > 0) {
+        if ((te != null) && (te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))) {
+            IFluidHandler tank = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+            ItemStack bucket = player.getHeldItem(hand);
+            if ((bucket != null) && (bucket.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))) {
+                IFluidHandler handler = bucket.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+                FluidStack fluid = (handler != null) ? handler.drain(1000, false) : null;
+                if ((fluid != null) && (fluid.amount > 0)) {
+                    int filled = tank.fill(fluid, false);
+                    if (filled == fluid.amount) {
+                        tank.fill(fluid, true);
+                        if (!player.capabilities.isCreativeMode) {
                             handler.drain(filled, true);
-                            return true;
                         }
+                        return true;
                     }
                 }
             }
@@ -134,18 +152,23 @@ public abstract class BaseOrientedBlock<T extends TileEntity> extends Block impl
     }
 
     @Override
-    protected BlockStateContainer createBlockState()
-    {
-        return new BlockStateContainer(this, FACING);
-    }
-
-    @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
         world.setBlockState(pos, state.withProperty(FACING, getFacingFromEntity(pos, placer)), 2);
     }
 
     public static EnumFacing getFacingFromEntity(BlockPos clickedBlock, EntityLivingBase entity) {
-        return EnumFacing.getFacingFromVector((float) (entity.posX - clickedBlock.getX()), 0, (float) (entity.posZ - clickedBlock.getZ()));
+        // return EnumFacing.getFacingFromVector((float) (entity.posX - clickedBlock.getX()), 0, (float) (entity.posZ - clickedBlock.getZ()));
+        return getFacingFromEntity(clickedBlock, entity.posX, entity.posZ);
+    }
+
+    public static EnumFacing getFacingFromEntity(BlockPos pos, double entityX, double entityZ) {
+        return EnumFacing.getFacingFromVector((float) (entityX - pos.getX()), 0, (float) (entityZ - pos.getZ()));
+    }
+
+    @Override
+    protected BlockStateContainer createBlockState()
+    {
+        return new BlockStateContainer(this, FACING);
     }
 
     @Override

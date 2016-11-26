@@ -2,7 +2,6 @@ package mekfarm.client;
 
 import mekfarm.MekfarmMod;
 import mekfarm.common.CommonProxy;
-import net.minecraft.entity.passive.EntityCow;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
