@@ -232,13 +232,16 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
         return !isInvalid() && playerIn.getDistanceSq(pos.add(0.5D, 0.5D, 0.5D)) <= 64D;
     }
 
+    protected boolean testBlockState() {
+        return (this.getWorld().getBlockState(this.getPos()).getBlock() instanceof BaseOrientedBlock);
+    }
+
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        EnumFacing machineFacing = BlocksRegistry.animalFarmBlock.getStateFromMeta(this.getBlockMetadata())
-                .getValue(AnimalFarmBlock.FACING);
-        Boolean isFront = (machineFacing == facing);
-
-//        MekfarmMod.logger.info("Tested for capability: " + capability.getName());
+        EnumFacing machineFacing = this.testBlockState()
+                ? this.getWorld().getBlockState(this.getPos()).getValue(BaseOrientedBlock.FACING)
+                : null;
+        Boolean isFront = (machineFacing != null) && (machineFacing == facing);
 
         if ((capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) && !isFront) {
             return true;
@@ -271,9 +274,10 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        EnumFacing machineFacing = BlocksRegistry.animalFarmBlock.getStateFromMeta(this.getBlockMetadata())
-                .getValue(AnimalFarmBlock.FACING);
-        Boolean isFront = (machineFacing == facing);
+        EnumFacing machineFacing = this.testBlockState()
+                ? this.getWorld().getBlockState(this.getPos()).getValue(BaseOrientedBlock.FACING)
+                : null;
+        Boolean isFront = (machineFacing != null) && (machineFacing == facing);
 
         if (!isFront && (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)) {
             return (T) this.allStackHandler;
