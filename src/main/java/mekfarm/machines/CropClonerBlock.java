@@ -48,7 +48,6 @@ public class CropClonerBlock extends BaseOrientedBlock<CropClonerEntity> {
     {
         TileEntity tileEntity = worldIn.getTileEntity(pos);
         worldIn.setBlockState(pos, newState);
-        worldIn.setBlockState(pos, newState);
         if (tileEntity != null)
         {
             tileEntity.validate();

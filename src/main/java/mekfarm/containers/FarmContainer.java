@@ -114,7 +114,7 @@ public class FarmContainer extends Container {
             }
 
             if (itemstack1.getCount() == 0) {
-                slot.putStack(null);
+                slot.putStack(ItemStack.EMPTY);
             } else {
                 slot.onSlotChanged();
             }

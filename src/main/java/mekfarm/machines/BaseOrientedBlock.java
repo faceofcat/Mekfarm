@@ -118,8 +118,8 @@ public abstract class BaseOrientedBlock<T extends BaseElectricEntity> extends Bl
         if ((te != null) && (te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))) {
             IFluidHandler tank = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
             ItemStack bucket = player.getHeldItem(hand);
-            if ((bucket != null) && (bucket.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))) {
-                IFluidHandler handler = bucket.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+            if ((bucket != null) && (bucket.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null))) {
+                IFluidHandler handler = bucket.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
                 FluidStack fluid = (handler != null) ? handler.drain(1000, false) : null;
                 if ((fluid != null) && (fluid.amount > 0)) {
                     int filled = tank.fill(fluid, false);
