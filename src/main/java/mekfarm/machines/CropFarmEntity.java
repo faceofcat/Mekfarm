@@ -6,7 +6,6 @@ import mekfarm.common.BlockPosUtils;
 import mekfarm.common.BlocksRegistry;
 import mekfarm.common.FakeMekPlayer;
 import mekfarm.containers.CropFarmContainer;
-import mekfarm.inventories.SingleFluidTank;
 import mekfarm.ui.CropFarmContainerGUI;
 import net.minecraft.block.BlockFarmland;
 import net.minecraft.block.IGrowable;
@@ -16,37 +15,21 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by CF on 2016-11-15.
  */
-public class CropFarmEntity extends BaseElectricEntity<CropFarmContainer, CropFarmContainerGUI>  {
-    private static ArrayList<String> seedItems = new ArrayList<>();
-
-    static {
-        CropFarmEntity.seedItems.add("minecraft:carrot");
-        CropFarmEntity.seedItems.add("minecraft:potato");
-        CropFarmEntity.seedItems.add("minecraft:wheat_seeds");
-        CropFarmEntity.seedItems.add("minecraft:beetroot_seeds");
-    }
-
+public class CropFarmEntity extends BaseElectricWaterEntity<CropFarmContainer, CropFarmContainerGUI>  {
     public CropFarmEntity() {
-        super(4, 500000, 3, 6, 1, CropFarmContainer.class, CropFarmContainerGUI.class);
+        super(4, 500000, 3, 6, 1, 5000, CropFarmContainer.class, CropFarmContainerGUI.class);
     }
-
-    private SingleFluidTank fluidTank = new SingleFluidTank(5000) {
-    };
 
     @Override
     protected boolean acceptsInputStack(int slot, ItemStack stack, boolean internal) {
@@ -58,37 +41,11 @@ public class CropFarmEntity extends BaseElectricEntity<CropFarmContainer, CropFa
             return true;
         }
 
-        if (CropFarmEntity.seedItems.contains(stack.getItem().getRegistryName().toString())) {
+        if (stack.getItem() instanceof IPlantable) {
             return true;
         }
 
         return false;
-    }
-
-    @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        EnumFacing machineFacing = this.getBlockType().getStateFromMeta(this.getBlockMetadata())
-                .getValue(BaseOrientedBlock.FACING);
-        Boolean isFront = (machineFacing == facing);
-
-        if (!isFront && (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)) {
-            return true;
-        }
-
-        return super.hasCapability(capability, facing);
-    }
-
-    @Override
-    public <T>T getCapability(Capability<T> capability, EnumFacing facing) {
-        EnumFacing machineFacing = this.getBlockType().getStateFromMeta(this.getBlockMetadata())
-                .getValue(BaseOrientedBlock.FACING);
-        Boolean isFront = (machineFacing == facing);
-
-        if (!isFront && (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)) {
-            return (T)this.fluidTank;
-        }
-
-        return super.getCapability(capability, facing);
     }
 
     @Override
@@ -242,28 +199,13 @@ public class CropFarmEntity extends BaseElectricEntity<CropFarmContainer, CropFa
         }
 
         //endregion
-        MekfarmMod.logger.info("------------------------------: " + result);
+//        MekfarmMod.logger.info("------------------------------: " + result);
 
         return result;
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-        compound = super.writeToNBT(compound);
-
-        NBTTagCompound fluid = new NBTTagCompound();
-        fluid = this.fluidTank.writeToNBT(fluid);
-        compound.setTag("fluid", fluid);
-
-        return compound;
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        super.readFromNBT(compound);
-
-        if (compound.hasKey("fluid")) {
-            this.fluidTank.readFromNBT(compound.getCompoundTag("fluid"));
-        }
+    protected int getFluidRequiredToWork(){
+        return 30;
     }
 }

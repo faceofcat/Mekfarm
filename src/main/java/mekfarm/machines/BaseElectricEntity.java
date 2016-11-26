@@ -1,6 +1,8 @@
 package mekfarm.machines;
 
+import com.google.common.collect.Lists;
 import mekfarm.MekfarmMod;
+import mekfarm.capabilities.ColoredTextLine;
 import mekfarm.capabilities.IMachineInfo;
 import mekfarm.capabilities.MekfarmCapabilities;
 import mekfarm.common.BlocksRegistry;
@@ -26,8 +28,10 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.items.CapabilityItemHandler;
 
+import java.awt.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -51,6 +55,8 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
 
     private Class<CT> containerClass;
     private Class<CGT> guiContainerClass;
+
+    protected boolean outOfPower = false;
 
     protected BaseElectricEntity(int typeId, int energyMaxStorage, int inputSlots, int outputSlots, int filterSlots, Class<CT> containerClass, Class<CGT> guiContainerClass) {
         this.typeId = typeId;
@@ -100,7 +106,7 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
     }
 
     protected void forceSync() {
-        if (!this.getWorld().isRemote) {
+        if ((this.getWorld() != null) && !this.getWorld().isRemote) {
             this.syncTick = SYNC_ON_TICK;
         }
     }
@@ -110,7 +116,7 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
         if (this.lastWorkTicks <= 0) {
             return 0;
         }
-        return (float)Math.min(this.lastWorkTicks, Math.max(0, this.workTick)) / (float)this.lastWorkTicks;
+        return (float) Math.min(this.lastWorkTicks, Math.max(0, this.workTick)) / (float) this.lastWorkTicks;
     }
 
     protected int getWorkTicks() {
@@ -121,7 +127,9 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
         return 500;
     }
 
-    protected int getEntityTypeId() { return this.typeId; }
+    protected int getEntityTypeId() {
+        return this.typeId;
+    }
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
@@ -141,6 +149,7 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
         this.lastWorkTicks = compound.getInteger("tick_lastWork");
         this.workTick = compound.getInteger("tick_work");
         this.syncTick = compound.getInteger("tick_sync");
+        this.outOfPower = compound.getBoolean("out_of_power");
     }
 
     @Override
@@ -156,6 +165,7 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
         compound.setInteger("tick_work", this.workTick);
         compound.setInteger("tick_lastWork", this.lastWorkTicks);
         compound.setInteger("tick_sync", this.syncTick);
+        compound.setBoolean("out_of_power", this.outOfPower);
         return compound;
     }
 
@@ -195,12 +205,16 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
             if (!this.getWorld().isRemote) {
                 int energy = this.getEnergyForWork();
                 if (this.energyStorage.getEnergyStored() >= energy) {
+                    this.outOfPower = false;
                     float work = this.performWork();
                     if (work > 0) {
                         this.energyStorage.extractEnergy(Math.round(energy * work), false, true);
-                        this.forceSync();
                     }
                 }
+                else {
+                    this.outOfPower = true;
+                }
+                this.forceSync();
             }
         }
 
@@ -228,14 +242,11 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
 
         if ((capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) && !isFront) {
             return true;
-        }
-        else if (!isFront && (capability == CapabilityEnergy.ENERGY)) {
+        } else if (!isFront && (capability == CapabilityEnergy.ENERGY)) {
             return true;
-        }
-        else if ((this.filtersHandler != null) && (capability == MekfarmCapabilities.CAPABILITY_FILTERS_HANDLER)) {
+        } else if ((this.filtersHandler != null) && (capability == MekfarmCapabilities.CAPABILITY_FILTERS_HANDLER)) {
             return true;
-        }
-        else if (capability == MekfarmCapabilities.CAPABILITY_MACHINE_INFO) {
+        } else if (capability == MekfarmCapabilities.CAPABILITY_MACHINE_INFO) {
             return true;
         }
 
@@ -259,24 +270,19 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T>T getCapability(Capability<T> capability, EnumFacing facing) {
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         EnumFacing machineFacing = BlocksRegistry.animalFarmBlock.getStateFromMeta(this.getBlockMetadata())
                 .getValue(AnimalFarmBlock.FACING);
         Boolean isFront = (machineFacing == facing);
 
-//        MekfarmMod.logger.info("Asked for capability: " + capability.getName());
-
         if (!isFront && (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)) {
-            return (T)this.allStackHandler;
-        }
-        else if (!isFront && (capability == CapabilityEnergy.ENERGY)) {
-            return (T)this.energyStorage;
-        }
-        else if ((this.filtersHandler != null) && (capability == MekfarmCapabilities.CAPABILITY_FILTERS_HANDLER)) {
-            return (T)this.filtersHandler;
-        }
-        else if (capability == MekfarmCapabilities.CAPABILITY_MACHINE_INFO) {
-            return (T)this;
+            return (T) this.allStackHandler;
+        } else if (!isFront && (capability == CapabilityEnergy.ENERGY)) {
+            return (T) this.energyStorage;
+        } else if ((this.filtersHandler != null) && (capability == MekfarmCapabilities.CAPABILITY_FILTERS_HANDLER)) {
+            return (T) this.filtersHandler;
+        } else if (capability == MekfarmCapabilities.CAPABILITY_MACHINE_INFO) {
+            return (T) this;
         }
 
         if (Loader.isModLoaded("tesla")) {
@@ -286,16 +292,16 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
             }
         }
         if (Loader.isModLoaded("Mekanism") && !isFront && Objects.equals(capability.getName(), "mekanism.api.energy.IStrictEnergyAcceptor")) {
-            return (T)this.energyStorage;
+            return (T) this.energyStorage;
         }
 
         return super.getCapability(capability, facing);
     }
 
     @Optional.Method(modid = "tesla")
-    private <T>T getTeslaCapability(Capability<T> capability, EnumFacing facing, boolean isFront) {
+    private <T> T getTeslaCapability(Capability<T> capability, EnumFacing facing, boolean isFront) {
         if (!isFront && ((capability == TeslaCapabilities.CAPABILITY_HOLDER) || (capability == TeslaCapabilities.CAPABILITY_CONSUMER))) {
-            return (T)this.energyStorage;
+            return (T) this.energyStorage;
         }
         return null;
     }
@@ -325,14 +331,28 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
                     gui = c.newInstance(this, container);
                 }
             }
-        } catch(NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             MekfarmMod.logger.error("Error getting container gui", e);
         }
         return gui;
     }
 
     @Override
-    public String getUnlocalizedMachineName(){
+    public String getUnlocalizedMachineName() {
         return this.getBlockType().getUnlocalizedName() + ".name";
+    }
+
+    @Override
+    public List<ColoredTextLine> getHUDLines() {
+        List<ColoredTextLine> list = Lists.newArrayList();
+
+        if (this.outOfPower) {
+            list.add(new ColoredTextLine(Color.RED,
+                    new Color(255, 0, 0, 42),
+                    "out of power")
+                    .setTextAlignment(ColoredTextLine.TextAlignment.CENTER));
+        }
+
+        return list;
     }
 }
