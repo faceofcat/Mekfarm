@@ -46,7 +46,7 @@ public abstract class BaseOrientedBlock<T extends BaseElectricEntity> extends Bl
     private int guiId;
 
     protected BaseOrientedBlock(String blockId, Class<T> teClass, int guiId) {
-        this(blockId,  teClass, guiId, Material.IRON);
+        this(blockId, teClass, guiId, Material.ROCK);
     }
 
     protected BaseOrientedBlock(String blockId, Class<T> teClass, int guiId, Material material) {
@@ -58,6 +58,9 @@ public abstract class BaseOrientedBlock<T extends BaseElectricEntity> extends Bl
         this.setRegistryName(blockId);
         this.setUnlocalizedName(MekfarmMod.MODID + "." + blockId);
         this.setCreativeTab(MekfarmMod.creativeTab);
+
+        this.setHarvestLevel("pickaxe", 0);
+        this.setHardness(3.0f);
 
         this.setDefaultState(this.blockState.getBaseState()
                 .withProperty(FACING, EnumFacing.NORTH));
@@ -108,17 +111,6 @@ public abstract class BaseOrientedBlock<T extends BaseElectricEntity> extends Bl
         }
     }
 
-//    protected T getTileEntity(World world, BlockPos pos) {
-//        TileEntity entity = world.getTileEntity(pos);
-//        try {
-//            return this.teClass.cast(entity);
-//        }
-//        catch (ClassCastException ex) {
-//            MekfarmMod.logger.warn("Error trying to get tile entity at position: " + pos.toString() + ". [" + ex.getMessage() + "]");
-//            return null;
-//        }
-//    }
-
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
                                     ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
@@ -136,8 +128,8 @@ public abstract class BaseOrientedBlock<T extends BaseElectricEntity> extends Bl
                         if (!player.capabilities.isCreativeMode) {
                             handler.drain(filled, true);
                         }
-                        return true;
                     }
+                    return true;
                 }
             }
         }
