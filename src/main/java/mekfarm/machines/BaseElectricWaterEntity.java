@@ -28,9 +28,10 @@ public abstract class BaseElectricWaterEntity<CT extends Container, CGT extends 
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        EnumFacing machineFacing = this.getWorld().getBlockState(this.getPos())
-                .getValue(BaseOrientedBlock.FACING);
-        Boolean isFront = (machineFacing == facing);
+        EnumFacing machineFacing = this.testBlockState()
+                ? this.getWorld().getBlockState(this.getPos()).getValue(BaseOrientedBlock.FACING)
+                : null;
+        Boolean isFront = (machineFacing != null) && (machineFacing == facing);
 
         if (!isFront && (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)) {
             return true;
@@ -41,9 +42,10 @@ public abstract class BaseElectricWaterEntity<CT extends Container, CGT extends 
 
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        EnumFacing machineFacing = this.getWorld().getBlockState(this.getPos())
-                .getValue(BaseOrientedBlock.FACING);
-        Boolean isFront = (machineFacing == facing);
+        EnumFacing machineFacing = this.testBlockState()
+                ? this.getWorld().getBlockState(this.getPos()).getValue(BaseOrientedBlock.FACING)
+                : null;
+        Boolean isFront = (machineFacing != null) && (machineFacing == facing);
 
         if (!isFront && (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)) {
             return (T) this.fluidTank;
