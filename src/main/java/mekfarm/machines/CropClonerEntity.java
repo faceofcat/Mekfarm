@@ -34,7 +34,7 @@ public class CropClonerEntity extends BaseElectricWaterEntity<CropClonerContaine
             return false;
         }
 
-        if ((stack.getItem() instanceof IPlantable) && (stack.stackSize > 0)) {
+        if ((stack.getItem() instanceof IPlantable) && (stack.getCount() > 0)) {
             IPlantable plant = (IPlantable) stack.getItem();
             if (plant.getPlantType(this.getWorld(), this.getPos()) == EnumPlantType.Crop) {
                 return true;
@@ -72,7 +72,7 @@ public class CropClonerEntity extends BaseElectricWaterEntity<CropClonerContaine
 
         if ((this.plantedThing == null) && super.hasEnoughFluid()) {
             ItemStack stack = this.inStackHandler.getStackInSlot(0, true);
-            if ((stack != null) && (stack.stackSize > 0) && (stack.getItem() instanceof IPlantable)) {
+            if ((stack != null) && (stack.getCount() > 0) && (stack.getItem() instanceof IPlantable)) {
                 IPlantable plantable = (IPlantable) stack.getItem();
                 if (plantable.getPlantType(this.getWorld(), this.getPos()) == EnumPlantType.Crop) {
                     this.plantedThing = plantable.getPlant(this.getWorld(), this.getPos());
@@ -146,7 +146,7 @@ public class CropClonerEntity extends BaseElectricWaterEntity<CropClonerContaine
 
     private PropertyInteger getAgeProperty(IBlockState thing) {
         if (thing != null) {
-            for (IProperty p : thing.getPropertyNames()) {
+            for (IProperty p : thing.getPropertyKeys()) {
                 if ((p instanceof PropertyInteger) && (p.getName() == "age")) {
                     return (PropertyInteger) p;
                 }

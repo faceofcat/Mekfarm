@@ -123,7 +123,6 @@ public abstract class BaseOrientedBlock<T extends BaseElectricEntity> extends Bl
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
                                     EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntity te = world.getTileEntity(pos);
-
         if ((te != null) && (te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))) {
             IFluidHandler tank = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
             ItemStack bucket = player.getHeldItem(hand);
@@ -137,8 +136,8 @@ public abstract class BaseOrientedBlock<T extends BaseElectricEntity> extends Bl
                         if (!player.capabilities.isCreativeMode) {
                             handler.drain(filled, true);
                         }
-                        return true;
                     }
+                    return true;
                 }
             }
         }
