@@ -11,13 +11,14 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
+import net.ndrei.teslacorelib.render.HudInfoRenderer;
 
 import java.util.List;
 
 /**
  * Created by CF on 2016-11-24.
  */
-public class CropClonerSpecialRenderer extends HUDSpecialRenderer<CropClonerEntity> {
+public class CropClonerSpecialRenderer extends HudInfoRenderer<CropClonerEntity> {
     public CropClonerSpecialRenderer() {
     }
 

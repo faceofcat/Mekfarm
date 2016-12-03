@@ -7,6 +7,4 @@ import java.util.List;
  */
 public interface IMachineInfo {
     String getUnlocalizedMachineName();
-
-    List<ColoredTextLine> getHUDLines();
 }

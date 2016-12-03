@@ -1,7 +1,6 @@
 package mekfarm.machines;
 
 import com.google.common.collect.Lists;
-import mekfarm.capabilities.ColoredTextLine;
 import mekfarm.inventories.SingleFluidTank;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
@@ -10,6 +9,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.ndrei.teslacorelib.capabilities.hud.HudInfoLine;
 
 import java.awt.*;
 import java.util.List;
@@ -91,20 +91,19 @@ public abstract class BaseElectricWaterEntity<CT extends Container, CGT extends 
     }
 
     @Override
-    public List<ColoredTextLine> getHUDLines() {
-        List<ColoredTextLine> list = super.getHUDLines();
+    public List<HudInfoLine> getHUDLines() {
+        List<HudInfoLine> list = super.getHUDLines();
         if (list == null) {
             list = Lists.newArrayList();
         }
 
         if (!this.hasEnoughFluid()) {
-            list.add(new ColoredTextLine(new Color(51, 159, 255),
+            list.add(new HudInfoLine(new Color(51, 159, 255),
                     new Color(51, 159, 255, 42),
                     "no water")
-                    .setTextAlignment(ColoredTextLine.TextAlignment.CENTER));
+                    .setTextAlignment(HudInfoLine.TextAlignment.CENTER));
         }
 
         return list;
     }
-
 }

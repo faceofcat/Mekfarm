@@ -1,7 +1,6 @@
 package mekfarm.machines;
 
 import com.google.common.collect.Lists;
-import mekfarm.capabilities.ColoredTextLine;
 import mekfarm.containers.CropClonerContainer;
 import mekfarm.ui.CropClonerContainerGUI;
 import net.minecraft.block.Block;
@@ -13,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
+import net.ndrei.teslacorelib.capabilities.hud.HudInfoLine;
 
 import java.awt.*;
 import java.util.List;
@@ -164,25 +164,25 @@ public class CropClonerEntity extends BaseElectricWaterEntity<CropClonerContaine
         return 250;
     }
 
-    public List<ColoredTextLine> getHUDLines() {
-        List<ColoredTextLine> list = super.getHUDLines();
+    public List<HudInfoLine> getHUDLines() {
+        List<HudInfoLine> list = super.getHUDLines();
         if (list == null)
             list = Lists.newArrayList();
 
         if (!super.outOfPower && super.hasEnoughFluid() && (this.plantedThing == null)) {
-            list.add(new ColoredTextLine(new Color(255, 159, 51),
+            list.add(new HudInfoLine(new Color(255, 159, 51),
                     new Color(255, 159, 51, 42),
                     "no seed")
-                    .setTextAlignment(ColoredTextLine.TextAlignment.CENTER));
+                    .setTextAlignment(HudInfoLine.TextAlignment.CENTER));
         }
 
         if (this.plantedThing != null) {
-            list.add(new ColoredTextLine(Color.WHITE, this.plantedThing.getBlock().getLocalizedName())
-                    .setTextAlignment(ColoredTextLine.TextAlignment.CENTER));
+            list.add(new HudInfoLine(Color.WHITE, this.plantedThing.getBlock().getLocalizedName())
+                    .setTextAlignment(HudInfoLine.TextAlignment.CENTER));
             PropertyInteger age = this.getAgeProperty(this.plantedThing);
             if (age != null) {
                 int percent = (this.plantedThing.getValue(age) * 100) / age.getAllowedValues().size();
-                list.add(new ColoredTextLine(Color.CYAN,
+                list.add(new HudInfoLine(Color.CYAN,
                         new Color(Color.GRAY.getRed(), Color.GRAY.getGreen(), Color.GRAY.getBlue(), 192),
                         new Color(Color.CYAN.getRed(), Color.CYAN.getGreen(), Color.CYAN.getBlue(), 192),
                         "growth: " + percent + "%")

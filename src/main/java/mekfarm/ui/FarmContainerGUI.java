@@ -2,11 +2,11 @@ package mekfarm.ui;
 
 import mekfarm.capabilities.IMachineInfo;
 import mekfarm.capabilities.MekfarmCapabilities;
-import mekfarm.common.IWorkProgress;
 import mekfarm.containers.TexturedSlot;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
+import net.ndrei.teslacorelib.tileentity.IWorkProgressProvider;
 
 /**
  * Created by CF on 2016-10-28.
@@ -57,8 +57,8 @@ public class FarmContainerGUI extends MekUIContainer {
             this.drawTexturedModalRect(super.guiLeft + 187, super.guiTop + 5, 212, 5, 18, 54);
         }
 
-        if (super.te instanceof IWorkProgress) {
-            drawTexturedModalRect(super.guiLeft + 117, super.guiTop + 23, 0, 170, Math.round(54.0f * ((IWorkProgress) this.te).getWorkProgress()), 5);
+        if (super.te instanceof IWorkProgressProvider) {
+            drawTexturedModalRect(super.guiLeft + 117, super.guiTop + 23, 0, 170, Math.round(54.0f * ((IWorkProgressProvider)this.te).getJobProgress()), 5);
         }
     }
 }

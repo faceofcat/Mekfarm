@@ -89,24 +89,28 @@ public class CropClonerBlock extends BaseOrientedBlock<CropClonerEntity> {
     // TODO: find out what this should be replaced with
     @Override
     @SideOnly(Side.CLIENT)
+    @SuppressWarnings("deprecation")
     public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
         return false;
     }
 
     // TODO: find out what this should be replaced with
     @Override
+    @SuppressWarnings("deprecation")
     public boolean isBlockNormalCube(IBlockState state) {
         return false;
     }
 
     // TODO: find out what this should be replaced with
     @Override
+    @SuppressWarnings("deprecation")
     public boolean isFullCube(IBlockState state) {
         return false;
     }
 
     // TODO: find out what this should be replaced with
     @Override
+    @SuppressWarnings("deprecation")
     public boolean isOpaqueCube(IBlockState state) {
         return false;
     }

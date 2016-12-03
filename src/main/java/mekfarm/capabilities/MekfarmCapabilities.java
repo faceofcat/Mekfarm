@@ -47,11 +47,6 @@ public class MekfarmCapabilities {
         public String getUnlocalizedMachineName() {
             return "mekfarm.machine";
         }
-
-        @Override
-        public List<ColoredTextLine> getHUDLines() {
-            return null;
-        }
     }
 
     public static void register() {
