@@ -1,87 +1,103 @@
 buildscript {
     repositories {
-        jcenter()
-        maven { url "http://files.minecraftforge.net/maven" }
+        mavenCentral()
+        maven { url = "http://files.minecraftforge.net/maven" }
+        maven { url = "http://repo.maven.apache.org/maven2" }
+        maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
     }
 }
-apply plugin: 'net.minecraftforge.gradle.forge'
-//Only edit below this line, the above code adds and enables the nessasary things for Forge to be setup.
+apply plugin: "net.minecraftforge.gradle.forge"
+apply plugin: "maven-publish"
+apply plugin: "maven"
 
-version = "1.11-0.0.4"
-group = "com.faceofcat.mekfarm" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = "net.ndrei.mekfarm" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "mekfarm"
 
-repositories {
-   maven { url 'http://maven.epoxide.xyz' }
+version = "${project.minecraft_version}-${project.mod_version}"
+if (project.hasProperty('mod_suffix')) {
+    version += "-${project.mod_suffix}"
+    if (project.mod_suffix == 'snapshot') {
+        version += "_" + getDate()
+    }
 }
-dependencies { compile "net.darkhax.tesla:Tesla:1.11-1.3.0.51" }
 
-//repositories {
-//    maven {
-//        name = "CB Repo"
-//        url = "http://chickenbones.net/maven"
-//    }
-//}
-//dependencies {
-//    compile "codechicken:CodeChickenLib:1.11-3.0.0.150:deobf"
-//}
-
-sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
 compileJava {
     sourceCompatibility = targetCompatibility = "1.8"
 }
 
 minecraft {
-    version = "1.11-13.19.0.2160"
+    version = "${minecraft_version}-${forge_version}"
+    mappings = "${mcp_version}"
     runDir = "run"
-
-    mappings = "snapshot_20161126"
     makeObfSourceJar = false
 }
 
-dependencies {
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
-      
-    // real examples
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // the 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
-    //provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
-    // the deobf configurations:  'deobfCompile' and 'deobfProvided' are the same as the normal compile and provided,
-    // except that these dependencies get remapped to your current MCP mappings
-    //deobfCompile 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-    //deobfProvided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
-    // for more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
+configurations {
+    compile.extendsFrom exportedCompile
+    deployerJars
 }
 
-processResources
-{
-    // this will ensure that this task is redone when the versions change.
+repositories {
+    mavenCentral()
+    maven { url 'http://maven.epoxide.xyz' }
+    mavenLocal()
+}
+
+dependencies {
+    compile "net.darkhax.tesla:Tesla:1.11-1.3.0.51:deobf"
+    deployerJars 'org.apache.maven.wagon:wagon-ftp:2.2'
+}
+
+processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
 
-    // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-                
+        include '**/*.info'
+        include '**/*.properties'
+
         // replace version and mcversion
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
         
-    // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
+        exclude '**/*.info'
+        exclude '**/*.properties'
     }
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+}
+
+artifacts {
+    archives sourceJar, deobfJar
+}
+
+uploadArchives {
+    if (project.hasProperty('mavenFTPServer') && project.hasProperty('mavenFTPUser') && project.hasProperty('mavenFTPPassword')) {
+        repositories.mavenDeployer {
+            dependsOn build, deobfJar, sourcesJar
+            configuration = configurations.deployerJars
+            repository(url: project.mavenFTPServer) {
+                authentication(userName: project.mavenFTPUser, password: mavenFTPPassword)
+            }
+        }
+    }
+}
+uploadArchives.dependsOn build, sourcesJar, deobfJar
+
+def getDate() {
+    def date = new Date()
+    def formattedDate = date.format('yyyyMMdd') // HHmmss')
+    return formattedDate
 }
