@@ -47,9 +47,7 @@ public class MekfarmMod
         }
 
         @Override
-        public ItemStack getTabIconItem() {
-            return this.getIconItemStack();
-        }
+        public ItemStack getTabIconItem() { return this.getIconItemStack(); }
     };
 
     private static HashMap<String, FakeMekPlayer> fakePlayers = new HashMap<>();

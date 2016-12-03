@@ -118,6 +118,11 @@ public class CombinedStackHandler implements IItemHandlerModifiable, IInternalIt
     }
 
     @Override
+    public int getSlotLimit(int slot) {
+        return 64;
+    }
+
+    @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate, boolean internal) {
         if (slot < this.getIncomeSlots()) {
             if (this.income instanceof IInternalItemHandler) {

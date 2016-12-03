@@ -57,5 +57,10 @@ public class InternalSlot extends SlotItemHandler {
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             return this.handler.extractItem(slot, amount, simulate, true);
         }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return 64;
+        }
     }
 }
