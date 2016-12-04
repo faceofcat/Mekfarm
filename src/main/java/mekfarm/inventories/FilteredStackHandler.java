@@ -38,7 +38,7 @@ public class FilteredStackHandler extends ItemStackHandler implements IInternalI
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate, boolean internal) {
         if ((stack == null) || (stack.getCount() == 0)) {
-            return null;
+            return ItemStack.EMPTY;
         }
 
         if ((internal == false) && (this.acceptsStack(slot, stack, internal) == false)) {
@@ -57,7 +57,7 @@ public class FilteredStackHandler extends ItemStackHandler implements IInternalI
     public ItemStack extractItem(int slot, int amount, boolean simulate, boolean internal) {
         if (this.canExtract(slot, amount, internal))
             return super.extractItem(slot, amount, simulate);
-        return null;
+        return ItemStack.EMPTY;
     }
 
     protected boolean acceptsStack(int slot, ItemStack stack, boolean internal) {
