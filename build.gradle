@@ -57,9 +57,9 @@ repositories {
 dependencies {
     compile "net.darkhax.tesla:Tesla:1.11-1.3.0.51:deobf"
     if (project.hasProperty('mavenLocalPath')) {
-        compile('net.ndrei.tesla-core-lib:tesla-core-lib:1.11-0.0.1-snapshot:deobf') { changing = true }
+        compile('net.ndrei.tesla-core-lib:tesla-core-lib:1.11-0.0.2-snapshot:deobf') { changing = true }
     } else {
-        compile 'net.ndrei.tesla-core-lib:tesla-core-lib:1.11-0.0.1-snapshot_20161203:deobf'
+        compile 'net.ndrei.tesla-core-lib:tesla-core-lib:1.11-0.0.1-HF:deobf'
     }
     deployerJars 'org.apache.maven.wagon:wagon-ftp:2.2'
 }
