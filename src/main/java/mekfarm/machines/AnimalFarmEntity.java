@@ -57,7 +57,7 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
 
     @Override
     protected boolean acceptsInputStack(int slot, ItemStack stack, boolean internal) {
-        if (stack == null)
+        if ((stack == null) || stack.isEmpty())
             return true;
 
         // test for animal package

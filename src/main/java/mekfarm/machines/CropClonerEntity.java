@@ -30,7 +30,7 @@ public class CropClonerEntity extends BaseElectricWaterEntity<CropClonerContaine
 
     @Override
     protected boolean acceptsInputStack(int slot, ItemStack stack, boolean internal) {
-        if (stack == null) {
+        if ((stack == null) || stack.isEmpty()) {
             return false;
         }
 

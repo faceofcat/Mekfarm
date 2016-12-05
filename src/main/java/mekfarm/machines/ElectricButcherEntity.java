@@ -32,7 +32,7 @@ public class ElectricButcherEntity extends BaseElectricEntity<ElectricButcherCon
 
     @Override
     protected boolean acceptsInputStack(int slot, ItemStack stack, boolean internal) {
-        if (stack == null)
+        if ((stack == null) || stack.isEmpty())
             return true;
 
         if (slot == 0) {

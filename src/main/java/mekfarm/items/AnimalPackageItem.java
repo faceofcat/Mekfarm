@@ -30,7 +30,7 @@ public class AnimalPackageItem extends BaseItem {
             @SideOnly(Side.CLIENT)
             public float apply(ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn)
             {
-                NBTTagCompound nbt = (stack == null) ? null : stack.getTagCompound();
+                NBTTagCompound nbt = ((stack == null) || stack.isEmpty()) ? null : stack.getTagCompound();
                 if ((nbt != null) && (nbt.getInteger("hasAnimal") == 1)) {
                     return 1;
                 }
@@ -67,7 +67,7 @@ public class AnimalPackageItem extends BaseItem {
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         super.addInformation(stack, playerIn, tooltip, advanced);
 
-        NBTTagCompound nbt = (stack == null) ? null : stack.getTagCompound();
+        NBTTagCompound nbt = ((stack == null) || stack.isEmpty()) ? null : stack.getTagCompound();
         if ((nbt != null) && (nbt.getInteger("hasAnimal") == 1)) {
             tooltip.add(ChatFormatting.AQUA + "Contains Animal");
         } else {
@@ -76,7 +76,7 @@ public class AnimalPackageItem extends BaseItem {
     }
 
     public boolean hasAnimal(ItemStack stack) {
-        NBTTagCompound nbt = (stack == null) ? null : stack.getTagCompound();
+        NBTTagCompound nbt = ((stack == null) || stack.isEmpty()) ? null : stack.getTagCompound();
         return ((nbt != null) && (nbt.getInteger("hasAnimal") == 1));
     }
 }

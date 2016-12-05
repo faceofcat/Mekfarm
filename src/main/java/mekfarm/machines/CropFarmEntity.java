@@ -33,7 +33,7 @@ public class CropFarmEntity extends BaseElectricWaterEntity<CropFarmContainer, C
 
     @Override
     protected boolean acceptsInputStack(int slot, ItemStack stack, boolean internal) {
-        if (stack == null)
+        if ((stack == null) || stack.isEmpty())
             return true;
 
         // test for hoe
@@ -68,7 +68,7 @@ public class CropFarmEntity extends BaseElectricWaterEntity<CropFarmContainer, C
                     IGrowable growable = (IGrowable)state.getBlock();
                     if (growable.canGrow(this.getWorld(), pos, state, false) == false) {
                         FakeMekPlayer player = MekfarmMod.getFakePlayer(this.getWorld());
-                        state.getBlock().harvestBlock(this.getWorld(), player, pos, state, null, null);
+                        state.getBlock().harvestBlock(this.getWorld(), player, pos, state, null, ItemStack.EMPTY);
                         this.getWorld().setBlockState(pos, state.getBlock().getDefaultState());
                         this.getWorld().destroyBlock(pos, true); // <-- to force replanting
                         result += 0.45f;

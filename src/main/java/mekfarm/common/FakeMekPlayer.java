@@ -28,7 +28,7 @@ import java.util.UUID;
  * TODO: figure out if not using FakePlayer is a bad idea in general
  */
 public class FakeMekPlayer extends EntityPlayerMP {
-    public ItemStack previousItem = null;
+    public ItemStack previousItem = ItemStack.EMPTY;
 
     public FakeMekPlayer(WorldServer world, GameProfile name)
     {
@@ -57,13 +57,13 @@ public class FakeMekPlayer extends EntityPlayerMP {
         ItemStack itemStackCurrent = super.getHeldItemMainhand();
 
         if (ItemStack.areItemStacksEqual(itemStackCurrent, itemStackOld) == false) {
-            if (itemStackOld != null) {
+            if (!itemStackOld.isEmpty()) {
                 super.getAttributeMap().removeAttributeModifiers(itemStackOld.getAttributeModifiers(EntityEquipmentSlot.MAINHAND));
             }
-            if (itemStackCurrent != null) {
+            if ((itemStackCurrent != null) && !itemStackCurrent.isEmpty()) {
                 super.getAttributeMap().applyAttributeModifiers(itemStackCurrent.getAttributeModifiers(EntityEquipmentSlot.MAINHAND));
             }
-            this.previousItem = (itemStackCurrent == null) ? null : itemStackCurrent.copy();
+            this.previousItem = ((itemStackCurrent == null) || itemStackCurrent.isEmpty()) ? ItemStack.EMPTY : itemStackCurrent.copy();
         }
     }
 
