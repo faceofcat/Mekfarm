@@ -94,7 +94,7 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
             for(int i = 0; i < animals.size(); i++) {
                 EntityAnimal thingy = animals.get(i);
 
-                if ((animalToPackage == null) && ((filter == null) || filter.shouldHandle(thingy))) {
+                if ((animalToPackage == null) && ((filter == null) || filter.canProcess(this, i, thingy))) {
                     animalToPackage = thingy;
                 }
                 else if (this.canBreed(thingy)) {

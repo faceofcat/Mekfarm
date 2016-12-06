@@ -58,7 +58,7 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
         };
         this.allStackHandler = new CombinedStackHandler(this.inStackHandler, this.outStackHandler);
 
-        this.filtersHandler = (filterSlots <= 0) ? null : new FiltersStackHandler(filterSlots) {
+        this.filtersHandler = (filterSlots <= 0) ? null : new FiltersStackHandler(this, filterSlots) {
             @Override
             public boolean acceptsFilter(int slot, ItemStack filter) {
                 // TODO: maybe add more stuff to this

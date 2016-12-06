@@ -76,7 +76,7 @@ public class ElectricButcherEntity extends BaseElectricEntity<ElectricButcherCon
                 for (int i = 0; i < list.size(); i++) {
                     EntityAnimal thingy = list.get(i);
 
-                    if ((animalToHurt == null) && ((filter == null) || filter.shouldHandle(thingy))) {
+                    if ((animalToHurt == null) && ((filter == null) || filter.canProcess(this, i, thingy))) {
                         animalToHurt = thingy;
                         break;
                     }
@@ -91,7 +91,7 @@ public class ElectricButcherEntity extends BaseElectricEntity<ElectricButcherCon
                     ItemStack weapon = player.getHeldItem(EnumHand.MAIN_HAND);
                     this.inStackHandler.setStackInSlot(0, (weapon == null) ? null : weapon.copy(), true);
 
-                    player.setItemInUse(null);
+                    player.setItemInUse(ItemStack.EMPTY);
                     result += .9f;
                 }
             }
