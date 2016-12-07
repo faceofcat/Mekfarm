@@ -43,7 +43,9 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
         AnimalFarmEntity.foodItems.add("minecraft:wheat");
         AnimalFarmEntity.foodItems.add("minecraft:carrot");
         AnimalFarmEntity.foodItems.add("minecraft:potato");
+        AnimalFarmEntity.foodItems.add("minecraft:beetroot");
         AnimalFarmEntity.foodItems.add("minecraft:wheat_seeds");
+        AnimalFarmEntity.foodItems.add("minecraft:beetroot_seeds");
     }
 
     private final float ENERGY_PACKAGE = .9f;
