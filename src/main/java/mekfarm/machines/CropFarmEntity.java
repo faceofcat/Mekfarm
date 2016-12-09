@@ -6,12 +6,15 @@ import mekfarm.common.BlockPosUtils;
 import mekfarm.common.BlocksRegistry;
 import mekfarm.common.FakeMekPlayer;
 import mekfarm.containers.CropFarmContainer;
+import mekfarm.ui.CropClonerContainerGUI;
 import mekfarm.ui.CropFarmContainerGUI;
 import net.minecraft.block.BlockFarmland;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
@@ -20,15 +23,23 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
 /**
  * Created by CF on 2016-11-15.
  */
-public class CropFarmEntity extends BaseElectricWaterEntity<CropFarmContainer, CropFarmContainerGUI>  {
+public class CropFarmEntity extends BaseElectricWaterEntity<CropFarmContainer>  {
     public CropFarmEntity() {
-        super(4, 500000, 3, 6, 1, 5000, CropFarmContainer.class, CropFarmContainerGUI.class);
+        super(4, 500000, 3, 6, 1, 5000, CropFarmContainer.class);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public GuiContainer getContainerGUI(IInventory playerInventory) {
+        return new CropFarmContainerGUI(this, this.getContainer(playerInventory));
     }
 
     @Override

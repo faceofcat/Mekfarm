@@ -8,19 +8,29 @@ import mekfarm.common.ItemsRegistry;
 import mekfarm.containers.AnimalReleaserContainer;
 import mekfarm.items.AnimalPackageItem;
 import mekfarm.ui.FarmContainerGUI;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by CF on 2016-11-04.
  */
-public class AnimalReleaserEntity extends BaseElectricEntity<AnimalReleaserContainer, FarmContainerGUI> {
+public class AnimalReleaserEntity extends BaseElectricEntity<AnimalReleaserContainer> {
     public AnimalReleaserEntity() {
-        super(2, 500000, 3, 3, 0, AnimalReleaserContainer.class, FarmContainerGUI.class);
+        super(2, 500000, 3, 3, 0, AnimalReleaserContainer.class);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public GuiContainer getContainerGUI(IInventory playerInventory) {
+        return new FarmContainerGUI(this, this.getContainer(playerInventory));
     }
 
     @Override

@@ -82,6 +82,7 @@ public class CropClonerBlock extends BaseOrientedBlock<CropClonerEntity> {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     protected TileEntitySpecialRenderer<CropClonerEntity> getSpecialRenderer() {
         return new CropClonerSpecialRenderer();
     }

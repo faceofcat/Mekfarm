@@ -8,16 +8,21 @@ import mekfarm.common.BlocksRegistry;
 import mekfarm.common.FakeMekPlayer;
 import mekfarm.containers.ElectricButcherContainer;
 import mekfarm.items.BaseAnimalFilterItem;
+import mekfarm.ui.CropClonerContainerGUI;
 import mekfarm.ui.ElectricButcherContainerGUI;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Collection;
 import java.util.List;
@@ -25,9 +30,15 @@ import java.util.List;
 /**
  * Created by CF on 2016-11-11.
  */
-public class ElectricButcherEntity extends BaseElectricEntity<ElectricButcherContainer, ElectricButcherContainerGUI> {
+public class ElectricButcherEntity extends BaseElectricEntity<ElectricButcherContainer> {
     public ElectricButcherEntity() {
-        super(3, 500000, 1, 6, 1, ElectricButcherContainer.class, ElectricButcherContainerGUI.class);
+        super(3, 500000, 1, 6, 1, ElectricButcherContainer.class);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public GuiContainer getContainerGUI(IInventory playerInventory) {
+        return new ElectricButcherContainerGUI(this, this.getContainer(playerInventory));
     }
 
     @Override

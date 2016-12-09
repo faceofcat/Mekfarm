@@ -24,7 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * Created by CF on 2016-11-04.
  */
-public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiContainer> extends ElectricTileEntity implements IContainerProvider, IInteractiveEntity, IMachineInfo {
+public abstract class BaseElectricEntity<CT extends Container> extends ElectricTileEntity implements IContainerProvider, IInteractiveEntity, IMachineInfo {
     protected IncomingStackHandler inStackHandler;
     protected OutcomingStackHandler outStackHandler;
     protected CombinedStackHandler allStackHandler;
@@ -32,9 +32,8 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
     protected FiltersStackHandler filtersHandler;
 
     private Class<CT> containerClass;
-    private Class<CGT> guiContainerClass;
 
-    protected BaseElectricEntity(int typeId, int energyMaxStorage, int inputSlots, int outputSlots, int filterSlots, Class<CT> containerClass, Class<CGT> guiContainerClass) {
+    protected BaseElectricEntity(int typeId, int energyMaxStorage, int inputSlots, int outputSlots, int filterSlots, Class<CT> containerClass) {
         super(typeId);
 
         this.inStackHandler = new IncomingStackHandler(inputSlots) {
@@ -67,7 +66,6 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
         };
 
         this.containerClass = containerClass;
-        this.guiContainerClass = guiContainerClass;
     }
 
     protected boolean acceptsInputStack(int slot, ItemStack stack, boolean internal) {
@@ -159,23 +157,6 @@ public abstract class BaseElectricEntity<CT extends Container, CGT extends GuiCo
             MekfarmMod.logger.error("Error getting container", e);
         }
         return container;
-    }
-
-    @Override
-    public GuiContainer getContainerGUI(IInventory playerInventory) {
-        CGT gui = null;
-        try {
-            Constructor<CGT> c = this.guiContainerClass.getConstructor(TileEntity.class, Container.class);
-            if (c != null) {
-                Container container = this.getContainer(playerInventory);
-                if (container != null) {
-                    gui = c.newInstance(this, container);
-                }
-            }
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            MekfarmMod.logger.error("Error getting container gui", e);
-        }
-        return gui;
     }
 
     @Override

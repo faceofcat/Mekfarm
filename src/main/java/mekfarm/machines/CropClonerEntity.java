@@ -3,15 +3,20 @@ package mekfarm.machines;
 import com.google.common.collect.Lists;
 import mekfarm.containers.CropClonerContainer;
 import mekfarm.ui.CropClonerContainerGUI;
+import mekfarm.ui.FarmContainerGUI;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.ndrei.teslacorelib.capabilities.hud.HudInfoLine;
 
 import java.awt.*;
@@ -20,12 +25,18 @@ import java.util.List;
 /**
  * Created by CF on 2016-11-24.
  */
-public class CropClonerEntity extends BaseElectricWaterEntity<CropClonerContainer, CropClonerContainerGUI> {
+public class CropClonerEntity extends BaseElectricWaterEntity<CropClonerContainer> {
     private IBlockState plantedThing = null;
 //    private boolean hasSeed = true;
 
     public CropClonerEntity() {
-        super(5, 500000, 1, 6, 0, 5000, CropClonerContainer.class, CropClonerContainerGUI.class);
+        super(5, 500000, 1, 6, 0, 5000, CropClonerContainer.class);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public GuiContainer getContainerGUI(IInventory playerInventory) {
+        return new CropClonerContainerGUI(this, this.getContainer(playerInventory));
     }
 
     @Override

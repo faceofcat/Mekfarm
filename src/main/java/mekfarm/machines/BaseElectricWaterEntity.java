@@ -17,11 +17,11 @@ import java.util.List;
 /**
  * Created by CF on 2016-11-26.
  */
-public abstract class BaseElectricWaterEntity<CT extends Container, CGT extends GuiContainer> extends BaseElectricEntity<CT, CGT> {
+public abstract class BaseElectricWaterEntity<CT extends Container> extends BaseElectricEntity<CT> {
     protected SingleFluidTank fluidTank;
 
-    protected BaseElectricWaterEntity(int typeId, int energyMaxStorage, int inputSlots, int outputSlots, int filterSlots, int tankCapacity, Class<CT> containerClass, Class<CGT> guiContainerClass) {
-        super(typeId, energyMaxStorage, inputSlots, outputSlots, filterSlots, containerClass, guiContainerClass);
+    protected BaseElectricWaterEntity(int typeId, int energyMaxStorage, int inputSlots, int outputSlots, int filterSlots, int tankCapacity, Class<CT> containerClass) {
+        super(typeId, energyMaxStorage, inputSlots, outputSlots, filterSlots, containerClass);
 
         this.fluidTank = new SingleFluidTank(tankCapacity);
     }

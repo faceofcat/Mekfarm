@@ -10,12 +10,14 @@ import mekfarm.containers.AnimalFarmContainer;
 import mekfarm.items.AnimalPackageItem;
 import mekfarm.items.BaseAnimalFilterItem;
 import mekfarm.ui.FarmContainerGUI;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.passive.EntityMooshroom;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
@@ -24,6 +26,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.IShearable;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +35,7 @@ import java.util.List;
 /**
  * Created by CF on 2016-10-28.
  */
-public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, FarmContainerGUI> {
+public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer> {
     private static ArrayList<String> foodItems = new ArrayList<>();
 
     static {
@@ -44,6 +48,10 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
         AnimalFarmEntity.foodItems.add("minecraft:carrot");
         AnimalFarmEntity.foodItems.add("minecraft:potato");
         AnimalFarmEntity.foodItems.add("minecraft:wheat_seeds");
+        AnimalFarmEntity.foodItems.add("minecraft:beetroot");
+        AnimalFarmEntity.foodItems.add("minecraft:beetroot_seeds");
+        AnimalFarmEntity.foodItems.add("minecraft:golden_carrot");
+        AnimalFarmEntity.foodItems.add("minecraft:hay_block");
     }
 
     private final float ENERGY_PACKAGE = .9f;
@@ -52,7 +60,13 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
     private final float ENERGY_MILK = .3f;
 
     public AnimalFarmEntity() {
-        super(1, 500000, 3, 6, 1, AnimalFarmContainer.class, FarmContainerGUI.class);
+        super(1, 500000, 3, 6, 1, AnimalFarmContainer.class);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public GuiContainer getContainerGUI(IInventory playerInventory) {
+        return new FarmContainerGUI(this, this.getContainer(playerInventory));
     }
 
     @Override
@@ -91,22 +105,21 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
                 : null;
         EntityAnimal animalToPackage = null;
         if ((animals != null) && (animals.size() > 0)) {
-            for(int i = 0; i < animals.size(); i++) {
+            for (int i = 0; i < animals.size(); i++) {
                 EntityAnimal thingy = animals.get(i);
 
                 if ((animalToPackage == null) && ((filter == null) || filter.canProcess(this, i, thingy))) {
                     animalToPackage = thingy;
-                }
-                else if (this.canBreed(thingy)) {
+                } else if (this.canBreed(thingy)) {
                     breedable.add(thingy);
                 }
 
                 if (thingy instanceof IShearable) {
-                    shearables.add((IShearable)thingy);
+                    shearables.add((IShearable) thingy);
                 }
 
                 if (thingy instanceof EntityCow) {
-                    EntityCow cow = (EntityCow)thingy;
+                    EntityCow cow = (EntityCow) thingy;
                     if (!cow.isChild()) {
                         adultCows.add(cow);
                     }
@@ -121,7 +134,7 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
         if (animalToPackage != null) {
             ItemStack packageStack = null;
             int packageSlot = 0;
-            for(int ti = 0; ti < this.inStackHandler.getSlots(); ti++) {
+            for (int ti = 0; ti < this.inStackHandler.getSlots(); ti++) {
                 packageStack = this.inStackHandler.extractItem(ti, 1, true, true);
                 if ((packageStack != null) && (packageStack.getCount() > 0) && (packageStack.getItem() instanceof AnimalPackageItem) && !ItemsRegistry.animalPackage.hasAnimal(packageStack)) {
                     packageSlot = ti;
@@ -177,12 +190,10 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
                             if ((size0 > 0) && a.isBreedingItem(food0)) {
                                 slotA = 0;
                                 size0--;
-                            }
-                            else if ((size1 > 0) && a.isBreedingItem(food1)) {
+                            } else if ((size1 > 0) && a.isBreedingItem(food1)) {
                                 slotA = 1;
                                 size1--;
-                            }
-                            else if ((size2 > 0) && a.isBreedingItem(food2)) {
+                            } else if ((size2 > 0) && a.isBreedingItem(food2)) {
                                 slotA = 2;
                                 size2--;
                             }
@@ -190,12 +201,10 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
                             if ((size0 > 0) && b.isBreedingItem(food0)) {
                                 slotB = 0;
 //                                size1--;
-                            }
-                            else if ((size1 > 0) && b.isBreedingItem(food1)) {
+                            } else if ((size1 > 0) && b.isBreedingItem(food1)) {
                                 slotB = 1;
 //                                size1--;
-                            }
-                            else if ((size2 > 0) && b.isBreedingItem(food2)) {
+                            } else if ((size2 > 0) && b.isBreedingItem(food2)) {
                                 slotB = 2;
 //                                size2--;
                             }
@@ -224,20 +233,20 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
         //region process shears
 
         if ((shearables.size() > 0) && ((1 - result) >= ENERGY_SHEAR)) {
-            for(int i = 0; i < this.inStackHandler.getSlots(); i++) {
+            for (int i = 0; i < this.inStackHandler.getSlots(); i++) {
                 ItemStack stack = this.inStackHandler.getStackInSlot(i, true);
                 if ((stack == null) || !stack.getItem().getRegistryName().equals(Items.SHEARS.getRegistryName())) {
                     continue;
                 }
 
-                for(IShearable shearable : shearables) {
+                for (IShearable shearable : shearables) {
                     if ((shearable != null) && shearable.isShearable(stack, this.getWorld(), this.getPos())) {
                         List<ItemStack> loot = shearable.onSheared(stack, this.getWorld(), this.getPos(), 0);
                         if ((loot != null) && (loot.size() > 0)) {
-                            for(int j = 0; j < loot.size(); j++) {
+                            for (int j = 0; j < loot.size(); j++) {
                                 ItemStack stillThere = this.outStackHandler.distributeItems(loot.get(j), false);
                                 if ((stillThere != null) && (stillThere.getCount() > 0)) {
-                                    BlockPos pos = ((Entity)shearable).getPosition();
+                                    BlockPos pos = ((Entity) shearable).getPosition();
                                     this.getWorld().spawnEntity(new EntityItem(this.getWorld(), pos.getX(), pos.getY(), pos.getZ(), stillThere));
                                 }
                             }
@@ -261,7 +270,7 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
         //region process bucket
 
         if ((adultCows.size() > 0) && ((1 - result) > ENERGY_MILK)) {
-            for(int i = 0; i < this.inStackHandler.getSlots(); i++) {
+            for (int i = 0; i < this.inStackHandler.getSlots(); i++) {
                 ItemStack stack = this.inStackHandler.extractItem(i, 1, true, true);
                 if ((stack != null) && (stack.getCount() == 1) && stack.getItem().getRegistryName().equals(Items.BUCKET.getRegistryName())) {
                     ItemStack milk = new ItemStack(Items.MILK_BUCKET, 1);
@@ -282,7 +291,7 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer, Fa
 
         if ((adultCows.size() > 0) && ((1 - result) > ENERGY_MILK)) {
             int mooshrooms = 0;
-            for(EntityCow cow: adultCows) {
+            for (EntityCow cow : adultCows) {
                 if (cow instanceof EntityMooshroom) {
                     mooshrooms++;
                 }
