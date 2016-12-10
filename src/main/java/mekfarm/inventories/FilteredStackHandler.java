@@ -1,7 +1,10 @@
 package mekfarm.inventories;
 
+import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
+
+import java.util.List;
 
 /**
  * Created by CF on 2016-10-29.
@@ -49,7 +52,7 @@ public class FilteredStackHandler extends ItemStackHandler implements IInternalI
     }
 
     @Override
-    public final ItemStack extractItem(int slot, int amount, boolean simulate){
+    public final ItemStack extractItem(int slot, int amount, boolean simulate) {
         return this.extractItem(slot, amount, simulate, false);
     }
 
@@ -64,7 +67,9 @@ public class FilteredStackHandler extends ItemStackHandler implements IInternalI
         return true;
     }
 
-    protected boolean canExtract(int slot, int amount, boolean internal) { return true; }
+    protected boolean canExtract(int slot, int amount, boolean internal) {
+        return true;
+    }
 
     public final ItemStack distributeItems(ItemStack stack, boolean simulate) {
         return this.distributeItems(stack, simulate, false);
@@ -80,5 +85,51 @@ public class FilteredStackHandler extends ItemStackHandler implements IInternalI
             }
         }
         return stack;
+    }
+
+    public List<ItemStack> getCombinedInventory() {
+        List<ItemStack> list = Lists.newArrayList();
+        for (int i = 0; i < this.getSlots(); i++) {
+            ItemStack stack = this.getStackInSlot(i, true);
+            if ((stack == null) || stack.isEmpty()) {
+                continue;
+            }
+
+            ItemStack match = null;
+            for (ItemStack existing : list) {
+                if (existing.getItem() == stack.getItem()) {
+                    match = existing;
+                    break;
+                }
+            }
+            if (match == null) {
+                list.add(stack.copy());
+            } else {
+                match.setCount(match.getCount() + stack.getCount());
+            }
+        }
+        return list;
+    }
+
+    public int extractFromCombinedInventory(ItemStack stack, int amount) {
+        if ((stack == null) || stack.isEmpty() || (stack.getCount() == 0)) {
+            return 0;
+        }
+
+        int taken = 0;
+        for (int i = 0; i < this.getSlots(); i++) {
+            ItemStack temp = this.getStackInSlot(i, true);
+            if ((temp == null) || temp.isEmpty() || (temp.getItem() != stack.getItem())) {
+                continue;
+            }
+
+            ItemStack takenStack = this.extractItem(i, Math.min(amount, temp.getCount()), false, true);
+            taken += takenStack.getCount();
+            amount -= takenStack.getCount();
+            if (amount <= 0) {
+                break;
+            }
+        }
+        return taken;
     }
 }

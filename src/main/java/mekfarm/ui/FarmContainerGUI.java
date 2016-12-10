@@ -44,6 +44,7 @@ public class FarmContainerGUI extends MekUIContainer {
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         this.bindDefaultTexture();
         this.drawTexturedModalRect(super.guiLeft, super.guiTop, 0, 0, super.xSize, super.ySize);
+        this.drawTexturedModalRect(super.guiLeft + 117, super.guiTop + 5, 182, 66, 54, 72);
 
         super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
 

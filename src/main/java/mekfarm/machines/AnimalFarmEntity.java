@@ -2,13 +2,12 @@ package mekfarm.machines;
 
 import com.google.common.collect.Lists;
 import mekfarm.MekfarmMod;
-import mekfarm.common.BlockCube;
-import mekfarm.common.BlockPosUtils;
-import mekfarm.common.BlocksRegistry;
-import mekfarm.common.ItemsRegistry;
+import mekfarm.common.*;
 import mekfarm.containers.AnimalFarmContainer;
 import mekfarm.items.AnimalPackageItem;
 import mekfarm.items.BaseAnimalFilterItem;
+import mekfarm.machines.wrappers.AnimalWrapperFactory;
+import mekfarm.machines.wrappers.IAnimalWrapper;
 import mekfarm.ui.FarmContainerGUI;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.Entity;
@@ -52,6 +51,7 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer> {
         AnimalFarmEntity.foodItems.add("minecraft:beetroot_seeds");
         AnimalFarmEntity.foodItems.add("minecraft:golden_carrot");
         AnimalFarmEntity.foodItems.add("minecraft:hay_block");
+        AnimalFarmEntity.foodItems.add("minecraft:apple");
     }
 
     private final float ENERGY_PACKAGE = .9f;
@@ -84,7 +84,8 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer> {
 
     @Override
     protected float performWork() {
-        List<EntityAnimal> breedable = Lists.newArrayList();
+        List<IAnimalWrapper> toProcess = Lists.newArrayList();
+        IAnimalWrapper animalToPackage = null;
         float result = 0.0f;
 
         //region find animals
@@ -97,32 +98,18 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer> {
 
         // find animal
         List<EntityAnimal> animals = this.getWorld().getEntitiesWithinAABB(EntityAnimal.class, aabb);
-        List<IShearable> shearables = Lists.newArrayList();
-        List<EntityCow> adultCows = Lists.newArrayList();
         ItemStack filterStack = this.filtersHandler.getStackInSlot(0, true);
         BaseAnimalFilterItem filter = ((filterStack != null) && (filterStack.getItem() instanceof BaseAnimalFilterItem))
                 ? (BaseAnimalFilterItem) filterStack.getItem()
                 : null;
-        EntityAnimal animalToPackage = null;
         if ((animals != null) && (animals.size() > 0)) {
             for (int i = 0; i < animals.size(); i++) {
-                EntityAnimal thingy = animals.get(i);
+                IAnimalWrapper thingy = AnimalWrapperFactory.getAnimalWrapper(animals.get(i));
 
-                if ((animalToPackage == null) && ((filter == null) || filter.canProcess(this, i, thingy))) {
+                if ((animalToPackage == null) && ((filter == null) || filter.canProcess(this, i, thingy.getAnimal()))) {
                     animalToPackage = thingy;
-                } else if (this.canBreed(thingy)) {
-                    breedable.add(thingy);
-                }
-
-                if (thingy instanceof IShearable) {
-                    shearables.add((IShearable) thingy);
-                }
-
-                if (thingy instanceof EntityCow) {
-                    EntityCow cow = (EntityCow) thingy;
-                    if (!cow.isChild()) {
-                        adultCows.add(cow);
-                    }
+                } else if (thingy.breedable()) {
+                    toProcess.add(thingy);
                 }
             }
         }
@@ -147,14 +134,14 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer> {
 
                 stackCopy.setTagInfo("hasAnimal", new NBTTagInt(1));
                 NBTTagCompound animalCompound = new NBTTagCompound();
-                animalToPackage.writeEntityToNBT(animalCompound);
+                animalToPackage.getAnimal().writeEntityToNBT(animalCompound);
                 stackCopy.setTagInfo("animal", animalCompound);
-                stackCopy.setTagInfo("animalClass", new NBTTagString(animalToPackage.getClass().getName()));
+                stackCopy.setTagInfo("animalClass", new NBTTagString(animalToPackage.getAnimal().getClass().getName()));
 
                 ItemStack finalStack = this.outStackHandler.distributeItems(stackCopy, false);
                 int inserted = packageStack.getCount() - ((finalStack == null) ? 0 : finalStack.getCount());
                 if (inserted > 0) {
-                    this.getWorld().removeEntity(animalToPackage);
+                    this.getWorld().removeEntity(animalToPackage.getAnimal());
                     this.inStackHandler.extractItem(packageSlot, inserted, false, true);
                     animalToPackage = null;
                     result += ENERGY_PACKAGE;
@@ -162,163 +149,127 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer> {
             }
         }
 
-        if ((animalToPackage != null) && this.canBreed(animalToPackage)) {
-            breedable.add(animalToPackage);
+        if (animalToPackage != null) {
+            toProcess.add(animalToPackage);
+            animalToPackage = null;
         }
 
         //endregion
 
-        //region process food
+        float minEnergy = Math.min(ENERGY_FEED, Math.min(ENERGY_MILK, ENERGY_SHEAR));
+        if ((toProcess.size() >= 2) && ((1.0f - result) >= minEnergy)) {
+            for(int i = 0; i < toProcess.size(); i++) {
+                IAnimalWrapper wrapper = toProcess.get(i);
+                if (wrapper.breedable() && ((1.0f - result) >= ENERGY_FEED)) {
+                    //region breed this thing
 
-        if ((breedable.size() >= 2) && ((1.0f - result) >= ENERGY_FEED)) {
-            ItemStack food0 = this.inStackHandler.extractItem(0, 2, true, true);
-            ItemStack food1 = this.inStackHandler.extractItem(1, 2, true, true);
-            ItemStack food2 = this.inStackHandler.extractItem(2, 2, true, true);
-            if ((food0 != null) || (food1 != null) || (food2 != null)) {
-                for (int i = 0; i < breedable.size(); i++) {
-                    boolean breed = false;
-                    for (int j = i + 1; j < breedable.size(); j++) {
-                        EntityAnimal a = breedable.get(i);
-                        EntityAnimal b = breedable.get(j);
-                        if ((a != null) && (b != null) && (a.getClass().equals(b.getClass()))) {
-                            int slotA = -1;
-                            int slotB = -1;
-                            int size0 = (food0 != null) ? food0.getCount() : 0;
-                            int size1 = (food1 != null) ? food1.getCount() : 0;
-                            int size2 = (food2 != null) ? food2.getCount() : 0;
+                    List<ItemStack> potentialFood = this.inStackHandler.getCombinedInventory();
 
-                            if ((size0 > 0) && a.isBreedingItem(food0)) {
-                                slotA = 0;
-                                size0--;
-                            } else if ((size1 > 0) && a.isBreedingItem(food1)) {
-                                slotA = 1;
-                                size1--;
-                            } else if ((size2 > 0) && a.isBreedingItem(food2)) {
-                                slotA = 2;
-                                size2--;
-                            }
-
-                            if ((size0 > 0) && b.isBreedingItem(food0)) {
-                                slotB = 0;
-//                                size1--;
-                            } else if ((size1 > 0) && b.isBreedingItem(food1)) {
-                                slotB = 1;
-//                                size1--;
-                            } else if ((size2 > 0) && b.isBreedingItem(food2)) {
-                                slotB = 2;
-//                                size2--;
-                            }
-
-                            if ((slotA >= 0) && (slotB >= 0)) {
-                                // food found!
-                                this.inStackHandler.extractItem(slotA, 1, false, true);
-                                this.inStackHandler.extractItem(slotB, 1, false, true);
-                                a.setInLove(MekfarmMod.getFakePlayer(this.getWorld()));
-                                b.setInLove(MekfarmMod.getFakePlayer(this.getWorld()));
-                                result += ENERGY_FEED;
-                                breed = true;
-                                break;
+                    ItemStack foodStack = null;
+                    for(int f = 0; f < potentialFood.size(); f++) {
+                        ItemStack tempFood = potentialFood.get(f);
+                        if (wrapper.isFood(tempFood)) {
+                            foodStack = tempFood;
+                            break;
+                        }
+                    }
+                    if ((foodStack != null) && !foodStack.isEmpty()) {
+                        for(int j = i+1; j < toProcess.size(); j++) {
+                            IAnimalWrapper toMateWith = toProcess.get(j);
+                            if (toMateWith.breedable() && toMateWith.isFood(foodStack) && wrapper.canMateWith(toMateWith)) {
+                                int foodUsed = wrapper.mate(MekfarmMod.getFakePlayer(this.getWorld()), foodStack, toMateWith);
+                                if ((foodUsed > 0) && (foodUsed <= foodStack.getCount())) {
+                                    this.inStackHandler.extractFromCombinedInventory(foodStack, foodUsed);
+                                    foodStack.shrink(foodUsed);
+                                    result += ENERGY_FEED;
+                                    break;
+                                }
                             }
                         }
                     }
-                    if (breed) {
-                        break;
+
+                    //endregion
+                }
+
+                if (wrapper.shearable() && ((1.0f - result) >= ENERGY_SHEAR)) {
+                    //region shear this unfortunate animal
+
+                    int shearsSlot = -1;
+                    for(int s = 0; s < this.inStackHandler.getSlots(); s++) {
+                        if (wrapper.canBeShearedWith(this.inStackHandler.getStackInSlot(s, true))) {
+                            shearsSlot = s;
+                            break;
+                        }
                     }
-                }
-            }
-        }
-
-        //endregion
-
-        //region process shears
-
-        if ((shearables.size() > 0) && ((1 - result) >= ENERGY_SHEAR)) {
-            for (int i = 0; i < this.inStackHandler.getSlots(); i++) {
-                ItemStack stack = this.inStackHandler.getStackInSlot(i, true);
-                if ((stack == null) || !stack.getItem().getRegistryName().equals(Items.SHEARS.getRegistryName())) {
-                    continue;
-                }
-
-                for (IShearable shearable : shearables) {
-                    if ((shearable != null) && shearable.isShearable(stack, this.getWorld(), this.getPos())) {
-                        List<ItemStack> loot = shearable.onSheared(stack, this.getWorld(), this.getPos(), 0);
+                    if (shearsSlot >= 0) {
+                        ItemStack shears = this.inStackHandler.getStackInSlot(shearsSlot, true);
+                        List<ItemStack> loot = wrapper.shear(shears, 0);
                         if ((loot != null) && (loot.size() > 0)) {
                             for (int j = 0; j < loot.size(); j++) {
                                 ItemStack stillThere = this.outStackHandler.distributeItems(loot.get(j), false);
                                 if ((stillThere != null) && (stillThere.getCount() > 0)) {
-                                    BlockPos pos = ((Entity) shearable).getPosition();
+                                    BlockPos pos = wrapper.getAnimal().getPosition();
                                     this.getWorld().spawnEntity(new EntityItem(this.getWorld(), pos.getX(), pos.getY(), pos.getZ(), stillThere));
                                 }
                             }
 
-                            if (stack.attemptDamageItem(1, this.getWorld().rand)) {
-                                this.inStackHandler.setStackInSlot(i, null);
+                            if (shears.attemptDamageItem(1, this.getWorld().rand)) {
+                                this.inStackHandler.setStackInSlot(shearsSlot, ItemStack.EMPTY);
                             }
 
                             result += ENERGY_SHEAR;
-                            break;
+                        }
+                    }
+
+                    //endregion
+                }
+
+                if (wrapper.canBeMilked() && ((1.0f - result) >= ENERGY_MILK)) {
+                    //region no milk left behind!
+
+                    for (int b = 0; b < this.inStackHandler.getSlots(); b++) {
+                        ItemStack stack = this.inStackHandler.extractItem(b, 1, true, true);
+                        if ((stack != null) && (stack.getCount() == 1) && (stack.getItem() == Items.BUCKET)) {
+                            ItemStack milk = wrapper.milk();
+                            milk = this.outStackHandler.distributeItems(milk, false);
+                            if ((milk == null) || (milk.getCount() == 0) || milk.isEmpty()) {
+                                this.inStackHandler.extractItem(i, 1, false, true);
+
+                                result += ENERGY_MILK;
+                                break;
+                            }
+                        }
+                    }
+
+                    //endregion
+                }
+
+                //region mushroom stew best stew
+
+                if (wrapper.canBeBowled() && ((1.0f - result) >= ENERGY_MILK)) {
+                    for (int b = 0; b < this.inStackHandler.getSlots(); b++) {
+                        ItemStack stack = this.inStackHandler.extractItem(b, 1, true, true);
+                        if ((stack != null) && (stack.getCount() == 1) && (stack.getItem() == Items.BOWL)) {
+                            ItemStack stew = wrapper.bowl();
+                            stew = this.outStackHandler.distributeItems(stew, false);
+                            if ((stew == null) || (stew.getCount() == 0)) {
+                                this.inStackHandler.extractItem(i, 1, false, true);
+
+                                result += ENERGY_MILK;
+                                break;
+                            }
                         }
                     }
                 }
 
-                break;
-            }
-        }
+                //endregion
 
-        //endregion
-
-        //region process bucket
-
-        if ((adultCows.size() > 0) && ((1 - result) > ENERGY_MILK)) {
-            for (int i = 0; i < this.inStackHandler.getSlots(); i++) {
-                ItemStack stack = this.inStackHandler.extractItem(i, 1, true, true);
-                if ((stack != null) && (stack.getCount() == 1) && stack.getItem().getRegistryName().equals(Items.BUCKET.getRegistryName())) {
-                    ItemStack milk = new ItemStack(Items.MILK_BUCKET, 1);
-                    milk = this.outStackHandler.distributeItems(milk, false);
-                    if ((milk == null) || (milk.getCount() == 0)) {
-                        this.inStackHandler.extractItem(i, 1, false, true);
-
-                        result += ENERGY_MILK;
-                        break;
-                    }
+                if ((1.0f - result) < minEnergy) {
+                    break; // no more energy
                 }
             }
         }
-
-        //endregion
-
-        //region process bowl
-
-        if ((adultCows.size() > 0) && ((1 - result) > ENERGY_MILK)) {
-            int mooshrooms = 0;
-            for (EntityCow cow : adultCows) {
-                if (cow instanceof EntityMooshroom) {
-                    mooshrooms++;
-                }
-            }
-            if (mooshrooms > 0) {
-                for (int i = 0; i < this.inStackHandler.getSlots(); i++) {
-                    ItemStack stack = this.inStackHandler.extractItem(i, 1, true, true);
-                    if ((stack != null) && (stack.getCount() == 1) && stack.getItem().getRegistryName().equals(Items.BOWL.getRegistryName())) {
-                        ItemStack stew = new ItemStack(Items.MUSHROOM_STEW, 1);
-                        stew = this.outStackHandler.distributeItems(stew, false);
-                        if ((stew == null) || (stew.getCount() == 0)) {
-                            this.inStackHandler.extractItem(i, 1, false, true);
-
-                            result += ENERGY_MILK;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        //endregion
 
         return result;
-    }
-
-    private boolean canBreed(EntityAnimal animal) {
-        return ((animal != null) && !animal.isInLove() && !animal.isChild() && (animal.getGrowingAge() == 0));
     }
 }
