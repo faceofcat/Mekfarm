@@ -3,7 +3,6 @@ package mekfarm.machines;
 import com.google.common.collect.Lists;
 import mekfarm.containers.CropClonerContainer;
 import mekfarm.ui.CropClonerContainerGUI;
-import mekfarm.ui.FarmContainerGUI;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;

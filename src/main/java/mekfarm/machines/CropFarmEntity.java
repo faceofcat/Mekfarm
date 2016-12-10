@@ -6,7 +6,6 @@ import mekfarm.common.BlockPosUtils;
 import mekfarm.common.BlocksRegistry;
 import mekfarm.common.FakeMekPlayer;
 import mekfarm.containers.CropFarmContainer;
-import mekfarm.ui.CropClonerContainerGUI;
 import mekfarm.ui.CropFarmContainerGUI;
 import net.minecraft.block.BlockFarmland;
 import net.minecraft.block.IGrowable;

@@ -2,7 +2,10 @@ package mekfarm.machines;
 
 import com.google.common.collect.Lists;
 import mekfarm.MekfarmMod;
-import mekfarm.common.*;
+import mekfarm.common.BlockCube;
+import mekfarm.common.BlockPosUtils;
+import mekfarm.common.BlocksRegistry;
+import mekfarm.common.ItemsRegistry;
 import mekfarm.containers.AnimalFarmContainer;
 import mekfarm.items.AnimalPackageItem;
 import mekfarm.items.BaseAnimalFilterItem;
@@ -10,13 +13,12 @@ import mekfarm.machines.wrappers.AnimalWrapperFactory;
 import mekfarm.machines.wrappers.IAnimalWrapper;
 import mekfarm.ui.FarmContainerGUI;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.passive.EntityCow;
-import net.minecraft.entity.passive.EntityMooshroom;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
@@ -24,7 +26,6 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.IShearable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -35,23 +36,25 @@ import java.util.List;
  * Created by CF on 2016-10-28.
  */
 public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer> {
-    private static ArrayList<String> foodItems = new ArrayList<>();
+    private static ArrayList<Item> foodItems = new ArrayList<>();
 
     static {
-        AnimalFarmEntity.foodItems.add("minecraft:shears");
-        AnimalFarmEntity.foodItems.add("minecraft:bucket");
-        AnimalFarmEntity.foodItems.add("minecraft:bowl");
+        AnimalFarmEntity.foodItems.add(Items.SHEARS);
+        AnimalFarmEntity.foodItems.add(Items.BUCKET);
+        AnimalFarmEntity.foodItems.add(Items.BOWL);
         // ^^ not really food :D
 
-        AnimalFarmEntity.foodItems.add("minecraft:wheat");
-        AnimalFarmEntity.foodItems.add("minecraft:carrot");
-        AnimalFarmEntity.foodItems.add("minecraft:potato");
-        AnimalFarmEntity.foodItems.add("minecraft:wheat_seeds");
-        AnimalFarmEntity.foodItems.add("minecraft:beetroot");
-        AnimalFarmEntity.foodItems.add("minecraft:beetroot_seeds");
-        AnimalFarmEntity.foodItems.add("minecraft:golden_carrot");
-        AnimalFarmEntity.foodItems.add("minecraft:hay_block");
-        AnimalFarmEntity.foodItems.add("minecraft:apple");
+        AnimalFarmEntity.foodItems.add(Items.WHEAT);
+        AnimalFarmEntity.foodItems.add(Items.CARROT);
+        AnimalFarmEntity.foodItems.add(Items.POTATO);
+        AnimalFarmEntity.foodItems.add(Items.WHEAT_SEEDS);
+        AnimalFarmEntity.foodItems.add(Items.BEETROOT);
+        AnimalFarmEntity.foodItems.add(Items.BEETROOT_SEEDS);
+        AnimalFarmEntity.foodItems.add(Items.GOLDEN_CARROT);
+        AnimalFarmEntity.foodItems.add(Item.getItemFromBlock(Blocks.HAY_BLOCK));
+        AnimalFarmEntity.foodItems.add(Items.APPLE);
+        AnimalFarmEntity.foodItems.add(Items.PUMPKIN_SEEDS);
+        AnimalFarmEntity.foodItems.add(Items.MELON_SEEDS);
     }
 
     private final float ENERGY_PACKAGE = .9f;
@@ -76,10 +79,10 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer> {
 
         // test for animal package
         if (stack.getItem().getRegistryName().equals(ItemsRegistry.animalPackage.getRegistryName())) {
-            return (false == ItemsRegistry.animalPackage.hasAnimal(stack));
+            return !ItemsRegistry.animalPackage.hasAnimal(stack);
         }
 
-        return AnimalFarmEntity.foodItems.contains(stack.getItem().getRegistryName().toString());
+        return AnimalFarmEntity.foodItems.contains(stack.getItem());
     }
 
     @Override

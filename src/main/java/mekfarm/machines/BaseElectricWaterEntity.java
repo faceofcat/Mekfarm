@@ -2,7 +2,6 @@ package mekfarm.machines;
 
 import com.google.common.collect.Lists;
 import mekfarm.inventories.SingleFluidTank;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;

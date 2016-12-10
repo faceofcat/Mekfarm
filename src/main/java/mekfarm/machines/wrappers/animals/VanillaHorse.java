@@ -30,7 +30,7 @@ public class VanillaHorse extends VanillaGenericAnimal {
     protected int getFoodNeededForMating(ItemStack stack) {
         return (stack.getItem() == Items.GOLDEN_CARROT)
                 ? 1
-                : 4; // assume apple
+                : 6; // assume apple
     }
 }
 

@@ -8,7 +8,6 @@ import mekfarm.common.BlocksRegistry;
 import mekfarm.common.FakeMekPlayer;
 import mekfarm.containers.ElectricButcherContainer;
 import mekfarm.items.BaseAnimalFilterItem;
-import mekfarm.ui.CropClonerContainerGUI;
 import mekfarm.ui.ElectricButcherContainerGUI;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.SharedMonsterAttributes;
