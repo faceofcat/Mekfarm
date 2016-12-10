@@ -2,8 +2,12 @@ package mekfarm.machines.wrappers.animals;
 
 import mekfarm.machines.wrappers.IAnimalWrapper;
 import net.minecraft.entity.passive.AbstractHorse;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
+import java.util.List;
 
 /**
  * Created by CF on 2016-12-10.
@@ -31,6 +35,11 @@ public class VanillaHorse extends VanillaGenericAnimal {
         return (stack.getItem() == Items.GOLDEN_CARROT)
                 ? 1
                 : 6; // assume apple
+    }
+
+    public static void populateFoodItems(List<Item> food) {
+        food.add(Items.GOLDEN_CARROT);
+        food.add(Items.APPLE);
     }
 }
 

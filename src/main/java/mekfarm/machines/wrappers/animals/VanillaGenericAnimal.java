@@ -1,12 +1,15 @@
 package mekfarm.machines.wrappers.animals;
 
 import com.google.common.collect.Lists;
+import mekfarm.machines.AnimalFarmEntity;
 import mekfarm.machines.wrappers.IAnimalWrapper;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.passive.EntityMooshroom;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.IShearable;
 
@@ -66,7 +69,7 @@ public class VanillaGenericAnimal implements IAnimalWrapper {
 
     @Override
     public boolean shearable() {
-        return (this.getAnimal() instanceof IShearable);
+        return !(this.getAnimal() instanceof EntityMooshroom) && (this.getAnimal() instanceof IShearable);
     }
 
     @Override
@@ -117,5 +120,25 @@ public class VanillaGenericAnimal implements IAnimalWrapper {
         return this.canBeBowled()
                 ? new ItemStack(Items.MUSHROOM_STEW, 1)
                 : ItemStack.EMPTY;
+    }
+
+    public static void populateFoodItems(List<Item> food) {
+        // cows / mooshrooms
+        food.add(Items.WHEAT);
+
+        // chicken
+        food.add(Items.WHEAT_SEEDS);
+        food.add(Items.BEETROOT_SEEDS);
+        food.add(Items.PUMPKIN_SEEDS);
+        food.add(Items.MELON_SEEDS);
+
+        // pigs
+        food.add(Items.CARROT);
+        food.add(Items.POTATO);
+        food.add(Items.BEETROOT);
+
+        food.add(Items.GOLDEN_CARROT);
+        food.add(Item.getItemFromBlock(Blocks.HAY_BLOCK));
+        food.add(Items.APPLE);
     }
 }

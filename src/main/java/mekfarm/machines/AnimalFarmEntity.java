@@ -44,17 +44,7 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer> {
         AnimalFarmEntity.foodItems.add(Items.BOWL);
         // ^^ not really food :D
 
-        AnimalFarmEntity.foodItems.add(Items.WHEAT);
-        AnimalFarmEntity.foodItems.add(Items.CARROT);
-        AnimalFarmEntity.foodItems.add(Items.POTATO);
-        AnimalFarmEntity.foodItems.add(Items.WHEAT_SEEDS);
-        AnimalFarmEntity.foodItems.add(Items.BEETROOT);
-        AnimalFarmEntity.foodItems.add(Items.BEETROOT_SEEDS);
-        AnimalFarmEntity.foodItems.add(Items.GOLDEN_CARROT);
-        AnimalFarmEntity.foodItems.add(Item.getItemFromBlock(Blocks.HAY_BLOCK));
-        AnimalFarmEntity.foodItems.add(Items.APPLE);
-        AnimalFarmEntity.foodItems.add(Items.PUMPKIN_SEEDS);
-        AnimalFarmEntity.foodItems.add(Items.MELON_SEEDS);
+        AnimalWrapperFactory.populateFoodItems(AnimalFarmEntity.foodItems);
     }
 
     private final float ENERGY_PACKAGE = .9f;
@@ -236,7 +226,7 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer> {
                             ItemStack milk = wrapper.milk();
                             milk = this.outStackHandler.distributeItems(milk, false);
                             if ((milk == null) || (milk.getCount() == 0) || milk.isEmpty()) {
-                                this.inStackHandler.extractItem(i, 1, false, true);
+                                this.inStackHandler.extractItem(b, 1, false, true);
 
                                 result += ENERGY_MILK;
                                 break;
@@ -256,7 +246,7 @@ public class AnimalFarmEntity extends BaseElectricEntity<AnimalFarmContainer> {
                             ItemStack stew = wrapper.bowl();
                             stew = this.outStackHandler.distributeItems(stew, false);
                             if ((stew == null) || (stew.getCount() == 0)) {
-                                this.inStackHandler.extractItem(i, 1, false, true);
+                                this.inStackHandler.extractItem(b, 1, false, true);
 
                                 result += ENERGY_MILK;
                                 break;

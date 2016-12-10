@@ -6,6 +6,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import java.util.List;
+
 /**
  * Created by CF on 2016-12-10.
  */
@@ -27,6 +29,11 @@ public class VanillaLlama extends VanillaGenericAnimal {
         return (stack.getItem() == Item.getItemFromBlock(Blocks.HAY_BLOCK))
                 ? 1
                 : 9; // assume wheat
+    }
+
+    public static void populateFoodItems(List<Item> food) {
+        food.add(Item.getItemFromBlock(Blocks.HAY_BLOCK));
+        food.add(Items.WHEAT);
     }
 }
 

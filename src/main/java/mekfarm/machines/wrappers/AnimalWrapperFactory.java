@@ -4,6 +4,9 @@ import mekfarm.machines.wrappers.animals.VanillaGenericAnimal;
 import mekfarm.machines.wrappers.animals.VanillaHorse;
 import mekfarm.machines.wrappers.animals.VanillaLlama;
 import net.minecraft.entity.passive.*;
+import net.minecraft.item.Item;
+
+import java.util.List;
 
 /**
  * Created by CF on 2016-12-10.
@@ -28,5 +31,11 @@ public class AnimalWrapperFactory {
             wrapper = new VanillaGenericAnimal(entity);
         }
         return wrapper;
+    }
+
+    public static void populateFoodItems(List<Item> food) {
+        VanillaGenericAnimal.populateFoodItems(food);
+        VanillaHorse.populateFoodItems(food);
+        VanillaLlama.populateFoodItems(food);
     }
 }
