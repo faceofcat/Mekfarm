@@ -51,11 +51,7 @@ public class CropFarmEntity extends BaseElectricWaterEntity<CropFarmContainer>  
             return true;
         }
 
-        if (stack.getItem() instanceof IPlantable) {
-            return true;
-        }
-
-        return false;
+        return PlantWrapperFactory.isSeed(stack);
     }
 
     @Override
@@ -77,7 +73,7 @@ public class CropFarmEntity extends BaseElectricWaterEntity<CropFarmContainer>  
             }
 
             if (plant.canBeHarvested() && ((1.0f - result) >= .45f)) {
-                List<ItemStack> loot = plant.harvest();
+                List<ItemStack> loot = plant.harvest(0);
                 for(ItemStack lootStack : loot) {
                     ItemStack remaining = this.inStackHandler.distributeItems(lootStack, false, true);
                     if (!remaining.isEmpty()) {
@@ -122,31 +118,36 @@ public class CropFarmEntity extends BaseElectricWaterEntity<CropFarmContainer>  
             BlockPos landPos = pos.offset(EnumFacing.DOWN);
             IBlockState state = this.getWorld().getBlockState(landPos);
             if (state != null) {
-                if (state.getBlock() == Blocks.FARMLAND) {
+                if (this.getWorld().isAirBlock(pos) && (result <= 0.8f)) {
                     //region plant thing
 
-                    if (this.getWorld().isAirBlock(pos) && (result <= 0.8f)) {
-                        IBlockState plant = null;
-                        ItemStack plantedSeed = null;
-                        for (ISeedWrapper seed : seeds) {
-                            if (seed.canPlantHere(this.getWorld(), pos)) {
-                                plant = seed.plant(this.getWorld(), pos);
-                                plantedSeed = seed.getSeeds();
-                                break;
-                            }
+                    IBlockState plant = null;
+                    ItemStack plantedSeed = null;
+                    for (ISeedWrapper seed : seeds) {
+                        if (seed.canPlantHere(this.getWorld(), pos)) {
+                            plant = seed.plant(this.getWorld(), pos);
+                            plantedSeed = seed.getSeeds();
+                            break;
                         }
+                    }
 
-                        if ((plant != null) && (plantedSeed != null) && !plantedSeed.isEmpty()) {
-                            if (1 == this.inStackHandler.extractFromCombinedInventory(plantedSeed, 1)) {
-                                this.getWorld().setBlockState(pos, plant);
-                                plantedSeed.shrink(1);
-                                result += 0.2f;
+                    if ((plant != null) && (plantedSeed != null) && !plantedSeed.isEmpty()) {
+                        if (1 == this.inStackHandler.extractFromCombinedInventory(plantedSeed, 1)) {
+                            this.getWorld().setBlockState(pos, plant);
+                            plantedSeed.shrink(1);
+                            result += 0.2f;
+
+                            IPlantWrapper newPlant = PlantWrapperFactory.getPlantWrapper(this.getWorld(), pos);
+                            if ((newPlant != null) && newPlant.canBlockNeighbours()) {
+                                blockers.add(newPlant);
                             }
                         }
                     }
 
                     //endregion
+                }
 
+                if (state.getBlock() == Blocks.FARMLAND) {
                     //region moisturize land
 
                     if (result <= 0.95f) {

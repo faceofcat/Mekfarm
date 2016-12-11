@@ -2,6 +2,8 @@ package mekfarm.machines.wrappers.seeds;
 
 import mekfarm.machines.wrappers.ISeedWrapper;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -27,7 +29,8 @@ public class VanillaGenericSeed implements ISeedWrapper {
 
     @Override
     public boolean canPlantHere(World world, BlockPos pos) {
-        return this.plantable.getPlantType(world, pos) == EnumPlantType.Crop;
+        return (world.getBlockState(pos.down()).getBlock() == Blocks.FARMLAND)
+                && this.plantable.getPlantType(world, pos) == EnumPlantType.Crop;
     }
 
     @Override
@@ -35,5 +38,13 @@ public class VanillaGenericSeed implements ISeedWrapper {
         return this.canPlantHere(world, pos)
                 ? this.plantable.getPlant(world, pos)
                 : null;
+    }
+
+    public static boolean isSeed(ItemStack stack) {
+        if (!stack.isEmpty()) {
+            Item item = stack.getItem();
+            return (item instanceof IPlantable);
+        }
+        return false;
     }
 }

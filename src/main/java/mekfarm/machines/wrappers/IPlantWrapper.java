@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface IPlantWrapper {
     boolean canBeHarvested();
-    List<ItemStack> harvest();
+    List<ItemStack> harvest(int fortune);
 
     boolean canBlockNeighbours();
     boolean blocksNeighbour(BlockPos pos);

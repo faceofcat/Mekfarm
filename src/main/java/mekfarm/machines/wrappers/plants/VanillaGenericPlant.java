@@ -42,7 +42,7 @@ public class VanillaGenericPlant implements IPlantWrapper {
     }
 
     @Override
-    public List<ItemStack> harvest() {
+    public List<ItemStack> harvest(int fortune) {
         FakeMekPlayer player = MekfarmMod.getFakePlayer(this.world);
         state.getBlock().harvestBlock(this.world, player, pos, state, null, ItemStack.EMPTY);
         this.world.setBlockState(pos, state.getBlock().getDefaultState());

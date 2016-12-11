@@ -53,7 +53,7 @@ public class VanillaMelonPlant implements IPlantWrapper {
     }
 
     @Override
-    public List<ItemStack> harvest() {
+    public List<ItemStack> harvest(int fortune) {
         List<ItemStack> loot = Lists.newArrayList();
         IBlockState north = this.world.getBlockState(this.pos.north());
         if (MELON_BLOCKS.contains(north.getBlock())) {

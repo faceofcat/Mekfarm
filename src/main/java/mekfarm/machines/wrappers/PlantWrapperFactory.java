@@ -1,9 +1,13 @@
 package mekfarm.machines.wrappers;
 
+import mekfarm.machines.wrappers.plants.VanillaCactusPlant;
 import mekfarm.machines.wrappers.plants.VanillaGenericPlant;
 import mekfarm.machines.wrappers.plants.VanillaMelonPlant;
+import mekfarm.machines.wrappers.plants.VanillaTallPlant;
+import mekfarm.machines.wrappers.seeds.VanillaCactusSeed;
 import mekfarm.machines.wrappers.seeds.VanillaGenericSeed;
 import mekfarm.machines.wrappers.seeds.VanillaMelonSeed;
+import mekfarm.machines.wrappers.seeds.VanillaReedsSeed;
 import net.minecraft.block.Block;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.state.IBlockState;
@@ -29,11 +33,26 @@ public class PlantWrapperFactory {
             return new VanillaMelonSeed(seeds.copy());
         }
 
+        if (seed == Items.REEDS) {
+            return new VanillaReedsSeed(seeds.copy());
+        }
+
+        if (seed == Item.getItemFromBlock(Blocks.CACTUS)) {
+            return new VanillaCactusSeed(seeds.copy());
+        }
+
         if (seed instanceof IPlantable) {
             return new VanillaGenericSeed(seeds.copy());
         }
 
         return null;
+    }
+
+    public static boolean isSeed(ItemStack stack) {
+        return VanillaGenericSeed.isSeed(stack)
+                || VanillaCactusSeed.isSeed(stack)
+                || VanillaMelonSeed.isSeed(stack)
+                || VanillaReedsSeed.isSeed(stack);
     }
 
     public static IPlantWrapper getPlantWrapper(World world, BlockPos pos) {
@@ -44,6 +63,13 @@ public class PlantWrapperFactory {
             return new VanillaMelonPlant(block, state, world, pos);
         }
 
+        if (block == Blocks.REEDS) {
+            return new VanillaTallPlant(block, state, world, pos);
+        }
+
+        if (block == Blocks.CACTUS) {
+            return new VanillaCactusPlant(block, state, world, pos);
+        }
         if (block instanceof IGrowable) {
             return new VanillaGenericPlant(block, state, world, pos);
         }
