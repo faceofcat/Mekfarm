@@ -12,6 +12,9 @@ import net.minecraft.block.IGrowable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -68,5 +71,26 @@ public class VanillaGenericPlant implements IPlantWrapper {
     @Override
     public boolean blocksNeighbour(BlockPos pos) {
         return false;
+    }
+
+    @Override
+    public boolean canUseFertilizer() {
+        return !this.canBeHarvested();
+    }
+
+    @Override
+    public int useFertilizer(ItemStack fertilizer) {
+        return VanillaGenericPlant.useFertilizer(this.world, this.pos, fertilizer);
+    }
+
+    public static int useFertilizer(World world, BlockPos pos, ItemStack fertilizer) {
+        FakeMekPlayer player = MekfarmMod.getFakePlayer(world);
+        if (player != null) {
+            player.setItemInUse(fertilizer.copy());
+            EnumActionResult result = player.getHeldItem(EnumHand.MAIN_HAND).onItemUse(player, world, pos, EnumHand.MAIN_HAND, EnumFacing.UP, .5f, .5f, .5f);
+            player.setItemInUse(ItemStack.EMPTY);
+            return 1;
+        }
+        return 0;
     }
 }

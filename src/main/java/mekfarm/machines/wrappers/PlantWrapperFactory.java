@@ -76,4 +76,8 @@ public class PlantWrapperFactory {
 
         return null;
     }
+
+    public static boolean isFertilizer(ItemStack stack) {
+        return ((stack.getItem() == Items.DYE) && (stack.getMetadata() == 15));
+    }
 }

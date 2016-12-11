@@ -62,4 +62,14 @@ public class VanillaTallPlant implements IPlantWrapper {
     public boolean blocksNeighbour(BlockPos pos) {
         return false;
     }
+
+    @Override
+    public boolean canUseFertilizer() {
+        return false;
+    }
+
+    @Override
+    public int useFertilizer(ItemStack fertilizer) {
+        return 0;
+    }
 }

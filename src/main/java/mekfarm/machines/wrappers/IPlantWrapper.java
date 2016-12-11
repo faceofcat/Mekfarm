@@ -15,4 +15,7 @@ public interface IPlantWrapper {
 
     boolean canBlockNeighbours();
     boolean blocksNeighbour(BlockPos pos);
+
+    boolean canUseFertilizer();
+    int useFertilizer(ItemStack fertilizer);
 }

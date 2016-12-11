@@ -3,6 +3,7 @@ package mekfarm.machines.wrappers.plants;
 import com.google.common.collect.Lists;
 import mekfarm.machines.wrappers.IPlantWrapper;
 import net.minecraft.block.Block;
+import net.minecraft.block.IGrowable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -89,5 +90,18 @@ public class VanillaMelonPlant implements IPlantWrapper {
                 || pos.equals(this.pos.offset(EnumFacing.NORTH))
                 || pos.equals(this.pos.offset(EnumFacing.SOUTH))
                 || pos.equals(this.pos.offset(EnumFacing.WEST));
+    }
+
+    @Override
+    public boolean canUseFertilizer() {
+        if (this.block instanceof IGrowable) {
+            return ((IGrowable)this.block).canGrow(this.world, this.pos, this.state, false);
+        }
+        return false;
+    }
+
+    @Override
+    public int useFertilizer(ItemStack fertilizer) {
+        return VanillaGenericPlant.useFertilizer(this.world, this.pos, fertilizer);
     }
 }

@@ -113,7 +113,7 @@ public class FilteredStackHandler extends ItemStackHandler implements IInternalI
     }
 
     public int extractFromCombinedInventory(ItemStack stack, int amount) {
-        if ((stack == null) || stack.isEmpty() || (stack.getCount() == 0)) {
+        if ((stack == null) || (stack.getItem() == null)) {
             return 0;
         }
 

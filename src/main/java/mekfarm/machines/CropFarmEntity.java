@@ -14,6 +14,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemHoe;
@@ -51,7 +52,7 @@ public class CropFarmEntity extends BaseElectricWaterEntity<CropFarmContainer>  
             return true;
         }
 
-        return PlantWrapperFactory.isSeed(stack);
+        return PlantWrapperFactory.isFertilizer(stack) || PlantWrapperFactory.isSeed(stack);
     }
 
     @Override
@@ -199,6 +200,29 @@ public class CropFarmEntity extends BaseElectricWaterEntity<CropFarmContainer>  
         }
 
         //endregion
+
+        if (result <= .9f) {
+            ItemStack fertilizer = ItemStack.EMPTY;
+            for(ItemStack stack : this.inStackHandler.getCombinedInventory()) {
+                if (PlantWrapperFactory.isFertilizer(stack)) {
+                    fertilizer = stack.copy();
+                    break;
+                }
+            }
+            if ((fertilizer != null) && !fertilizer.isEmpty()) {
+                int tries = 10;
+                while ((tries >= 0) && (result <= .9f) && !fertilizer.isEmpty()) {
+                    BlockPos pos = cube.getRandomInside(this.getWorld().rand);
+                    IPlantWrapper plant = PlantWrapperFactory.getPlantWrapper(this.getWorld(), pos);
+                    if ((plant != null) && (plant.canUseFertilizer())) {
+                        int used = plant.useFertilizer(fertilizer);
+                        fertilizer.shrink(this.inStackHandler.extractFromCombinedInventory(fertilizer, used));
+                        result += .1;
+                    }
+                    tries--;
+                }
+            }
+        }
 
         return result;
     }
