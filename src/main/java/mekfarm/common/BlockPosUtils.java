@@ -8,15 +8,24 @@ import net.minecraft.util.math.BlockPos;
  */
 public class BlockPosUtils {
     public static BlockCube getCube(BlockPos entityPos, EnumFacing facing, int radius, int height) {
-        EnumFacing left = facing.rotateYCCW();
-        EnumFacing right = facing.rotateY();
-        BlockPos pos1 = entityPos
-                .offset(left, radius)
-                .offset(facing, 1);
-        BlockPos pos2 = entityPos
-                .offset(right, radius)
-                .offset(facing, radius * 2 + 1)
-                .offset(EnumFacing.UP, height - 1);
+        BlockPos pos1, pos2;
+
+        if (facing != null) {
+            // assume horizontal facing
+            EnumFacing left = facing.rotateYCCW();
+            EnumFacing right = facing.rotateY();
+            pos1 = entityPos
+                    .offset(left, radius)
+                    .offset(facing, 1);
+            pos2 = entityPos
+                    .offset(right, radius)
+                    .offset(facing, radius * 2 + 1);
+        }
+        else {
+            pos1 = new BlockPos(entityPos.getX() - radius, entityPos.getY(), entityPos.getZ() - radius);
+            pos2 = new BlockPos(entityPos.getX() + radius, entityPos.getY(), entityPos.getZ() + radius);
+        }
+        pos2 = pos2.offset(EnumFacing.UP, height - 1);
 
         return new BlockCube(pos1, pos2);
     }

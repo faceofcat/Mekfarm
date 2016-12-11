@@ -77,7 +77,8 @@ public class FilteredStackHandler extends ItemStackHandler implements IInternalI
 
     public ItemStack distributeItems(ItemStack stack, boolean simulate, boolean ignoreEmptySlots) {
         for (int i = 0; i < this.getSlots(); i++) {
-            if (!ignoreEmptySlots || (this.getStackInSlot(i, true) != null)) {
+            ItemStack existing = this.getStackInSlot(i, true);
+            if (!ignoreEmptySlots || ((existing != null) && !existing.isEmpty())) {
                 stack = this.insertItem(i, stack, simulate, true);
                 if ((stack == null) || stack.isEmpty() || (stack.getCount() == 0)) {
                     break;
