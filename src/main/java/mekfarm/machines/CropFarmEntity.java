@@ -85,7 +85,7 @@ public class CropFarmEntity extends ElectricMekfarmMachine {
                     }
                     if (!ItemStackUtil.isEmpty(remaining)) {
                         BlockPos spawnPos = this.pos.offset(facing);
-                        world.spawnEntity(new EntityItem(this.getWorld(), spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), remaining));
+                        this.getWorld().spawnEntityInWorld(new EntityItem(this.getWorld(), spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), remaining));
                     }
                 }
                 result += 0.45f;

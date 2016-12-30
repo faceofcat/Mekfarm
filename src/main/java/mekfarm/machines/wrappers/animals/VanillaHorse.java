@@ -1,7 +1,7 @@
 package mekfarm.machines.wrappers.animals;
 
 import mekfarm.machines.wrappers.IAnimalWrapper;
-import net.minecraft.entity.passive.AbstractHorse;
+import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -12,9 +12,9 @@ import java.util.List;
  * Created by CF on 2016-12-10.
  */
 public class VanillaHorse extends VanillaGenericAnimal {
-    private AbstractHorse horse;
+    private EntityHorse horse;
 
-    public VanillaHorse(AbstractHorse horse) {
+    public VanillaHorse(EntityHorse horse) {
         super(horse);
         this.horse = horse;
     }

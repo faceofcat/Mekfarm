@@ -5,6 +5,7 @@ import mekfarm.common.CommonProxy;
 import mekfarm.common.FakeMekPlayer;
 import mekfarm.common.ItemsRegistry;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -46,7 +47,7 @@ public class MekfarmMod
         }
 
         @Override
-        public ItemStack getTabIconItem() { return this.getIconItemStack(); }
+        public Item getTabIconItem() { return this.getIconItemStack().getItem(); }
     };
 
     private static HashMap<String, FakeMekPlayer> fakePlayers = new HashMap<>();
@@ -67,7 +68,7 @@ public class MekfarmMod
 //                    spawn = new BlockPos(0, 0, 0);
 //                }
 //                player.setPosition(spawn.getX(), spawn.getY(), spawn.getZ());
-                fakePlayers.putIfAbsent(key, player);
+                fakePlayers.put(key, player);
                 return player;
             }
         }

@@ -90,7 +90,7 @@ public class CropClonerEntity extends ElectricMekfarmMachine {
                             ItemStack remaining = ItemHandlerHelper.insertItem(this.outStackHandler, s, false);
                             if (!ItemStackUtil.isEmpty(remaining)) {
                                 BlockPos spawnPos = this.pos.offset(facing);
-                                world.spawnEntity(new EntityItem(this.getWorld(), spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), remaining));
+                                this.getWorld().spawnEntityInWorld(new EntityItem(this.getWorld(), spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), remaining));
                             }
                         }
                     }
@@ -177,7 +177,7 @@ public class CropClonerEntity extends ElectricMekfarmMachine {
 
     private PropertyInteger getAgeProperty(IBlockState thing) {
         if (thing != null) {
-            for (IProperty p : thing.getPropertyKeys()) {
+            for (IProperty p : thing.getPropertyNames()) {
                 if ((p instanceof PropertyInteger) && (p.getName() == "age")) {
                     return (PropertyInteger) p;
                 }

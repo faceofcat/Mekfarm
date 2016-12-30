@@ -194,7 +194,7 @@ public class AnimalFarmEntity extends ElectricMekfarmMachine {
                                 ItemStack stillThere = ItemHandlerHelper.insertItem(this.outStackHandler, loot.get(j),false);
                                 if (!ItemStackUtil.isEmpty(stillThere)) {
                                     BlockPos pos = wrapper.getAnimal().getPosition();
-                                    this.getWorld().spawnEntity(new EntityItem(this.getWorld(), pos.getX(), pos.getY(), pos.getZ(), stillThere));
+                                    this.getWorld().spawnEntityInWorld(new EntityItem(this.getWorld(), pos.getX(), pos.getY(), pos.getZ(), stillThere));
                                 }
                             }
 
