@@ -1,6 +1,5 @@
 package mekfarm.machines;
 
-import mekfarm.common.BlocksRegistry;
 import mekfarm.common.ItemsRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -13,7 +12,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
  */
 public class CropFarmBlock extends BaseOrientedBlock<CropFarmEntity> {
     public CropFarmBlock() {
-        super("crop_farm", CropFarmEntity.class, BlocksRegistry.CROP_FARM_GUI_ID);
+        super("crop_farm", CropFarmEntity.class);
     }
 
     @Override

@@ -17,6 +17,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
 
 import java.util.UUID;
 
@@ -28,7 +29,7 @@ import java.util.UUID;
  * TODO: figure out if not using FakePlayer is a bad idea in general
  */
 public class FakeMekPlayer extends EntityPlayerMP {
-    public ItemStack previousItem = ItemStack.EMPTY;
+    public ItemStack previousItem = ItemStackUtil.getEmptyStack();
 
     public FakeMekPlayer(WorldServer world, GameProfile name)
     {
@@ -56,14 +57,14 @@ public class FakeMekPlayer extends EntityPlayerMP {
         ItemStack itemStackOld = this.previousItem;
         ItemStack itemStackCurrent = super.getHeldItemMainhand();
 
-        if (ItemStack.areItemStacksEqual(itemStackCurrent, itemStackOld) == false) {
-            if (!itemStackOld.isEmpty()) {
+        if (!ItemStack.areItemStacksEqual(itemStackCurrent, itemStackOld)) {
+            if (!ItemStackUtil.isEmpty(itemStackOld)) {
                 super.getAttributeMap().removeAttributeModifiers(itemStackOld.getAttributeModifiers(EntityEquipmentSlot.MAINHAND));
             }
-            if ((itemStackCurrent != null) && !itemStackCurrent.isEmpty()) {
+            if (!ItemStackUtil.isEmpty(itemStackCurrent)) {
                 super.getAttributeMap().applyAttributeModifiers(itemStackCurrent.getAttributeModifiers(EntityEquipmentSlot.MAINHAND));
             }
-            this.previousItem = ((itemStackCurrent == null) || itemStackCurrent.isEmpty()) ? ItemStack.EMPTY : itemStackCurrent.copy();
+            this.previousItem = ItemStackUtil.isEmpty(itemStackCurrent) ? ItemStackUtil.getEmptyStack() : itemStackCurrent.copy();
         }
     }
 

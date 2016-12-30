@@ -1,7 +1,6 @@
 package mekfarm.machines;
 
 import mekfarm.client.CropClonerSpecialRenderer;
-import mekfarm.common.BlocksRegistry;
 import mekfarm.common.ItemsRegistry;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
@@ -27,7 +26,7 @@ public class CropClonerBlock extends BaseOrientedBlock<CropClonerEntity> {
     public static final PropertyInteger STATE = PropertyInteger.create("state", 0, 1);
 
     public CropClonerBlock() {
-        super("crop_cloner", CropClonerEntity.class, BlocksRegistry.CROP_CLONER_GUI_ID);
+        super("crop_cloner", CropClonerEntity.class);
 
         super.setDefaultState(super.getDefaultState()
             .withProperty(STATE, 0));

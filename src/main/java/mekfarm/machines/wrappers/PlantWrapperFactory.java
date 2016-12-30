@@ -18,13 +18,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
+import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
 
 /**
  * Created by CF on 2016-12-10.
  */
 public class PlantWrapperFactory {
     public static ISeedWrapper getSeedWrapper(ItemStack seeds) {
-        if ((seeds == null) || seeds.isEmpty()) {
+        if (ItemStackUtil.isEmpty(seeds)) {
             return null;
         }
         Item seed = seeds.getItem();

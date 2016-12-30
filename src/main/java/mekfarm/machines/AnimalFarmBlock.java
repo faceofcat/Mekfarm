@@ -1,6 +1,5 @@
 package mekfarm.machines;
 
-import mekfarm.common.BlocksRegistry;
 import mekfarm.common.ItemsRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -13,7 +12,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
  */
 public class AnimalFarmBlock extends BaseOrientedBlock<AnimalFarmEntity> {
     public AnimalFarmBlock() {
-        super("animal_farm", AnimalFarmEntity.class, BlocksRegistry.ANIMAL_FARM_GUI_ID);
+        super("animal_farm", AnimalFarmEntity.class);
     }
 
     @Override

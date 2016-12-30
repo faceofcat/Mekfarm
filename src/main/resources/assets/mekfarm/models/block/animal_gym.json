@@ -1,0 +1,6 @@
+{
+  "parent": "mekfarm:block/base_generator",
+  "textures": {
+    "north": "mekfarm:blocks/generators/animal_gym-front"
+  }
+}

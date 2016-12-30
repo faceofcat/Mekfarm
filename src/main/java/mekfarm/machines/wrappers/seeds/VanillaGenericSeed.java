@@ -9,6 +9,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
+import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
 
 /**
  * Created by CF on 2016-12-11.
@@ -41,7 +42,7 @@ public class VanillaGenericSeed implements ISeedWrapper {
     }
 
     public static boolean isSeed(ItemStack stack) {
-        if (!stack.isEmpty()) {
+        if (!ItemStackUtil.isEmpty(stack)) {
             Item item = stack.getItem();
             return (item instanceof IPlantable);
         }

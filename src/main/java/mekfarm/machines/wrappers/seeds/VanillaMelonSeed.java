@@ -1,11 +1,10 @@
 package mekfarm.machines.wrappers.seeds;
 
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
 
 /**
  * Created by CF on 2016-12-11.
@@ -25,7 +24,7 @@ public class VanillaMelonSeed extends VanillaGenericSeed {
     }
 
     public static boolean isSeed(ItemStack stack) {
-        return (!stack.isEmpty() &&
+        return (!ItemStackUtil.isEmpty(stack) &&
                 ((stack.getItem() == Items.MELON_SEEDS) || (stack.getItem() == Items.PUMPKIN_SEEDS))
         );
     }

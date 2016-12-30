@@ -2,11 +2,9 @@ package mekfarm.machines.wrappers.plants;
 
 import com.google.common.collect.Lists;
 import mekfarm.MekfarmMod;
-import mekfarm.common.BlockCube;
 import mekfarm.common.BlockPosUtils;
 import mekfarm.common.FakeMekPlayer;
 import mekfarm.machines.wrappers.IPlantWrapper;
-import mekfarm.machines.wrappers.animals.VanillaGenericAnimal;
 import net.minecraft.block.Block;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.state.IBlockState;
@@ -18,6 +16,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
 
 import java.util.List;
 
@@ -47,7 +46,7 @@ public class VanillaGenericPlant implements IPlantWrapper {
     @Override
     public List<ItemStack> harvest(int fortune) {
         FakeMekPlayer player = MekfarmMod.getFakePlayer(this.world);
-        state.getBlock().harvestBlock(this.world, player, pos, state, null, ItemStack.EMPTY);
+        state.getBlock().harvestBlock(this.world, player, pos, state, null, ItemStackUtil.getEmptyStack());
         this.world.setBlockState(pos, state.getBlock().getDefaultState());
         this.world.destroyBlock(pos,true); // <-- to force replanting
 
@@ -88,7 +87,7 @@ public class VanillaGenericPlant implements IPlantWrapper {
         if (player != null) {
             player.setItemInUse(fertilizer.copy());
             EnumActionResult result = player.getHeldItem(EnumHand.MAIN_HAND).onItemUse(player, world, pos, EnumHand.MAIN_HAND, EnumFacing.UP, .5f, .5f, .5f);
-            player.setItemInUse(ItemStack.EMPTY);
+            player.setItemInUse(ItemStackUtil.getEmptyStack());
             return 1;
         }
         return 0;

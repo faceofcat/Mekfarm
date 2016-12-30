@@ -8,6 +8,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
 
 /**
  * Created by CF on 2016-12-11.
@@ -46,5 +47,5 @@ public class VanillaReedsSeed implements ISeedWrapper {
     }
 
     public static boolean isSeed(ItemStack stack) {
-        return (!stack.isEmpty() && (stack.getItem() == Items.REEDS));
+        return (!ItemStackUtil.isEmpty(stack) && (stack.getItem() == Items.REEDS));
     }}

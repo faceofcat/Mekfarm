@@ -8,8 +8,8 @@ item.mekfarm_animal_age_filter_adult.name=Animal Filter (adults)
 item.mekfarm_animal_age_filter_baby.name=Animal Filter (baby)
 item.mekfarm_machine_case.name=Machine Case
 
-tile.mekfarm.animal_farm.name=Animal Farm
-tile.mekfarm.animal_releaser.name=Animal Releaser
-tile.mekfarm.electric_butcher.name=Electric Butcher
-tile.mekfarm.crop_farm.name=Crop Farm
-tile.mekfarm.crop_cloner.name=Crop Cloner
+tile.mekfarm_animal_farm.name=Animal Farm
+tile.mekfarm_animal_releaser.name=Animal Releaser
+tile.mekfarm_electric_butcher.name=Electric Butcher
+tile.mekfarm_crop_farm.name=Crop Farm
+tile.mekfarm_crop_cloner.name=Crop Cloner

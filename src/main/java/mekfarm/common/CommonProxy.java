@@ -1,11 +1,9 @@
 package mekfarm.common;
 
 import mekfarm.MekfarmMod;
-import mekfarm.ui.MekfarmGuiProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
@@ -22,7 +20,7 @@ public class CommonProxy {
     public void init(FMLInitializationEvent e) {
         MekfarmMod.logger.info("CommonProxy::init");
 
-        NetworkRegistry.INSTANCE.registerGuiHandler(MekfarmMod.instance, new MekfarmGuiProxy());
+        // NetworkRegistry.INSTANCE.registerGuiHandler(MekfarmMod.instance, new MekfarmGuiProxy());
     }
 
     public void postInit(FMLPostInitializationEvent e) {

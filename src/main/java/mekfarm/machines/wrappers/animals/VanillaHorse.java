@@ -2,7 +2,6 @@ package mekfarm.machines.wrappers.animals;
 
 import mekfarm.machines.wrappers.IAnimalWrapper;
 import net.minecraft.entity.passive.AbstractHorse;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

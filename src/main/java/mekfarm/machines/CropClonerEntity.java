@@ -1,22 +1,25 @@
 package mekfarm.machines;
 
 import com.google.common.collect.Lists;
-import mekfarm.containers.CropClonerContainer;
-import mekfarm.ui.CropClonerContainerGUI;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.ndrei.teslacorelib.capabilities.hud.HudInfoLine;
+import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
+import net.ndrei.teslacorelib.inventory.BoundingRectangle;
 
 import java.awt.*;
 import java.util.List;
@@ -24,27 +27,44 @@ import java.util.List;
 /**
  * Created by CF on 2016-11-24.
  */
-public class CropClonerEntity extends BaseElectricWaterEntity<CropClonerContainer> {
+public class CropClonerEntity extends ElectricMekfarmMachine {
     private IBlockState plantedThing = null;
-//    private boolean hasSeed = true;
+    private IFluidTank waterTank;
 
     public CropClonerEntity() {
-        super(5, 500000, 1, 6, 0, 5000, CropClonerContainer.class);
+        super(5);
+    }
+
+//    @Override
+//    @SideOnly(Side.CLIENT)
+//    public GuiContainer getContainerGUI(IInventory playerInventory) {
+//        return new CropClonerContainerGUI(this, this.getContainer(playerInventory));
+//    }
+
+    @Override
+    protected void createAddonsInventory() {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public GuiContainer getContainerGUI(IInventory playerInventory) {
-        return new CropClonerContainerGUI(this, this.getContainer(playerInventory));
+    protected void initializeInventories() {
+        super.initializeInventories();
+
+        this.waterTank = super.addFluidTank(FluidRegistry.WATER, 5000, EnumDyeColor.BLUE, "Water Tank",
+                new BoundingRectangle(43, 25, 18, 54));
     }
 
     @Override
-    protected boolean acceptsInputStack(int slot, ItemStack stack, boolean internal) {
-        if ((stack == null) || stack.isEmpty()) {
+    protected int getInputSlots() {
+        return 1;
+    }
+
+    @Override
+    protected boolean acceptsInputStack(int slot, ItemStack stack) {
+        if (ItemStackUtil.isEmpty(stack)) {
             return false;
         }
 
-        if ((stack.getItem() instanceof IPlantable) && (stack.getCount() > 0)) {
+        if (stack.getItem() instanceof IPlantable) {
             IPlantable plant = (IPlantable) stack.getItem();
             if (plant.getPlantType(this.getWorld(), this.getPos()) == EnumPlantType.Crop) {
                 return true;
@@ -56,6 +76,7 @@ public class CropClonerEntity extends BaseElectricWaterEntity<CropClonerContaine
     @Override
     protected float performWork() {
         float result = 0.0f;
+        EnumFacing facing = super.getFacing();
 
         if (this.plantedThing != null) {
             PropertyInteger ageProperty = this.getAgeProperty(this.plantedThing);
@@ -66,8 +87,11 @@ public class CropClonerEntity extends BaseElectricWaterEntity<CropClonerContaine
                     List<ItemStack> stacks = this.plantedThing.getBlock().getDrops(this.getWorld(), this.getPos(), this.plantedThing, 0);
                     if (stacks != null) {
                         for (ItemStack s : stacks) {
-                            // TODO: handle things that don't fit in the output slots
-                            this.outStackHandler.distributeItems(s, false);
+                            ItemStack remaining = ItemHandlerHelper.insertItem(this.outStackHandler, s, false);
+                            if (!ItemStackUtil.isEmpty(remaining)) {
+                                BlockPos spawnPos = this.pos.offset(facing);
+                                world.spawnEntity(new EntityItem(this.getWorld(), spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), remaining));
+                            }
                         }
                     }
                     this.plantedThing = null;
@@ -80,13 +104,13 @@ public class CropClonerEntity extends BaseElectricWaterEntity<CropClonerContaine
             result += .85f;
         }
 
-        if ((this.plantedThing == null) && super.hasEnoughFluid()) {
-            ItemStack stack = this.inStackHandler.getStackInSlot(0, true);
-            if ((stack != null) && (stack.getCount() > 0) && (stack.getItem() instanceof IPlantable)) {
+        if ((this.plantedThing == null) && (this.waterTank != null) && (this.waterTank.getFluidAmount() >= 250)) {
+            ItemStack stack = this.inStackHandler.getStackInSlot(0);
+            if (!ItemStackUtil.isEmpty(stack) && (stack.getItem() instanceof IPlantable)) {
                 IPlantable plantable = (IPlantable) stack.getItem();
                 if (plantable.getPlantType(this.getWorld(), this.getPos()) == EnumPlantType.Crop) {
                     this.plantedThing = plantable.getPlant(this.getWorld(), this.getPos());
-                    super.extractWorkFluid();
+                    this.waterTank.drain(250, true); // TODO: <-- do this better
                     this.onPlantedThingChanged();
                 }
             }
@@ -97,10 +121,10 @@ public class CropClonerEntity extends BaseElectricWaterEntity<CropClonerContaine
     }
 
     private void onPlantedThingChanged() {
-        if ((null != this.getWorld()) && (null != this.getPos())) {
+        if ((null != this.getWorld()) && (null != this.getPos())) { // <-- weird, but it actually happens!!
             int state = (this.plantedThing == null) ? 0 : 1;
             IBlockState block = this.getWorld().getBlockState(this.getPos());
-            if ((block != null) && (block.getValue(CropClonerBlock.STATE) != state)) {
+            if (block.getValue(CropClonerBlock.STATE) != state) {
                 CropClonerBlock.setState(block.withProperty(CropClonerBlock.STATE, state), this.getWorld(), this.getPos());
             }
         }
@@ -132,8 +156,6 @@ public class CropClonerEntity extends BaseElectricWaterEntity<CropClonerContaine
                 this.onPlantedThingChanged();
             }
         }
-
-//        this.hasSeed = compound.getBoolean("has_seed");
     }
 
     @Override
@@ -149,7 +171,6 @@ public class CropClonerEntity extends BaseElectricWaterEntity<CropClonerContaine
                 compound.setInteger("plantAge", this.plantedThing.getValue(ageProperty));
             }
         }
-//        compound.setBoolean("has_seed", this.hasSeed);
 
         return compound;
     }
@@ -169,24 +190,17 @@ public class CropClonerEntity extends BaseElectricWaterEntity<CropClonerContaine
         return this.plantedThing;
     }
 
-    @Override
-    protected int getFluidRequiredToWork(){
-        return 250;
-    }
-
     public List<HudInfoLine> getHUDLines() {
         List<HudInfoLine> list = super.getHUDLines();
         if (list == null)
             list = Lists.newArrayList();
 
-        if (!super.outOfPower && super.hasEnoughFluid() && (this.plantedThing == null)) {
+        if (this.plantedThing == null) {
             list.add(new HudInfoLine(new Color(255, 159, 51),
                     new Color(255, 159, 51, 42),
                     "no seed")
                     .setTextAlignment(HudInfoLine.TextAlignment.CENTER));
-        }
-
-        if (this.plantedThing != null) {
+        } else /*if (this.plantedThing != null)*/ {
             list.add(new HudInfoLine(Color.WHITE, this.plantedThing.getBlock().getLocalizedName())
                     .setTextAlignment(HudInfoLine.TextAlignment.CENTER));
             PropertyInteger age = this.getAgeProperty(this.plantedThing);

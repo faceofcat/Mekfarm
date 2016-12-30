@@ -3,11 +3,11 @@ package mekfarm.machines.wrappers.seeds;
 import mekfarm.machines.wrappers.ISeedWrapper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
 
 /**
  * Created by CF on 2016-12-11.
@@ -42,6 +42,6 @@ public class VanillaCactusSeed implements ISeedWrapper {
     }
 
     public static boolean isSeed(ItemStack stack) {
-        return (!stack.isEmpty() && (stack.getItem() == Item.getItemFromBlock(Blocks.CACTUS)));
+        return (!ItemStackUtil.isEmpty(stack) && (stack.getItem() == Item.getItemFromBlock(Blocks.CACTUS)));
     }
 }

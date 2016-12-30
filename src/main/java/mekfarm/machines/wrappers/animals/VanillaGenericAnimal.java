@@ -1,7 +1,6 @@
 package mekfarm.machines.wrappers.animals;
 
 import com.google.common.collect.Lists;
-import mekfarm.machines.AnimalFarmEntity;
 import mekfarm.machines.wrappers.IAnimalWrapper;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityCow;
@@ -12,6 +11,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.IShearable;
+import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
 
 import java.util.List;
 
@@ -50,7 +50,7 @@ public class VanillaGenericAnimal implements IAnimalWrapper {
     public int mate(EntityPlayer player, ItemStack stack, IAnimalWrapper wrapper) {
         int consumedFood;
         int neededFood = 2 * this.getFoodNeededForMating(stack);
-        if ((stack == null) || stack.getCount() < neededFood) {
+        if (ItemStackUtil.getSize(stack) < neededFood) {
             consumedFood = 0;
         } else if (!this.canMateWith(wrapper) || !(this.isFood(stack))) {
             consumedFood = 0;
@@ -106,7 +106,7 @@ public class VanillaGenericAnimal implements IAnimalWrapper {
     public ItemStack milk() {
         return this.canBeMilked()
                 ? new ItemStack(Items.MILK_BUCKET, 1)
-                : ItemStack.EMPTY;
+                : ItemStackUtil.getEmptyStack();
     }
 
     @Override
@@ -119,7 +119,7 @@ public class VanillaGenericAnimal implements IAnimalWrapper {
     public ItemStack bowl() {
         return this.canBeBowled()
                 ? new ItemStack(Items.MUSHROOM_STEW, 1)
-                : ItemStack.EMPTY;
+                : ItemStackUtil.getEmptyStack();
     }
 
     public static void populateFoodItems(List<Item> food) {

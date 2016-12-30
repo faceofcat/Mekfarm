@@ -3,38 +3,33 @@ package mekfarm.machines;
 import mekfarm.MekfarmMod;
 import mekfarm.common.BlockCube;
 import mekfarm.common.BlockPosUtils;
-import mekfarm.common.BlocksRegistry;
 import mekfarm.common.ItemsRegistry;
-import mekfarm.containers.AnimalReleaserContainer;
 import mekfarm.items.AnimalPackageItem;
-import mekfarm.ui.FarmContainerGUI;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.ItemHandlerHelper;
+import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
 
 /**
  * Created by CF on 2016-11-04.
  */
-public class AnimalReleaserEntity extends BaseElectricEntity<AnimalReleaserContainer> {
+public class AnimalReleaserEntity extends ElectricMekfarmMachine {
     public AnimalReleaserEntity() {
-        super(2, 500000, 3, 3, 0, AnimalReleaserContainer.class);
+        super(2);
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public GuiContainer getContainerGUI(IInventory playerInventory) {
-        return new FarmContainerGUI(this, this.getContainer(playerInventory));
-    }
+//    @Override
+//    @SideOnly(Side.CLIENT)
+//    public GuiContainer getContainerGUI(IInventory playerInventory) {
+//        return new FarmContainerGUI(this, this.getContainer(playerInventory));
+//    }
 
     @Override
-    protected boolean acceptsInputStack(int slot, ItemStack stack, boolean internal) {
+    protected boolean acceptsInputStack(int slot, ItemStack stack) {
         if (stack == null)
             return true;
 
@@ -46,16 +41,20 @@ public class AnimalReleaserEntity extends BaseElectricEntity<AnimalReleaserConta
     }
 
     @Override
+    protected void createAddonsInventory() {
+    }
+
+    @Override
     protected float performWork() {
-        ItemStack stack = null;
+        ItemStack stack = ItemStackUtil.getEmptyStack();
         int stackIndex = 0;
         for (; stackIndex < this.inStackHandler.getSlots(); stackIndex++) {
-            stack = this.inStackHandler.extractItem(stackIndex, 1, true, true);
-            if ((stack != null) && (stack.getCount() > 0)) {
+            stack = this.inStackHandler.extractItem(stackIndex, 1, true);
+            if (!ItemStackUtil.isEmpty(stack)) {
                 break;
             }
         }
-        if ((stack != null) && (stack.getCount() > 0)) {
+        if (!ItemStackUtil.isEmpty(stack)) {
             ItemStack stackCopy = stack.copy();
             if ((stackCopy.getItem() instanceof AnimalPackageItem) && stackCopy.hasTagCompound()) {
                 NBTTagCompound compound = stackCopy.getTagCompound();
@@ -70,18 +69,16 @@ public class AnimalReleaserEntity extends BaseElectricEntity<AnimalReleaserConta
                             EntityAnimal ea = (EntityAnimal)thing;
                             ea.readEntityFromNBT(animal);
 
-                            EnumFacing facing = BlocksRegistry.animalReleaserBlock.getStateFromMeta(this.getBlockMetadata())
-                                    .getValue(BlocksRegistry.animalReleaserBlock.FACING)
-                                    .getOpposite();
+                            EnumFacing facing = super.getFacing().getOpposite();
                             BlockCube cube = BlockPosUtils.getCube(this.getPos().offset(facing, 1), facing, 2, 1);
                             BlockPos pos = cube.getRandomInside(this.getWorld().rand);
                             ea.setPosition(pos.getX(), pos.getY(), pos.getZ());
 
                             stackCopy.setTagCompound(null);
-                            ItemStack finalStack = this.outStackHandler.distributeItems(stackCopy, false);
-                            int inserted = stack.getCount() - ((finalStack == null) ? 0 : finalStack.getCount());
+                            ItemStack finalStack = ItemHandlerHelper.insertItem(this.outStackHandler, stackCopy, false);
+                            int inserted = ItemStackUtil.getSize(stack) - ItemStackUtil.getSize(finalStack);
                             if (inserted > 0) {
-                                this.inStackHandler.extractItem(stackIndex, inserted, false, true);
+                                this.inStackHandler.extractItem(stackIndex, inserted, false);
                                 this.getWorld().spawnEntity(ea);
                                 return 1.0f;
                             }
