@@ -165,7 +165,7 @@ public class AnimalFarmEntity extends ElectricMekfarmMachine {
                                 int foodUsed = wrapper.mate(MekfarmMod.getFakePlayer(this.getWorld()), foodStack, toMateWith);
                                 if ((foodUsed > 0) && (foodUsed <= ItemStackUtil.getSize(foodStack))) {
                                     ItemStackUtil.extractFromCombinedInventory(this.inStackHandler, foodStack, foodUsed);
-                                    foodStack.shrink(foodUsed);
+                                    ItemStackUtil.shrink(foodStack, foodUsed);
                                     result += ENERGY_FEED;
                                     break;
                                 }
