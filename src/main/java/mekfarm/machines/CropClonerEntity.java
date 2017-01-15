@@ -32,7 +32,7 @@ public class CropClonerEntity extends ElectricMekfarmMachine {
     private IFluidTank waterTank;
 
     public CropClonerEntity() {
-        super(5);
+        super(CropClonerEntity.class.hashCode());
     }
 
 //    @Override

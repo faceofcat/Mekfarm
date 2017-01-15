@@ -47,14 +47,8 @@ public class AnimalFarmEntity extends ElectricMekfarmMachine {
     private final float ENERGY_MILK = .3f;
 
     public AnimalFarmEntity() {
-        super(1); // , 500000, 3, 6, 1, AnimalFarmContainer.class);
+        super(AnimalFarmEntity.class.hashCode());
     }
-
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public GuiContainer getContainerGUI(IInventory playerInventory) {
-//        return new FarmContainerGUI(this, this.getContainer(playerInventory));
-//    }
 
     @Override
     protected boolean acceptsInputStack(int slot, ItemStack stack) {

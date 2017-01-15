@@ -11,6 +11,7 @@ public final class BlocksRegistry {
     public static ElectricButcherBlock electricButcherBlock;
     public static CropFarmBlock cropFarmBlock;
     public static CropClonerBlock cropClonerBlock;
+    public static AnimalGymBlock animalGymBlock;
 
     static void createBlocks() {
         (BlocksRegistry.animalFarmBlock = new AnimalFarmBlock()).register();
@@ -18,5 +19,6 @@ public final class BlocksRegistry {
         (BlocksRegistry.electricButcherBlock = new ElectricButcherBlock()).register();
         (BlocksRegistry.cropFarmBlock = new CropFarmBlock()).register();
         (BlocksRegistry.cropClonerBlock = new CropClonerBlock()).register();
+        (BlocksRegistry.animalGymBlock = new AnimalGymBlock()).register();
     }
 }

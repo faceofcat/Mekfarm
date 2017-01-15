@@ -1,10 +1,10 @@
 package mekfarm.machines;
 
-import mekfarm.common.ItemsRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.ndrei.teslacorelib.TeslaCoreLib;
 
 /**
  * Created by CF on 2016-11-04.
@@ -17,7 +17,7 @@ public class AnimalReleaserBlock extends BaseOrientedBlock<AnimalReleaserEntity>
         return new ShapedOreRecipe(new ItemStack(this, 1),
                 "wxw", "wcw", "www",
                 'x', Blocks.DISPENSER,
-                'c', ItemsRegistry.machineCase,
+                'c', TeslaCoreLib.machineCase,
                 'w', Blocks.PLANKS);
     }
 }

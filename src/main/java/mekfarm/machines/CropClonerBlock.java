@@ -1,7 +1,6 @@
 package mekfarm.machines;
 
 import mekfarm.client.CropClonerSpecialRenderer;
-import mekfarm.common.ItemsRegistry;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -18,6 +17,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.ndrei.teslacorelib.TeslaCoreLib;
 
 /**
  * Created by CF on 2016-11-24.
@@ -39,7 +39,7 @@ public class CropClonerBlock extends BaseOrientedBlock<CropClonerEntity> {
                 'r', Blocks.REDSTONE_BLOCK,
                 'h', Items.DIAMOND_HOE,
                 'd', Blocks.DIRT,
-                'c', ItemsRegistry.machineCase,
+                'c', TeslaCoreLib.machineCase,
                 'w', Blocks.PLANKS);
     }
 

@@ -34,7 +34,7 @@ public class MekfarmMod
 
     public static Logger logger;
 
-    public static ITeslaCorePackets network = new TeslaCorePackets(MODID);
+//    public static ITeslaCorePackets network = new TeslaCorePackets(MODID);
 
     public static CreativeTabs creativeTab = new CreativeTabs("tabMekfarm") {
         @Override

@@ -1,11 +1,11 @@
 package mekfarm.machines;
 
-import mekfarm.common.ItemsRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.ndrei.teslacorelib.TeslaCoreLib;
 
 /**
  * Created by CF on 2016-11-15.
@@ -24,7 +24,7 @@ public class CropFarmBlock extends BaseOrientedBlock<CropFarmEntity> {
                 'z', Items.WHEAT_SEEDS,
                 'a', Items.CARROT,
                 'b', Items.POTATO,
-                'c', ItemsRegistry.machineCase,
+                'c', TeslaCoreLib.machineCase,
                 'w', Blocks.PLANKS);
     }
 }
