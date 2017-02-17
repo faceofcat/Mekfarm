@@ -26,14 +26,8 @@ import java.util.List;
  */
 public class ElectricButcherEntity extends ElectricMekfarmMachine {
     public ElectricButcherEntity() {
-        super(3);
+        super(ElectricButcherEntity.class.hashCode());
     }
-
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public GuiContainer getContainerGUI(IInventory playerInventory) {
-//        return new ElectricButcherContainerGUI(this, this.getContainer(playerInventory));
-//    }
 
     @Override
     protected int getInputSlots() {

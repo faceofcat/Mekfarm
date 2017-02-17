@@ -30,14 +30,8 @@ public class CropFarmEntity extends ElectricMekfarmMachine {
     private IFluidTank waterTank;
 
     public CropFarmEntity() {
-        super(4);
+        super(CropFarmEntity.class.hashCode());
     }
-
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public GuiContainer getContainerGUI(IInventory playerInventory) {
-//        return new CropFarmContainerGUI(this, this.getContainer(playerInventory));
-//    }
 
     @Override
     protected void initializeInventories() {

@@ -7,18 +7,20 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.ndrei.teslacorelib.TeslaCoreLib;
 
 /**
- * Created by CF on 2016-11-04.
+ * Created by CF on 2016-12-09.
  */
-public class AnimalReleaserBlock extends BaseOrientedBlock<AnimalReleaserEntity> {
-    public AnimalReleaserBlock() { super("animal_releaser", AnimalReleaserEntity.class); }
+public class AnimalGymBlock extends BaseOrientedBlock<AnimalGymEntity> {
+    public AnimalGymBlock() {
+        super("animal_gym", AnimalGymEntity.class);
+    }
 
     @Override
     protected IRecipe getRecipe() {
         return new ShapedOreRecipe(new ItemStack(this, 1),
-                "wxw", "wcw", "wgw",
-                'x', Blocks.DISPENSER,
+                "xgx", "wcw", "wgw",
+                'x', Blocks.IRON_BARS,
                 'c', TeslaCoreLib.machineCase,
                 'w', Blocks.PLANKS,
-                'g', TeslaCoreLib.gearStone);
+                'g', TeslaCoreLib.gearIron);
     }
 }

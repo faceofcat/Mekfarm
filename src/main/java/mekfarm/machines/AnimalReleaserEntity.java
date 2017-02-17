@@ -19,14 +19,8 @@ import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
  */
 public class AnimalReleaserEntity extends ElectricMekfarmMachine {
     public AnimalReleaserEntity() {
-        super(2);
+        super(AnimalReleaserEntity.class.hashCode());
     }
-
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public GuiContainer getContainerGUI(IInventory playerInventory) {
-//        return new FarmContainerGUI(this, this.getContainer(playerInventory));
-//    }
 
     @Override
     protected boolean acceptsInputStack(int slot, ItemStack stack) {

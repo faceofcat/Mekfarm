@@ -1,6 +1,9 @@
 package mekfarm.common;
 
-import mekfarm.items.*;
+import mekfarm.items.AnimalAgeAdultFilterItem;
+import mekfarm.items.AnimalAgeBabyFilterItem;
+import mekfarm.items.AnimalFilterItem;
+import mekfarm.items.AnimalPackageItem;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -8,20 +11,14 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  */
 public final class ItemsRegistry {
     public static AnimalPackageItem animalPackage;
-    public static BaseFilterItem baseFilterItem;
     public static AnimalFilterItem animalFilter;
     public static AnimalAgeAdultFilterItem animalAgeAdultFilter;
     public static AnimalAgeBabyFilterItem animalAgeBabyFilter;
 
-    public static MachineCaseItem machineCase;
-
     public static final void createItems() {
-        GameRegistry.register(ItemsRegistry.animalPackage = new AnimalPackageItem());
-        GameRegistry.register(ItemsRegistry.baseFilterItem = new BaseFilterItem());
-        GameRegistry.register(ItemsRegistry.animalFilter = new AnimalFilterItem());
-        GameRegistry.register(ItemsRegistry.animalAgeAdultFilter = new AnimalAgeAdultFilterItem());
-        GameRegistry.register(ItemsRegistry.animalAgeBabyFilter = new AnimalAgeBabyFilterItem());
-
-        GameRegistry.register(ItemsRegistry.machineCase = new MachineCaseItem());
+        (ItemsRegistry.animalPackage = new AnimalPackageItem()).register();
+        (ItemsRegistry.animalFilter = new AnimalFilterItem()).register();
+        (ItemsRegistry.animalAgeAdultFilter = new AnimalAgeAdultFilterItem()).register();
+        (ItemsRegistry.animalAgeBabyFilter = new AnimalAgeBabyFilterItem()).register();
     }
 }
