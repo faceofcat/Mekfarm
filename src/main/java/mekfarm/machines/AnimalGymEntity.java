@@ -257,7 +257,7 @@ public class AnimalGymEntity extends ElectricGenerator {
     private EntityAnimal getCurrent() {
         if ((this.currentAnimalClass != null) && (this.currentAnimalTag != null)) {
             try {
-                Object thing = this.currentAnimalClass.getConstructor(World.class).newInstance(world);
+                Object thing = this.currentAnimalClass.getConstructor(World.class).newInstance(this.getWorld());
                 if (thing instanceof EntityAnimal) {
                     NBTTagCompound animalCompound = this.currentAnimalTag;
                     if (animalCompound.hasKey("Attributes", 9) && this.getWorld().isRemote)
