@@ -15,9 +15,10 @@ public class AnimalReleaserBlock extends BaseOrientedBlock<AnimalReleaserEntity>
     @Override
     protected IRecipe getRecipe() {
         return new ShapedOreRecipe(new ItemStack(this, 1),
-                "wxw", "wcw", "www",
+                "wxw", "wcw", "wgw",
                 'x', Blocks.DISPENSER,
                 'c', TeslaCoreLib.machineCase,
-                'w', Blocks.PLANKS);
+                'w', Blocks.PLANKS,
+                'g', TeslaCoreLib.gearStone);
     }
 }

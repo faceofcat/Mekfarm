@@ -15,6 +15,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagFloat;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumFacing;
@@ -109,13 +110,8 @@ public class AnimalFarmEntity extends ElectricMekfarmMachine {
                 packageStack = null;
             }
             if (!ItemStackUtil.isEmpty(packageStack)) {
-                ItemStack stackCopy = packageStack.copy();
-
-                stackCopy.setTagInfo("hasAnimal", new NBTTagInt(1));
-                NBTTagCompound animalCompound = new NBTTagCompound();
-                animalToPackage.getAnimal().writeEntityToNBT(animalCompound);
-                stackCopy.setTagInfo("animal", animalCompound);
-                stackCopy.setTagInfo("animalClass", new NBTTagString(animalToPackage.getAnimal().getClass().getName()));
+                EntityAnimal animal = animalToPackage.getAnimal();
+                ItemStack stackCopy = AnimalFarmEntity.packageAnimal(packageStack, animal);
 
                 ItemStack finalStack = ItemHandlerHelper.insertItem(this.outStackHandler, stackCopy, false);
                 int inserted = ItemStackUtil.getSize(packageStack) - ItemStackUtil.getSize(finalStack);
@@ -250,5 +246,17 @@ public class AnimalFarmEntity extends ElectricMekfarmMachine {
         }
 
         return result;
+    }
+
+    static ItemStack packageAnimal(ItemStack packageStack, EntityAnimal animal) {
+        ItemStack stackCopy = (packageStack == null) ? new ItemStack(ItemsRegistry.animalPackage) : packageStack.copy();
+
+        stackCopy.setTagInfo("hasAnimal", new NBTTagInt(1));
+        NBTTagCompound animalCompound = new NBTTagCompound();
+        animal.writeEntityToNBT(animalCompound);
+        stackCopy.setTagInfo("animal", animalCompound);
+        stackCopy.setTagInfo("animalClass", new NBTTagString(animal.getClass().getName()));
+        stackCopy.setTagInfo("animalHealth", new NBTTagFloat(animal.getHealth()));
+        return stackCopy;
     }
 }

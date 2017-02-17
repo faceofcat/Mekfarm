@@ -16,9 +16,9 @@ public final class ItemsRegistry {
     public static AnimalAgeBabyFilterItem animalAgeBabyFilter;
 
     public static final void createItems() {
-        GameRegistry.register(ItemsRegistry.animalPackage = new AnimalPackageItem());
-        GameRegistry.register(ItemsRegistry.animalFilter = new AnimalFilterItem());
-        GameRegistry.register(ItemsRegistry.animalAgeAdultFilter = new AnimalAgeAdultFilterItem());
-        GameRegistry.register(ItemsRegistry.animalAgeBabyFilter = new AnimalAgeBabyFilterItem());
+        (ItemsRegistry.animalPackage = new AnimalPackageItem()).register();
+        (ItemsRegistry.animalFilter = new AnimalFilterItem()).register();
+        (ItemsRegistry.animalAgeAdultFilter = new AnimalAgeAdultFilterItem()).register();
+        (ItemsRegistry.animalAgeBabyFilter = new AnimalAgeBabyFilterItem()).register();
     }
 }

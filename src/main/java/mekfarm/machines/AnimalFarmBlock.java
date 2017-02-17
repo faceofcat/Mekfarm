@@ -18,11 +18,12 @@ public class AnimalFarmBlock extends BaseOrientedBlock<AnimalFarmEntity> {
     @Override
     protected IRecipe getRecipe() {
         return new ShapedOreRecipe(new ItemStack(this, 1),
-                "xyz", "wcw", "www",
+                "xyz", "wcw", "wgw",
                 'x', Items.WHEAT,
                 'y', Items.CARROT,
                 'z', Items.WHEAT,
                 'c', TeslaCoreLib.machineCase,
-                'w', Blocks.PLANKS);
+                'w', Blocks.PLANKS,
+                'g', TeslaCoreLib.gearStone);
     }
 }

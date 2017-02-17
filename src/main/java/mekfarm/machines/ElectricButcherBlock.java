@@ -16,9 +16,10 @@ public class ElectricButcherBlock extends BaseOrientedBlock<ElectricButcherEntit
     @Override
     protected IRecipe getRecipe() {
         return new ShapedOreRecipe(new ItemStack(this, 1),
-                "wxw", "wcw", "www",
+                "wxw", "wcw", "wgw",
                 'x', Items.DIAMOND_SWORD,
                 'c', TeslaCoreLib.machineCase,
-                'w', Blocks.PLANKS);
+                'w', Blocks.PLANKS,
+                'g', TeslaCoreLib.gearIron);
     }
 }

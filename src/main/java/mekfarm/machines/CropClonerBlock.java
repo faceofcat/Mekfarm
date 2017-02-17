@@ -35,12 +35,13 @@ public class CropClonerBlock extends BaseOrientedBlock<CropClonerEntity> {
     @Override
     protected IRecipe getRecipe() {
         return new ShapedOreRecipe(new ItemStack(this, 1),
-                "rhr", "dcd", "www",
+                "rhr", "dcd", "wgw",
                 'r', Blocks.REDSTONE_BLOCK,
                 'h', Items.DIAMOND_HOE,
                 'd', Blocks.DIRT,
                 'c', TeslaCoreLib.machineCase,
-                'w', Blocks.PLANKS);
+                'w', Blocks.PLANKS,
+                'g', TeslaCoreLib.gearIron);
     }
 
     public static void setState(IBlockState newState, World worldIn, BlockPos pos)

@@ -18,13 +18,14 @@ public class CropFarmBlock extends BaseOrientedBlock<CropFarmEntity> {
     @Override
     protected IRecipe getRecipe() {
         return new ShapedOreRecipe(new ItemStack(this, 1),
-                "xyz", "acb", "www",
+                "xyz", "acb", "wgw",
                 'x', Items.WHEAT_SEEDS,
                 'y', Items.DIAMOND_HOE,
                 'z', Items.WHEAT_SEEDS,
                 'a', Items.CARROT,
                 'b', Items.POTATO,
                 'c', TeslaCoreLib.machineCase,
-                'w', Blocks.PLANKS);
+                'w', Blocks.PLANKS,
+                'g', TeslaCoreLib.gearStone);
     }
 }
