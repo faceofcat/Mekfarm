@@ -28,9 +28,6 @@ public class MekfarmMod
     public static final String MODID = "mekfarm";
     public static final String VERSION = "0.0.1";
 
-    @SideOnly(Side.CLIENT)
-    public static final ResourceLocation MACHINES_BACKGROUND = new ResourceLocation(MekfarmMod.MODID, "textures/gui/machines.png");
-
     @SidedProxy(clientSide = "mekfarm.client.ClientProxy", serverSide = "mekfarm.common.CommonProxy")
     private static CommonProxy proxy;
 

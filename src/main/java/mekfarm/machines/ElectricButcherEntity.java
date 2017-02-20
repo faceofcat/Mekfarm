@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class ElectricButcherEntity extends ElectricMekfarmMachine {
     public ElectricButcherEntity() {
-        super(ElectricButcherEntity.class.hashCode());
+        super(ElectricButcherEntity.class.getName().hashCode());
     }
 
     @Override

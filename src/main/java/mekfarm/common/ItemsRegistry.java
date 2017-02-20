@@ -4,7 +4,6 @@ import mekfarm.items.AnimalAgeAdultFilterItem;
 import mekfarm.items.AnimalAgeBabyFilterItem;
 import mekfarm.items.AnimalFilterItem;
 import mekfarm.items.AnimalPackageItem;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * Created by CF on 2016-10-26.

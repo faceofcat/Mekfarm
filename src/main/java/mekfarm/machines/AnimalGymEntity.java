@@ -2,6 +2,7 @@ package mekfarm.machines;
 
 import mekfarm.MekfarmMod;
 import mekfarm.client.AnimalGymInfoPiece;
+import mekfarm.client.ClientProxy;
 import mekfarm.common.ItemsRegistry;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.passive.EntityAnimal;
@@ -36,7 +37,7 @@ public class AnimalGymEntity extends ElectricGenerator {
     protected ItemStackHandler outStackHandler;
 
     public AnimalGymEntity() {
-        super(AnimalGymEntity.class.hashCode());
+        super(AnimalGymEntity.class.getName().hashCode());
     }
 
     //#region inventories       methods
@@ -217,7 +218,7 @@ public class AnimalGymEntity extends ElectricGenerator {
                     return;
                 }
 
-                container.mc.getTextureManager().bindTexture(MekfarmMod.MACHINES_BACKGROUND);
+                container.mc.getTextureManager().bindTexture(ClientProxy.MACHINES_BACKGROUND);
                 container.drawTexturedRect(box.getLeft() - container.getGuiLeft(), box.getTop() - container.getGuiTop(),
                         56, over ? 9 : 1, 8, 7);
             }
