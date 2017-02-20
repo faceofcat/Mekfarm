@@ -19,7 +19,7 @@ import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
  */
 public class AnimalReleaserEntity extends ElectricMekfarmMachine {
     public AnimalReleaserEntity() {
-        super(AnimalReleaserEntity.class.hashCode());
+        super(AnimalReleaserEntity.class.getName().hashCode());
     }
 
     @Override

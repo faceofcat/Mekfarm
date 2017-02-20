@@ -19,7 +19,7 @@ public class AnimalGymInfoPiece extends BasicRenderedGuiPiece {
     private AnimalGymEntity entity;
 
     public AnimalGymInfoPiece(AnimalGymEntity entity, int left, int top) {
-        super(left, top, 54, 54, MekfarmMod.MACHINES_BACKGROUND, 1, 1);
+        super(left, top, 54, 54, ClientProxy.MACHINES_BACKGROUND, 1, 1);
 
         this.entity = entity;
     }

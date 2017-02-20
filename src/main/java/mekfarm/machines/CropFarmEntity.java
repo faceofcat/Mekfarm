@@ -30,7 +30,7 @@ public class CropFarmEntity extends ElectricMekfarmMachine {
     private IFluidTank waterTank;
 
     public CropFarmEntity() {
-        super(CropFarmEntity.class.hashCode());
+        super(CropFarmEntity.class.getName().hashCode());
     }
 
     @Override

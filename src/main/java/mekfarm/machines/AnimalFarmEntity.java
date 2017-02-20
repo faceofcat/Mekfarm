@@ -48,7 +48,7 @@ public class AnimalFarmEntity extends ElectricMekfarmMachine {
     private final float ENERGY_MILK = .3f;
 
     public AnimalFarmEntity() {
-        super(AnimalFarmEntity.class.hashCode());
+        super(AnimalFarmEntity.class.getName().hashCode());
     }
 
     @Override

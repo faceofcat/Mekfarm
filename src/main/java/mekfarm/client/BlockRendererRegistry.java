@@ -16,5 +16,6 @@ final class BlockRendererRegistry {
         BlocksRegistry.cropFarmBlock.registerRenderer();
         BlocksRegistry.cropClonerBlock.registerRenderer();
         BlocksRegistry.animalGymBlock.registerRenderer();
+        // BlocksRegistry.treeFarmBlock.registerRenderer();
     }
 }
