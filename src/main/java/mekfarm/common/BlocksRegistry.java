@@ -12,7 +12,7 @@ public final class BlocksRegistry {
     public static CropFarmBlock cropFarmBlock;
     public static CropClonerBlock cropClonerBlock;
     public static AnimalGymBlock animalGymBlock;
-    // public static TreeFarmBlock treeFarmBlock;
+    public static TreeFarmBlock treeFarmBlock;
 
     static void createBlocks() {
         (BlocksRegistry.animalFarmBlock = new AnimalFarmBlock()).register();
@@ -21,6 +21,6 @@ public final class BlocksRegistry {
         (BlocksRegistry.cropFarmBlock = new CropFarmBlock()).register();
         (BlocksRegistry.cropClonerBlock = new CropClonerBlock()).register();
         (BlocksRegistry.animalGymBlock = new AnimalGymBlock()).register();
-        // (BlocksRegistry.treeFarmBlock = new TreeFarmBlock()).register();
+        (BlocksRegistry.treeFarmBlock = new TreeFarmBlock()).register();
     }
 }

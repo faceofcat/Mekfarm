@@ -73,7 +73,7 @@ public class CropFarmEntity extends ElectricMekfarmMachine {
             if (plant.canBeHarvested() && ((1.0f - result) >= .45f)) {
                 List<ItemStack> loot = plant.harvest(0);
                 for(ItemStack lootStack : loot) {
-                    ItemStack remaining = ItemHandlerHelper.insertItem(this.inStackHandler, lootStack, false);
+                    ItemStack remaining = ItemStackUtil.insertItemInExistingStacks(this.inStackHandler, lootStack, false);
                     if (!ItemStackUtil.isEmpty(remaining)) {
                         remaining = ItemHandlerHelper.insertItem(this.outStackHandler, lootStack, false);
                     }
