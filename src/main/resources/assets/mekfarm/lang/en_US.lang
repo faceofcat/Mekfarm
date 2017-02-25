@@ -13,3 +13,5 @@ tile.mekfarm_crop_farm.name=Crop Farm
 tile.mekfarm_crop_cloner.name=Crop Cloner
 tile.mekfarm_animal_gym.name=Animal Gym
 tile.mekfarm_tree_farm.name=Tree Farm
+
+fluid.sewage=Sewage
