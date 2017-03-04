@@ -11,15 +11,37 @@ public class BlockPosUtils {
         BlockPos pos1, pos2;
 
         if (facing != null) {
-            // assume horizontal facing
-            EnumFacing left = facing.rotateYCCW();
-            EnumFacing right = facing.rotateY();
-            pos1 = entityPos
-                    .offset(left, radius)
-                    .offset(facing, 1);
-            pos2 = entityPos
-                    .offset(right, radius)
-                    .offset(facing, radius * 2 + 1);
+            if (facing == EnumFacing.UP) {
+                pos1 = entityPos
+                        .offset(EnumFacing.EAST, radius)
+                        .offset(EnumFacing.SOUTH, radius)
+                        .up(1);
+                pos2 = entityPos
+                        .offset(EnumFacing.WEST, radius)
+                        .offset(EnumFacing.NORTH, radius)
+                        .up(height);
+            }
+            else if (facing == EnumFacing.DOWN) {
+                pos1 = entityPos
+                        .offset(EnumFacing.EAST, radius)
+                        .offset(EnumFacing.SOUTH, radius)
+                        .down(1);
+                pos2 = entityPos
+                        .offset(EnumFacing.WEST, radius)
+                        .offset(EnumFacing.NORTH, radius)
+                        .down(height);
+            }
+            else {
+                // assume horizontal facing
+                EnumFacing left = facing.rotateYCCW();
+                EnumFacing right = facing.rotateY();
+                pos1 = entityPos
+                        .offset(left, radius)
+                        .offset(facing, 1);
+                pos2 = entityPos
+                        .offset(right, radius)
+                        .offset(facing, radius * 2 + 1);
+            }
         }
         else {
             pos1 = new BlockPos(entityPos.getX() - radius, entityPos.getY(), entityPos.getZ() - radius);

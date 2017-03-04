@@ -1,10 +1,17 @@
 package mekfarm.common;
 
+import com.google.common.collect.Lists;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
 
 import javax.annotation.Nullable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -108,5 +115,35 @@ public class BlockCube implements Iterable<BlockPos> {
             position++;
             return new BlockPos(this.minX + x, this.minY + y, this.minZ + z);
         }
+    }
+
+    public <T extends Entity> List<T> findEntities(Class<T> entityClass, World world) {
+        return world.getEntitiesWithinAABB(entityClass, this.getBoundingBox());
+    }
+
+    public List<ItemStack> pickItemEntities(World world) {
+        List<ItemStack> stacks = Lists.newArrayList();
+
+        for(EntityItem entity: this.findEntities(EntityItem.class, world)) {
+            ItemStack stack = entity.getEntityItem();
+            if (!ItemStackUtil.isEmpty(stack)) {
+                stacks.add(stack);
+            }
+            world.removeEntity(entity);
+        }
+
+//        if (stacks.size() > 0) {
+//            MekfarmMod.logger.info("Picked up items:");
+//            for (ItemStack stack : stacks) {
+//                MekfarmMod.logger.info(stack.toString());
+//            }
+//            MekfarmMod.logger.info("------------");
+//        }
+        return stacks;
+    }
+
+    public static List<ItemStack> pickItemEntities(World world, BlockPos pos, int radius) {
+        return new BlockCube(pos.east(radius).south(radius).down(radius), pos.west(radius).north(radius).up(radius))
+                .pickItemEntities(world);
     }
 }

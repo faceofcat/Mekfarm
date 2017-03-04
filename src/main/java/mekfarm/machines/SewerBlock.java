@@ -7,18 +7,18 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.ndrei.teslacorelib.TeslaCoreLib;
 
 /**
- * Created by CF on 2016-10-26.
+ * Created by CF on 2017-02-28.
  */
-public class TreeFarmBlock extends BaseOrientedBlock<TreeFarmEntity> {
-    public TreeFarmBlock() {
-        super("tree_farm", TreeFarmEntity.class);
+public class SewerBlock extends BaseOrientedBlock<SewerEntity> {
+    public SewerBlock() {
+        super("sewer", SewerEntity.class);
     }
 
     @Override
     protected IRecipe getRecipe() {
         return new ShapedOreRecipe(new ItemStack(this, 1),
-                "sss", "wcw", "wgw",
-                's', Blocks.SAPLING,
+                "xxx", "wcw", "wgw",
+                'x', Blocks.IRON_BARS,
                 'c', TeslaCoreLib.machineCase,
                 'w', Blocks.PLANKS,
                 'g', TeslaCoreLib.gearStone);

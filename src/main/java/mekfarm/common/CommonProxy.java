@@ -13,6 +13,7 @@ public class CommonProxy {
     public void preInit(FMLPreInitializationEvent e) {
         MekfarmMod.logger.info("CommonProxy::preInit");
 
+        FluidsRegistry.createFluids();
         ItemsRegistry.createItems();
         BlocksRegistry.createBlocks();
     }

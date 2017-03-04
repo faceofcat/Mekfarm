@@ -1,6 +1,5 @@
 package mekfarm.client;
 
-import mekfarm.MekfarmMod;
 import mekfarm.machines.AnimalGymEntity;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
