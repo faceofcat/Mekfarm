@@ -1,4 +1,4 @@
-package mekfarm.Fluids;
+package mekfarm.fluids;
 
 import mekfarm.MekfarmMod;
 import mekfarm.common.BlocksRegistry;

@@ -26,6 +26,7 @@ public final class BlocksRegistry {
     public static CropClonerBlock cropClonerBlock;
     public static AnimalGymBlock animalGymBlock;
     public static TreeFarmBlock treeFarmBlock;
+    public static SewerBlock sewerBlock;
 
     public static BlockFluidFinite sewageBlock;
 
@@ -37,6 +38,7 @@ public final class BlocksRegistry {
         (BlocksRegistry.cropClonerBlock = new CropClonerBlock()).register();
         (BlocksRegistry.animalGymBlock = new AnimalGymBlock()).register();
         (BlocksRegistry.treeFarmBlock = new TreeFarmBlock()).register();
+        (BlocksRegistry.sewerBlock = new SewerBlock()).register();
 
         BlocksRegistry.sewageBlock = new BlockFluidFinite(FluidsRegistry.sewage, new MaterialLiquid(MapColor.BROWN)) {
             @Override

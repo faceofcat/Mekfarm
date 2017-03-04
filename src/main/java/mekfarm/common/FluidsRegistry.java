@@ -1,6 +1,6 @@
 package mekfarm.common;
 
-import mekfarm.Fluids.SewageFluid;
+import mekfarm.fluids.SewageFluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
 /**

@@ -44,47 +44,53 @@ public abstract class ElectricMekfarmMachine extends ElectricMachine {
     }
 
     protected void initializeInputInventory() {
-        this.inStackHandler = new ItemStackHandler(Math.max(0, Math.min(3, this.getInputSlots()))) {
-            @Override
-            protected void onContentsChanged(int slot) {
-                ElectricMekfarmMachine.this.markDirty();
-            }
-        };
-        super.addInventory(new ColoredItemHandler(this.inStackHandler, EnumDyeColor.GREEN, "Input Items", new BoundingRectangle(115, 25, 54, 18)) {
-            @Override
-            public boolean canInsertItem(int slot, ItemStack stack) {
-                return ElectricMekfarmMachine.this.acceptsInputStack(slot, stack);
-            }
-
-            @Override
-            public boolean canExtractItem(int slot) {
-                return false;
-            }
-
-            @Override
-            public List<Slot> getSlots(BasicTeslaContainer container) {
-                List<Slot> slots = super.getSlots(container);
-
-                BoundingRectangle box = this.getBoundingBox();
-                for(int x = 0; x < this.handler.getSlots(); x++) {
-                    slots.add(new FilteredSlot(this.getItemHandlerForContainer(), x, box.getLeft() + 1 + x * 18, box.getTop() + 1));
+        int inputSlots = this.getInputSlots();
+        if (inputSlots > 0) {
+            this.inStackHandler = new ItemStackHandler(Math.max(0, Math.min(3, inputSlots))) {
+                @Override
+                protected void onContentsChanged(int slot) {
+                    ElectricMekfarmMachine.this.markDirty();
+                }
+            };
+            super.addInventory(new ColoredItemHandler(this.inStackHandler, EnumDyeColor.GREEN, "Input Items", new BoundingRectangle(115, 25, 54, 18)) {
+                @Override
+                public boolean canInsertItem(int slot, ItemStack stack) {
+                    return ElectricMekfarmMachine.this.acceptsInputStack(slot, stack);
                 }
 
-                return slots;
-            }
+                @Override
+                public boolean canExtractItem(int slot) {
+                    return false;
+                }
 
-            @Override
-            public List<IGuiContainerPiece> getGuiContainerPieces(BasicTeslaGuiContainer container) {
-                List<IGuiContainerPiece> pieces = super.getGuiContainerPieces(container);
+                @Override
+                public List<Slot> getSlots(BasicTeslaContainer container) {
+                    List<Slot> slots = super.getSlots(container);
 
-                BoundingRectangle box = this.getBoundingBox();
-                pieces.add(new TiledRenderedGuiPiece(box.getLeft(), box.getTop(), 18, 18,
-                        this.handler.getSlots(), 1,
-                        BasicTeslaGuiContainer.MACHINE_BACKGROUND, 108, 225, EnumDyeColor.GREEN));
+                    BoundingRectangle box = this.getBoundingBox();
+                    for (int x = 0; x < this.handler.getSlots(); x++) {
+                        slots.add(new FilteredSlot(this.getItemHandlerForContainer(), x, box.getLeft() + 1 + x * 18, box.getTop() + 1));
+                    }
 
-                return pieces;
-            }
-        });
+                    return slots;
+                }
+
+                @Override
+                public List<IGuiContainerPiece> getGuiContainerPieces(BasicTeslaGuiContainer container) {
+                    List<IGuiContainerPiece> pieces = super.getGuiContainerPieces(container);
+
+                    BoundingRectangle box = this.getBoundingBox();
+                    pieces.add(new TiledRenderedGuiPiece(box.getLeft(), box.getTop(), 18, 18,
+                            this.handler.getSlots(), 1,
+                            BasicTeslaGuiContainer.MACHINE_BACKGROUND, 108, 225, EnumDyeColor.GREEN));
+
+                    return pieces;
+                }
+            });
+        }
+        else {
+            this.inStackHandler = null;
+        }
     }
 
     protected boolean acceptsInputStack(int slot, ItemStack stack) {
@@ -96,58 +102,64 @@ public abstract class ElectricMekfarmMachine extends ElectricMachine {
     }
 
     protected void initializeOutputInventory() {
-        this.outStackHandler = new ItemStackHandler(Math.max(0, Math.min(6, this.getOutputSlots()))) {
-            @Override
-            protected void onContentsChanged(int slot) {
-                ElectricMekfarmMachine.this.markDirty();
-            }
-        };
-        int columns = Math.min(3, this.outStackHandler.getSlots());
-        int rows = Math.min(2, this.outStackHandler.getSlots() / columns);
-        super.addInventory(new ColoredItemHandler(this.outStackHandler, EnumDyeColor.PURPLE, "Output Items", new BoundingRectangle(115, 43, columns * 18, rows * 18)) {
-            @Override
-            public boolean canInsertItem(int slot, ItemStack stack) {
-                return false;
-            }
-
-            @Override
-            public boolean canExtractItem(int slot) {
-                return true;
-            }
-
-            @Override
-            public List<Slot> getSlots(BasicTeslaContainer container) {
-                List<Slot> slots = super.getSlots(container);
-
-                BoundingRectangle box = this.getBoundingBox();
-                for(int x = 0; x < 3; x++) {
-                    for(int y = 0; y < 2; y++) {
-                        int i = y * 3 +  x;
-                        if (i >= this.handler.getSlots()) {
-                            continue;
-                        }
-
-                        slots.add(new FilteredSlot(this.getItemHandlerForContainer(), i,
-                                box.getLeft() + 1 + x * 18, box.getTop() + 1 + y * 18));
-                    }
+        int outputSlots = this.getOutputSlots();
+        if (outputSlots > 0) {
+            this.outStackHandler = new ItemStackHandler(Math.max(0, Math.min(6, outputSlots))) {
+                @Override
+                protected void onContentsChanged(int slot) {
+                    ElectricMekfarmMachine.this.markDirty();
+                }
+            };
+            int columns = Math.min(3, this.outStackHandler.getSlots());
+            int rows = Math.min(2, this.outStackHandler.getSlots() / columns);
+            super.addInventory(new ColoredItemHandler(this.outStackHandler, EnumDyeColor.PURPLE, "Output Items", new BoundingRectangle(115, 43, columns * 18, rows * 18)) {
+                @Override
+                public boolean canInsertItem(int slot, ItemStack stack) {
+                    return false;
                 }
 
-                return slots;
-            }
+                @Override
+                public boolean canExtractItem(int slot) {
+                    return true;
+                }
 
-            @Override
-            public List<IGuiContainerPiece> getGuiContainerPieces(BasicTeslaGuiContainer container) {
-                List<IGuiContainerPiece> pieces = super.getGuiContainerPieces(container);
+                @Override
+                public List<Slot> getSlots(BasicTeslaContainer container) {
+                    List<Slot> slots = super.getSlots(container);
 
-                BoundingRectangle box = this.getBoundingBox();
-                pieces.add(new TiledRenderedGuiPiece(box.getLeft(), box.getTop(), 18, 18,
-                        Math.min(3, this.handler.getSlots()),
-                        Math.min(2, this.handler.getSlots() / Math.min(3, this.handler.getSlots())),
-                        BasicTeslaGuiContainer.MACHINE_BACKGROUND, 108, 225, EnumDyeColor.PURPLE));
+                    BoundingRectangle box = this.getBoundingBox();
+                    for (int x = 0; x < 3; x++) {
+                        for (int y = 0; y < 2; y++) {
+                            int i = y * 3 + x;
+                            if (i >= this.handler.getSlots()) {
+                                continue;
+                            }
 
-                return pieces;
-            }
-        });
+                            slots.add(new FilteredSlot(this.getItemHandlerForContainer(), i,
+                                    box.getLeft() + 1 + x * 18, box.getTop() + 1 + y * 18));
+                        }
+                    }
+
+                    return slots;
+                }
+
+                @Override
+                public List<IGuiContainerPiece> getGuiContainerPieces(BasicTeslaGuiContainer container) {
+                    List<IGuiContainerPiece> pieces = super.getGuiContainerPieces(container);
+
+                    BoundingRectangle box = this.getBoundingBox();
+                    pieces.add(new TiledRenderedGuiPiece(box.getLeft(), box.getTop(), 18, 18,
+                            Math.min(3, this.handler.getSlots()),
+                            Math.min(2, this.handler.getSlots() / Math.min(3, this.handler.getSlots())),
+                            BasicTeslaGuiContainer.MACHINE_BACKGROUND, 108, 225, EnumDyeColor.PURPLE));
+
+                    return pieces;
+                }
+            });
+        }
+        else {
+            this.outStackHandler = null;
+        }
     }
 
     @Override
@@ -176,8 +188,12 @@ public abstract class ElectricMekfarmMachine extends ElectricMachine {
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         compound = super.writeToNBT(compound);
 
-        compound.setTag("income", this.inStackHandler.serializeNBT());
-        compound.setTag("outcome", this.outStackHandler.serializeNBT());
+        if (this.inStackHandler != null) {
+            compound.setTag("income", this.inStackHandler.serializeNBT());
+        }
+        if (this.outStackHandler != null) {
+            compound.setTag("outcome", this.outStackHandler.serializeNBT());
+        }
 
         return compound;
     }
