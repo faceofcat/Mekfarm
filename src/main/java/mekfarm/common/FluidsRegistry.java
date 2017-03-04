@@ -9,8 +9,8 @@ import net.minecraftforge.fluids.FluidRegistry;
 public final class FluidsRegistry {
     public static SewageFluid sewage;
 
-    public static final void createFluids() {
-        FluidRegistry.enableUniversalBucket();
+    public static void createFluids() {
+        // FluidRegistry.enableUniversalBucket();
         (FluidsRegistry.sewage = new SewageFluid()).register();
     }
 }

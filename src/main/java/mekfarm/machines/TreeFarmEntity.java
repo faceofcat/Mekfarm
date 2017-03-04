@@ -141,7 +141,7 @@ public class TreeFarmEntity extends ElectricMekfarmMachine {
                 }
                 if (!ItemStackUtil.isEmpty(remaining)) {
                     BlockPos spawnPos = this.pos.offset(facing);
-                    world.spawnEntity(new EntityItem(this.getWorld(), spawnPos.getX() + .5, spawnPos.getY() + .5, spawnPos.getZ() + .5, remaining));
+                    this.getWorld().spawnEntityInWorld(new EntityItem(this.getWorld(), spawnPos.getX() + .5, spawnPos.getY() + .5, spawnPos.getZ() + .5, remaining));
                 }
             }
         }

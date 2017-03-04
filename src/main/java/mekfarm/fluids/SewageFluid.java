@@ -34,14 +34,14 @@ public class SewageFluid extends Fluid {
 
     public void registerRenderer() {
         IFluidBlock block = BlocksRegistry.sewageBlock;
-        final Item item = Item.getItemFromBlock((Block)block);
-        assert (item == Items.AIR);
-
-        ModelBakery.registerItemVariants(item);
+//        final Item item = Item.getItemFromBlock((Block)block);
+//        assert (item == null); // == Items.AIR);
+//
+//        ModelBakery.registerItemVariants(item);
 
         final ModelResourceLocation modelResourceLocation = new ModelResourceLocation(MekfarmMod.MODID + ":fluids", this.getName());
 
-        ModelLoader.setCustomMeshDefinition(item, stack -> modelResourceLocation);
+        // ModelLoader.setCustomMeshDefinition(item, stack -> modelResourceLocation);
 
         ModelLoader.setCustomStateMapper((Block) block, new StateMapperBase() {
             @Override

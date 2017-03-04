@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
 import net.ndrei.teslacorelib.inventory.BoundingRectangle;
@@ -48,8 +48,8 @@ public class SewerEntity extends ElectricMekfarmMachine {
 
     @Override
     protected boolean acceptsFluidItem(ItemStack stack) {
-        if (stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)) {
-            IFluidHandlerItem handler = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
+        if (stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
+            IFluidHandler handler = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
             if (handler != null) {
                 if (1 == handler.fill(new FluidStack(FluidsRegistry.sewage, 1), false)) {
                     return true;
@@ -78,13 +78,13 @@ public class SewerEntity extends ElectricMekfarmMachine {
 //                FluidUtil.
 //            }
                 ItemStack input = ItemStackUtil.copyWithSize(stack, 1);
-                FluidActionResult result = FluidUtil.tryFillContainer(input, this.fluidHandler, Fluid.BUCKET_VOLUME, null, true);
-                if (result.isSuccess()) {
+                ItemStack result = FluidUtil.tryFillContainer(input, this.fluidHandler, Fluid.BUCKET_VOLUME, null, true);
+                if (!ItemStackUtil.isEmpty(result)) {
                     ItemStackUtil.shrink(stack, 1);
-                    if (stack.isEmpty()) {
+                    if (ItemStackUtil.isEmpty(stack)) {
                         fluidItems.setStackInSlot(0, ItemStackUtil.getEmptyStack());
                     }
-                    fluidItems.setStackInSlot(1, result.getResult());
+                    fluidItems.setStackInSlot(1, result);
                 }
             }
         }
