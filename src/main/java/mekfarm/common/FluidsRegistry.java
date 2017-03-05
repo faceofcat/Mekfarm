@@ -11,6 +11,7 @@ public final class FluidsRegistry {
 
     public static final void createFluids() {
         FluidRegistry.enableUniversalBucket();
-        (FluidsRegistry.sewage = new SewageFluid()).register();
+        FluidsRegistry.sewage = new SewageFluid();
+        FluidsRegistry.sewage.register();
     }
 }
