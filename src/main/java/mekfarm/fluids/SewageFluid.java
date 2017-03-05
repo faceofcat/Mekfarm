@@ -4,16 +4,20 @@ import mekfarm.MekfarmMod;
 import mekfarm.common.BlocksRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidBlock;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by CF on 2017-02-25.
@@ -32,6 +36,7 @@ public class SewageFluid extends Fluid {
         FluidRegistry.addBucketForFluid(this);
     }
 
+    @SideOnly(Side.CLIENT)
     public void registerRenderer() {
         IFluidBlock block = BlocksRegistry.sewageBlock;
 //        final Item item = Item.getItemFromBlock((Block)block);
@@ -39,7 +44,7 @@ public class SewageFluid extends Fluid {
 //
 //        ModelBakery.registerItemVariants(item);
 
-        final ModelResourceLocation modelResourceLocation = new ModelResourceLocation(MekfarmMod.MODID + ":fluids", this.getName());
+        ModelResourceLocation modelResourceLocation = new ModelResourceLocation(MekfarmMod.MODID + ":fluids", this.getName());
 
         // ModelLoader.setCustomMeshDefinition(item, stack -> modelResourceLocation);
 
