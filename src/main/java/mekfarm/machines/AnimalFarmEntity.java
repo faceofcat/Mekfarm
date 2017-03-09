@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import mekfarm.MekfarmMod;
 import mekfarm.common.BlockCube;
 import mekfarm.common.BlockPosUtils;
+import mekfarm.common.IAnimalAgeFilterAcceptor;
 import mekfarm.common.ItemsRegistry;
 import mekfarm.items.AnimalPackageItem;
 import mekfarm.items.BaseAnimalFilterItem;
@@ -30,7 +31,7 @@ import java.util.List;
 /**
  * Created by CF on 2016-10-28.
  */
-public class AnimalFarmEntity extends ElectricMekfarmMachine {
+public class AnimalFarmEntity extends BaseXPCollectingMachine implements IAnimalAgeFilterAcceptor {
     private static ArrayList<Item> foodItems = new ArrayList<>();
 
     static {
@@ -65,7 +66,7 @@ public class AnimalFarmEntity extends ElectricMekfarmMachine {
     }
 
     @Override
-    protected float performWork() {
+    protected float performWorkInternal() {
         List<IAnimalWrapper> toProcess = Lists.newArrayList();
         IAnimalWrapper animalToPackage = null;
         float result = 0.0f;
@@ -78,10 +79,11 @@ public class AnimalFarmEntity extends ElectricMekfarmMachine {
 
         // find animal
         List<EntityAnimal> animals = this.getWorld().getEntitiesWithinAABB(EntityAnimal.class, aabb);
-        ItemStack filterStack = this.addonItems.getStackInSlot(0);
-        BaseAnimalFilterItem filter = (!ItemStackUtil.isEmpty(filterStack) && (filterStack.getItem() instanceof BaseAnimalFilterItem))
-                ? (BaseAnimalFilterItem) filterStack.getItem()
-                : null;
+//        ItemStack filterStack = this.addonItems.getStackInSlot(0);
+//        BaseAnimalFilterItem filter = (!ItemStackUtil.isEmpty(filterStack) && (filterStack.getItem() instanceof BaseAnimalFilterItem))
+//                ? (BaseAnimalFilterItem) filterStack.getItem()
+//                : null;
+        BaseAnimalFilterItem filter = super.getAddon(BaseAnimalFilterItem.class);
         if ((animals.size() > 0)) {
             for (int i = 0; i < animals.size(); i++) {
                 IAnimalWrapper thingy = AnimalWrapperFactory.getAnimalWrapper(animals.get(i));
@@ -258,5 +260,10 @@ public class AnimalFarmEntity extends ElectricMekfarmMachine {
         stackCopy.setTagInfo("animalClass", new NBTTagString(animal.getClass().getName()));
         stackCopy.setTagInfo("animalHealth", new NBTTagFloat(animal.getHealth()));
         return stackCopy;
+    }
+
+    @Override
+    public boolean acceptsFilter(BaseAnimalFilterItem item) {
+        return !super.hasAddon(BaseAnimalFilterItem.class);
     }
 }

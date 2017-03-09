@@ -5,6 +5,7 @@ import mekfarm.MekfarmMod;
 import mekfarm.common.BlockCube;
 import mekfarm.common.BlockPosUtils;
 import mekfarm.common.FakeMekPlayer;
+import mekfarm.common.IAnimalAgeFilterAcceptor;
 import mekfarm.items.BaseAnimalFilterItem;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -24,7 +25,7 @@ import java.util.List;
 /**
  * Created by CF on 2016-11-11.
  */
-public class ElectricButcherEntity extends ElectricMekfarmMachine {
+public class ElectricButcherEntity extends BaseXPCollectingMachine implements IAnimalAgeFilterAcceptor {
     public ElectricButcherEntity() {
         super(ElectricButcherEntity.class.getName().hashCode());
     }
@@ -56,7 +57,7 @@ public class ElectricButcherEntity extends ElectricMekfarmMachine {
     }
 
     @Override
-    protected float performWork() {
+    protected float performWorkInternal() {
         float result = 0.0f;
 
         EnumFacing facing = super.getFacing();
@@ -69,16 +70,17 @@ public class ElectricButcherEntity extends ElectricMekfarmMachine {
         if (!ItemStackUtil.isEmpty(stack)) {
             // find animal
             List<EntityAnimal> list = this.getWorld().getEntitiesWithinAABB(EntityAnimal.class, aabb);
-            ItemStack filterStack = this.addonItems.getStackInSlot(0);
-            BaseAnimalFilterItem filter = ((filterStack != null) && (filterStack.getItem() instanceof BaseAnimalFilterItem))
-                    ? (BaseAnimalFilterItem) filterStack.getItem()
-                    : null;
+//            ItemStack filterStack = this.addonItems.getStackInSlot(0);
+//            BaseAnimalFilterItem filter = ((filterStack != null) && (filterStack.getItem() instanceof BaseAnimalFilterItem))
+//                    ? (BaseAnimalFilterItem) filterStack.getItem()
+//                    : null;
+            BaseAnimalFilterItem filter = super.getAddon(BaseAnimalFilterItem.class);
             EntityAnimal animalToHurt = null;
             if ((list != null) && (list.size() > 0)) {
                 for (int i = 0; i < list.size(); i++) {
                     EntityAnimal thingy = list.get(i);
 
-                    if ((animalToHurt == null) && ((filter == null) || filter.canProcess(this, i, thingy))) {
+                    if (/*(animalToHurt == null) && */((filter == null) || filter.canProcess(this, i, thingy))) {
                         animalToHurt = thingy;
                         break;
                     }
@@ -126,5 +128,10 @@ public class ElectricButcherEntity extends ElectricMekfarmMachine {
         //endregion
 
         return result;
+    }
+
+    @Override
+    public boolean acceptsFilter(BaseAnimalFilterItem item) {
+        return !super.hasAddon(BaseAnimalFilterItem.class);
     }
 }

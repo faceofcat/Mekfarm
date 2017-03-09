@@ -17,6 +17,7 @@ public final class ItemRenderersRegistry {
         ItemRenderersRegistry.registerItemRenderer(ItemsRegistry.animalFilter);
         ItemRenderersRegistry.registerItemRenderer(ItemsRegistry.animalAgeBabyFilter);
         ItemRenderersRegistry.registerItemRenderer(ItemsRegistry.animalAgeAdultFilter);
+        ItemRenderersRegistry.registerItemRenderer(ItemsRegistry.liquidXPCollectorItem);
     }
 
     private static void registerItemRenderer(Item item) {

@@ -1,29 +1,22 @@
 package mekfarm.items;
 
+import mekfarm.MekfarmMod;
+import mekfarm.common.IAnimalAgeFilterAcceptor;
 import mekfarm.common.IAnimalEntityFilter;
-import mekfarm.machines.AnimalFarmEntity;
-import mekfarm.machines.ElectricButcherEntity;
-import net.minecraft.tileentity.TileEntity;
+import net.ndrei.teslacorelib.items.BaseAddon;
+import net.ndrei.teslacorelib.tileentities.SidedTileEntity;
 
 /**
  * Created by CF on 2016-11-10.
  */
-public abstract class BaseAnimalFilterItem extends BaseItem implements IAnimalEntityFilter {
+public abstract class BaseAnimalFilterItem extends BaseAddon implements IAnimalEntityFilter {
     public BaseAnimalFilterItem(String registryName) {
-        super(registryName);
+        super(MekfarmMod.MODID, MekfarmMod.creativeTab, registryName);
     }
 
     @Override
-    public boolean canBeAddedTo(TileEntity machine) {
-        if (machine == null) {
-            return false;
-        }
-
-        return ((machine instanceof AnimalFarmEntity) || (machine instanceof ElectricButcherEntity));
-    }
-
-    @Override
-    public float getPowerMultiplier() {
-        return 1.2f;
+    public boolean canBeAddedTo(SidedTileEntity machine) {
+        return (machine != null) && (machine instanceof IAnimalAgeFilterAcceptor)
+                && ((IAnimalAgeFilterAcceptor)machine).acceptsFilter(this);
     }
 }

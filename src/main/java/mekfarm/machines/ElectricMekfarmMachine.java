@@ -1,12 +1,10 @@
 package mekfarm.machines;
 
-import mekfarm.common.IMachineAddon;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.items.ItemStackHandler;
-import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
 import net.ndrei.teslacorelib.containers.BasicTeslaContainer;
 import net.ndrei.teslacorelib.containers.FilteredSlot;
 import net.ndrei.teslacorelib.gui.BasicTeslaGuiContainer;
@@ -52,7 +50,7 @@ public abstract class ElectricMekfarmMachine extends ElectricMachine {
                     ElectricMekfarmMachine.this.markDirty();
                 }
             };
-            super.addInventory(new ColoredItemHandler(this.inStackHandler, EnumDyeColor.GREEN, "Input Items", new BoundingRectangle(115, 25, 54, 18)) {
+            super.addInventory(new ColoredItemHandler(this.inStackHandler, EnumDyeColor.GREEN, "Input Items", this.getInputInventoryBounds(this.inStackHandler.getSlots(), 1)) {
                 @Override
                 public boolean canInsertItem(int slot, ItemStack stack) {
                     return ElectricMekfarmMachine.this.acceptsInputStack(slot, stack);
@@ -93,6 +91,10 @@ public abstract class ElectricMekfarmMachine extends ElectricMachine {
         }
     }
 
+    protected BoundingRectangle getInputInventoryBounds(int columns, int rows) {
+        return new BoundingRectangle(115 + (3 - columns) * 9, 25, 18 * columns, 18 * rows);
+    }
+
     protected boolean acceptsInputStack(int slot, ItemStack stack) {
         return true;
     }
@@ -112,7 +114,7 @@ public abstract class ElectricMekfarmMachine extends ElectricMachine {
             };
             int columns = Math.min(3, this.outStackHandler.getSlots());
             int rows = Math.min(2, this.outStackHandler.getSlots() / columns);
-            super.addInventory(new ColoredItemHandler(this.outStackHandler, EnumDyeColor.PURPLE, "Output Items", new BoundingRectangle(115, 43, columns * 18, rows * 18)) {
+            super.addInventory(new ColoredItemHandler(this.outStackHandler, EnumDyeColor.PURPLE, "Output Items", this.getOutputInventoryBounds(columns, rows)) {
                 @Override
                 public boolean canInsertItem(int slot, ItemStack stack) {
                     return false;
@@ -162,13 +164,17 @@ public abstract class ElectricMekfarmMachine extends ElectricMachine {
         }
     }
 
-    @Override
-    protected boolean isValidAddonItem(ItemStack stack) {
-        if (!ItemStackUtil.isEmpty(stack) && (stack.getItem() instanceof IMachineAddon)) {
-            return ((IMachineAddon) stack.getItem()).canBeAddedTo(this);
-        }
-        return false;
+    protected BoundingRectangle getOutputInventoryBounds(int columns, int rows) {
+        return new BoundingRectangle(115, 43, 18 * columns, 18 * rows);
     }
+
+//    @Override
+//    protected boolean isValidAddonItem(ItemStack stack) {
+//        if (!ItemStackUtil.isEmpty(stack) && (stack.getItem() instanceof IMachineAddon)) {
+//            return ((IMachineAddon) stack.getItem()).canBeAddedTo(this);
+//        }
+//        return false;
+//    }
 
     //#endregion
     //#region write/read/sync   methods
