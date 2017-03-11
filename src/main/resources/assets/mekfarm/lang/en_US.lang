@@ -15,6 +15,7 @@ tile.mekfarm_crop_cloner.name=Crop Cloner
 tile.mekfarm_animal_gym.name=Animal Gym
 tile.mekfarm_tree_farm.name=Tree Farm
 tile.mekfarm_sewer.name=Sewer
+tile.mekfarm_liquidxp_storage.name=Liquid XP Storage
 
 fluid.sewage=Sewage
 fluid.liquidxp=Liquid XP

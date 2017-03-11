@@ -42,7 +42,7 @@ public abstract class BaseXPCollectingMachine extends ElectricMekfarmMachine imp
             this.xpTank = null;
         }
 
-        this.xpTank = new FilteredFluidTank(FluidsRegistry.liquidXP, new FluidTank(1000) {
+        this.xpTank = new FilteredFluidTank(FluidsRegistry.liquidXP, new FluidTank(LiquidXPCollectorItem.MAX_CAPACITY) {
             @Override
             protected void onContentsChanged() {
                 int amount = this.getFluidAmount();

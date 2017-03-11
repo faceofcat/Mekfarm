@@ -1,6 +1,5 @@
 package mekfarm.machines;
 
-import mekfarm.MekfarmMod;
 import mekfarm.client.ClientProxy;
 import mekfarm.common.FluidsRegistry;
 import net.minecraft.init.Items;
@@ -304,5 +303,12 @@ public class LiquidXPStorageEntity extends SidedTileEntity {
     private boolean isEmptyFluidContainer(ItemStack stack) {
         FluidStack fluid = FluidUtil.getFluidContained(stack);
         return (fluid == null) || (fluid.amount == 0);
+    }
+
+    public float getFillPercent() {
+        if (this.xpTank == null) {
+            return 0.0f;
+        }
+        return (float)this.xpTank.getFluidAmount() / (float)this.xpTank.getCapacity();
     }
 }
