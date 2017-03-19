@@ -18,5 +18,6 @@ final class BlockRendererRegistry {
         BlocksRegistry.animalGymBlock.registerRenderer();
         BlocksRegistry.treeFarmBlock.registerRenderer();
         BlocksRegistry.sewerBlock.registerRenderer();
+        BlocksRegistry.xpStorageBlock.registerRenderer();
     }
 }

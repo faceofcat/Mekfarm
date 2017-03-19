@@ -2,7 +2,7 @@
   "parent": "block/cube",
   "textures": {
     "particle": "mekfarm:blocks/sewer-side",
-    "north": "mekfarm:blocks/sewer-side",
+    "north": "mekfarm:blocks/sewer-front",
     "west": "mekfarm:blocks/sewer-side",
     "east": "mekfarm:blocks/sewer-side",
     "south": "mekfarm:blocks/sewer-side",

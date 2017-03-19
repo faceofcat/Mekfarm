@@ -25,7 +25,7 @@ public class ClientProxy extends CommonProxy {
         // Typically initialization of models and such goes here:
         BlockRendererRegistry.registerBlockRenderers();
         ItemRenderersRegistry.registerItemRenderers();
-        FluidRenderersRegistry.registerFluiRenderers();
+        FluidRenderersRegistry.registerFluidRenderers();
     }
 
     @Override

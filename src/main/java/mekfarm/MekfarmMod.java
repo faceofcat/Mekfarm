@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 
-@Mod(modid = MekfarmMod.MODID, version = MekfarmMod.VERSION, name = "Mekfarm", dependencies = "after:teslacorelib", useMetadata = true)
+@Mod(modid = MekfarmMod.MODID, version = MekfarmMod.VERSION, name = "Mekfarm", dependencies = "after:teslacorelib;after:EnderIO", useMetadata = true)
 public class MekfarmMod
 {
     public static final String MODID = "mekfarm";

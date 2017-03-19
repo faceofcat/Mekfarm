@@ -4,6 +4,10 @@
     "sewage": {
       "model": "forge:fluid",
       "custom": { "fluid": "sewage" }
+    },
+    "liquidxp": {
+      "model": "forge:fluid",
+      "custom": { "fluid": "liquidxp" }
     }
   }
 }

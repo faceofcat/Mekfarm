@@ -18,7 +18,7 @@ import net.ndrei.teslacorelib.inventory.BoundingRectangle;
 /**
  * Created by CF on 2017-02-28.
  */
-public class SewerEntity extends ElectricMekfarmMachine {
+public class SewerEntity extends BaseXPCollectingMachine {
     private IFluidTank sewageTank;
 
     public SewerEntity() {
@@ -66,17 +66,6 @@ public class SewerEntity extends ElectricMekfarmMachine {
             ItemStack stack = fluidItems.getStackInSlot(0);
             ItemStack outputStack = fluidItems.getStackInSlot(1);
             if (!ItemStackUtil.isEmpty(stack) && ItemStackUtil.isEmpty(outputStack)) {
-//            if (stack.getItem() == Items.BUCKET) {
-//                FluidStack fluid = this.sewageTank.drain(Fluid.BUCKET_VOLUME, false);
-//                if ((fluid != null) && (fluid.amount == Fluid.BUCKET_VOLUME)) {
-//                    this.sewageTank.drain(Fluid.BUCKET_VOLUME, true);
-//                    fluidItems.setStackInSlot(0, UniversalBucket.getFilledBucket(new UniversalBucket(), FluidsRegistry.sewage));
-//                    this.discardUsedFluidItem();
-//                }
-//            }
-//            else if (stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)) {
-//                FluidUtil.
-//            }
                 ItemStack input = ItemStackUtil.copyWithSize(stack, 1);
                 ItemStack result = FluidUtil.tryFillContainer(input, this.fluidHandler, Fluid.BUCKET_VOLUME, null, true);
                 if (!ItemStackUtil.isEmpty(result)) {
@@ -103,15 +92,20 @@ public class SewerEntity extends ElectricMekfarmMachine {
     }
 
     @Override
-    protected float performWork() {
+    protected float performWorkInternal() {
         BlockCube cube = BlockPosUtils.getCube(this.getPos(), EnumFacing.UP, 3, 2);
         int sewage = 0;
-        for(EntityAnimal animal : this.getWorld().getEntitiesWithinAABB(EntityAnimal.class, cube.getBoundingBox())) {
+        for (EntityAnimal animal : this.getWorld().getEntitiesWithinAABB(EntityAnimal.class, cube.getBoundingBox())) {
             sewage += Math.round(animal.getMaxHealth());
         }
         if (sewage > 0) {
             this.sewageTank.fill(new FluidStack(FluidsRegistry.sewage, sewage), true);
         }
         return 1.0f;
+    }
+
+    @Override
+    protected BlockCube getXPOrbLookupCube() {
+        return BlockPosUtils.getCube(this.getPos(), EnumFacing.UP, 4, 3);
     }
 }

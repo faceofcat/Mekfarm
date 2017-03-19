@@ -27,8 +27,10 @@ public final class BlocksRegistry {
     public static AnimalGymBlock animalGymBlock;
     public static TreeFarmBlock treeFarmBlock;
     public static SewerBlock sewerBlock;
+    public static LiquidXPStorageBlock xpStorageBlock;
 
     public static BlockFluidFinite sewageBlock;
+    public static BlockFluidFinite liquidXpBlock;
 
     static void createBlocks() {
         (BlocksRegistry.animalFarmBlock = new AnimalFarmBlock()).register();
@@ -39,6 +41,7 @@ public final class BlocksRegistry {
         (BlocksRegistry.animalGymBlock = new AnimalGymBlock()).register();
         (BlocksRegistry.treeFarmBlock = new TreeFarmBlock()).register();
         (BlocksRegistry.sewerBlock = new SewerBlock()).register();
+        (BlocksRegistry.xpStorageBlock = new LiquidXPStorageBlock()).register();
 
         BlocksRegistry.sewageBlock = new BlockFluidFinite(FluidsRegistry.sewage, new MaterialLiquid(MapColor.BROWN)) {
             @Override
@@ -55,5 +58,24 @@ public final class BlocksRegistry {
         BlocksRegistry.sewageBlock.setCreativeTab(MekfarmMod.creativeTab);
         BlocksRegistry.sewageBlock.setRenderLayer(BlockRenderLayer.SOLID);
         GameRegistry.register(BlocksRegistry.sewageBlock);
+
+        BlocksRegistry.liquidXpBlock = new BlockFluidFinite(FluidsRegistry.liquidXP, new MaterialLiquid(MapColor.LIME)) {
+            @Override
+            public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity)
+            {
+                if (entity instanceof EntityLivingBase)
+                {
+                    int quanta = BlocksRegistry.liquidXpBlock.getQuantaValue(world, pos);
+                    if (quanta > 0) {
+                        ((EntityLivingBase) entity).addPotionEffect(
+                                new PotionEffect(MobEffects.REGENERATION, quanta * 100 / 15));
+                    }
+                }
+            }
+        };
+        BlocksRegistry.liquidXpBlock.setRegistryName(MekfarmMod.MODID, "liquidxp_block");
+        BlocksRegistry.liquidXpBlock.setCreativeTab(MekfarmMod.creativeTab);
+        BlocksRegistry.liquidXpBlock.setRenderLayer(BlockRenderLayer.SOLID);
+        GameRegistry.register(BlocksRegistry.liquidXpBlock);
     }
 }

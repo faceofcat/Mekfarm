@@ -5,20 +5,20 @@ package mekfarm.capabilities;
  * mekfarm.capabilities.MekfarmCapabilities <-- that sounds like the worst namespace / class name combination ever
  */
 public class MekfarmCapabilities {
-//    @CapabilityInject(IFilterHandler.class)
-//    public static Capability<IFilterHandler> CAPABILITY_FILTERS_HANDLER = null;
+//    @CapabilityInject(IAnimalAgeFilterAcceptor.class)
+//    public static Capability<IAnimalAgeFilterAcceptor> CAPABILITY_ANIMAL_AGE_FILTER = null;
 
 //    @CapabilityInject(IMachineInfo.class)
 //    public static Capability<IMachineInfo> CAPABILITY_MACHINE_INFO = null;
 
-//    public static class CapabilityFilterHandlerConsumer<T extends IFilterHandler> implements Capability.IStorage<IFilterHandler> {
+//    public static class CapabilityAnimalAgeFilterConsumer<T extends IAnimalAgeFilterAcceptor> implements Capability.IStorage<IAnimalAgeFilterAcceptor> {
 //        @Override
-//        public NBTBase writeNBT (Capability<IFilterHandler> capability, IFilterHandler instance, EnumFacing side) {
+//        public NBTBase writeNBT (Capability<IAnimalAgeFilterAcceptor> capability, IAnimalAgeFilterAcceptor instance, EnumFacing side) {
 //            return null;
 //        }
 //
 //        @Override
-//        public void readNBT (Capability<IFilterHandler> capability, IFilterHandler instance, EnumFacing side, NBTBase nbt) {
+//        public void readNBT (Capability<IAnimalAgeFilterAcceptor> capability, IAnimalAgeFilterAcceptor instance, EnumFacing side, NBTBase nbt) {
 //        }
 //    }
 
@@ -33,15 +33,15 @@ public class MekfarmCapabilities {
 //        }
 //    }
 
-//    public static class DefaultMachineInfo implements IMachineInfo {
+//    public static class DefaultAnimalFilterAcceptor implements IAnimalAgeFilterAcceptor {
 //        @Override
-//        public String getUnlocalizedMachineName() {
-//            return "mekfarm.machine";
+//        public boolean acceptsFilter(BaseAnimalFilterItem item) {
+//            return false;
 //        }
 //    }
 
     public static void register() {
-//        CapabilityManager.INSTANCE.register(IFilterHandler.class, new MekfarmCapabilities.CapabilityFilterHandlerConsumer<>(), FiltersStackHandler.class);
+//        CapabilityManager.INSTANCE.register(IAnimalAgeFilterAcceptor.class, new MekfarmCapabilities.CapabilityAnimalAgeFilterConsumer<>(), DefaultAnimalFilterAcceptor.class);
 //        CapabilityManager.INSTANCE.register(IMachineInfo.class, new MekfarmCapabilities.CapabilityMachineInfoConsumer<>(), DefaultMachineInfo.class);
     }
 }

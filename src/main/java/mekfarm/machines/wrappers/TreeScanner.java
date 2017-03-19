@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by CF on 2017-02-20.
  */
-public class TreeScanner {
+public class TreeScanner /*implements INBTSerializable<NBTTagCompound>*/ {
     private List<BlockPos> scanned = null;
     private List<BlockPos> toScan = null;
 
@@ -80,4 +80,16 @@ public class TreeScanner {
         this.scanned.remove(index);
         return pos;
     }
+
+//    @Override
+//    public NBTTagCompound serializeNBT() {
+//        NBTTagCompound compound = new NBTTagCompound();
+//
+//        return compound;
+//    }
+//
+//    @Override
+//    public void deserializeNBT(NBTTagCompound nbt) {
+//
+//    }
 }
