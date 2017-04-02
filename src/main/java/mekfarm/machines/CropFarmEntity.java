@@ -2,7 +2,6 @@ package mekfarm.machines;
 
 import com.google.common.collect.Lists;
 import mekfarm.common.BlockCube;
-import mekfarm.common.BlockPosUtils;
 import mekfarm.machines.wrappers.IPlantWrapper;
 import mekfarm.machines.wrappers.ISeedWrapper;
 import mekfarm.machines.wrappers.PlantWrapperFactory;
@@ -58,7 +57,7 @@ public class CropFarmEntity extends ElectricMekfarmMachine {
     protected float performWork() {
         float result = 0.0f;
         EnumFacing facing = super.getFacing();
-        BlockCube cube = BlockPosUtils.getCube(this.getPos(), facing.getOpposite(), 3, 1);
+        BlockCube cube = this.getWorkArea(facing.getOpposite(), 1);
 
         List<IPlantWrapper> blockers = Lists.newArrayList();
 

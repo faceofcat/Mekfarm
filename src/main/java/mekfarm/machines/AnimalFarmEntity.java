@@ -3,7 +3,6 @@ package mekfarm.machines;
 import com.google.common.collect.Lists;
 import mekfarm.MekfarmMod;
 import mekfarm.common.BlockCube;
-import mekfarm.common.BlockPosUtils;
 import mekfarm.common.IAnimalAgeFilterAcceptor;
 import mekfarm.common.ItemsRegistry;
 import mekfarm.items.AnimalPackageItem;
@@ -74,7 +73,7 @@ public class AnimalFarmEntity extends BaseXPCollectingMachine implements IAnimal
         //region find animals
 
         EnumFacing facing = super.getFacing();
-        BlockCube cube = BlockPosUtils.getCube(this.getPos(), facing.getOpposite(), 3, 1);
+        BlockCube cube = this.getWorkArea(facing.getOpposite(), 1);
         AxisAlignedBB aabb = cube.getBoundingBox();
 
         // find animal

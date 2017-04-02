@@ -2,9 +2,7 @@ package mekfarm.machines;
 
 import com.google.common.collect.Lists;
 import mekfarm.common.BlockCube;
-import mekfarm.common.BlockPosUtils;
 import mekfarm.machines.wrappers.*;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -49,7 +47,7 @@ public class TreeFarmEntity extends ElectricMekfarmMachine {
     protected float performWork() {
         EnumFacing facing = super.getFacing();
         float result = 0;
-        BlockCube cube = BlockPosUtils.getCube(this.getPos(), facing.getOpposite(), 3, 1);
+        BlockCube cube = this.getWorkArea(facing.getOpposite(), 1);
 
         //#region scan trees
 
@@ -140,8 +138,9 @@ public class TreeFarmEntity extends ElectricMekfarmMachine {
                     remaining = ItemHandlerHelper.insertItem(this.outStackHandler, stack, false);
                 }
                 if (!ItemStackUtil.isEmpty(remaining)) {
-                    BlockPos spawnPos = this.pos.offset(facing);
-                    world.spawnEntity(new EntityItem(this.getWorld(), spawnPos.getX() + .5, spawnPos.getY() + .5, spawnPos.getZ() + .5, remaining));
+//                    BlockPos spawnPos = this.pos.offset(facing);
+//                    world.spawnEntity(new EntityItem(this.getWorld(), spawnPos.getX() + .5, spawnPos.getY() + .5, spawnPos.getZ() + .5, remaining));
+                    super.spawnItemFromFrontSide(remaining);
                 }
             }
         }

@@ -11,6 +11,8 @@ public final class ItemsRegistry {
     public static AnimalAgeAdultFilterItem animalAgeAdultFilter;
     public static AnimalAgeBabyFilterItem animalAgeBabyFilter;
     public static LiquidXPCollectorItem liquidXPCollectorItem;
+    public static MachineRangeAddonTier1 machineRangeAddonTier1;
+    public static MachineRangeAddonTier2 machineRangeAddonTier2;
 
     public static final void createItems() {
         (ItemsRegistry.animalPackage = new AnimalPackageItem()).register();
@@ -18,5 +20,7 @@ public final class ItemsRegistry {
         (ItemsRegistry.animalAgeAdultFilter = new AnimalAgeAdultFilterItem()).register();
         (ItemsRegistry.animalAgeBabyFilter = new AnimalAgeBabyFilterItem()).register();
         (ItemsRegistry.liquidXPCollectorItem = new LiquidXPCollectorItem()).register();
+        (ItemsRegistry.machineRangeAddonTier1 = new MachineRangeAddonTier1()).register();
+        (ItemsRegistry.machineRangeAddonTier2 = new MachineRangeAddonTier2()).register();
     }
 }

@@ -18,6 +18,8 @@ public final class ItemRenderersRegistry {
         ItemRenderersRegistry.registerItemRenderer(ItemsRegistry.animalAgeBabyFilter);
         ItemRenderersRegistry.registerItemRenderer(ItemsRegistry.animalAgeAdultFilter);
         ItemRenderersRegistry.registerItemRenderer(ItemsRegistry.liquidXPCollectorItem);
+        ItemRenderersRegistry.registerItemRenderer(ItemsRegistry.machineRangeAddonTier1);
+        ItemRenderersRegistry.registerItemRenderer(ItemsRegistry.machineRangeAddonTier2);
     }
 
     private static void registerItemRenderer(Item item) {

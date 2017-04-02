@@ -1,9 +1,14 @@
 package mekfarm.machines;
 
+import mekfarm.common.BlockCube;
+import mekfarm.common.BlockPosUtils;
+import mekfarm.items.MachineRangeAddonTier1;
+import mekfarm.items.MachineRangeAddonTier2;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.ItemStackHandler;
 import net.ndrei.teslacorelib.containers.BasicTeslaContainer;
 import net.ndrei.teslacorelib.containers.FilteredSlot;
@@ -205,4 +210,23 @@ public abstract class ElectricMekfarmMachine extends ElectricMachine {
     }
 
     //#endregion
+
+    public boolean supportsRangeAddons() {
+        return true;
+    }
+
+    protected int getRange() {
+        return this.getRange(3, 3);
+    }
+
+    protected int getRange(int base, int perTier) {
+        int tier1 = this.hasAddon(MachineRangeAddonTier1.class) ? 1 : 0;
+        int tier2 = tier1 * (this.hasAddon(MachineRangeAddonTier2.class) ? 1 : 0);
+
+        return base + (tier1 + tier2) * perTier;
+    }
+
+    protected BlockCube getWorkArea(EnumFacing facing, int height) {
+        return BlockPosUtils.getCube(this.getPos(), facing, this.getRange(), height);
+    }
 }
