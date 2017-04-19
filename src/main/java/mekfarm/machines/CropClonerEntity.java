@@ -35,11 +35,10 @@ public class CropClonerEntity extends ElectricMekfarmMachine {
         super(CropClonerEntity.class.getName().hashCode());
     }
 
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public GuiContainer getContainerGUI(IInventory playerInventory) {
-//        return new CropClonerContainerGUI(this, this.getContainer(playerInventory));
-//    }
+    @Override
+    public boolean supportsRangeAddons() {
+        return false;
+    }
 
     @Override
     protected void createAddonsInventory() {

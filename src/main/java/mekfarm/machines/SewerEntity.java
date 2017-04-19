@@ -93,7 +93,7 @@ public class SewerEntity extends BaseXPCollectingMachine {
 
     @Override
     protected float performWorkInternal() {
-        BlockCube cube = BlockPosUtils.getCube(this.getPos(), EnumFacing.UP, 3, 2);
+        BlockCube cube = this.getWorkArea(EnumFacing.UP, 2);
         int sewage = 0;
         for (EntityAnimal animal : this.getWorld().getEntitiesWithinAABB(EntityAnimal.class, cube.getBoundingBox())) {
             sewage += Math.round(animal.getMaxHealth());

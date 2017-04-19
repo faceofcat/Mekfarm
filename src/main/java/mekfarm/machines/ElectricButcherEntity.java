@@ -3,7 +3,6 @@ package mekfarm.machines;
 import com.google.common.collect.Multimap;
 import mekfarm.MekfarmMod;
 import mekfarm.common.BlockCube;
-import mekfarm.common.BlockPosUtils;
 import mekfarm.common.FakeMekPlayer;
 import mekfarm.common.IAnimalAgeFilterAcceptor;
 import mekfarm.items.BaseAnimalFilterItem;
@@ -61,7 +60,7 @@ public class ElectricButcherEntity extends BaseXPCollectingMachine implements IA
         float result = 0.0f;
 
         EnumFacing facing = super.getFacing();
-        BlockCube cube = BlockPosUtils.getCube(this.getPos(), facing.getOpposite(), 3, 1);
+        BlockCube cube = this.getWorkArea(facing.getOpposite(), 1);
         AxisAlignedBB aabb = cube.getBoundingBox();
 
         //region attack animal

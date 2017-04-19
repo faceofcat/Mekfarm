@@ -6,6 +6,8 @@ item.mekfarm_animal_filter.name=Animal Filter
 item.mekfarm_animal_age_filter_adult.name=Animal Filter (adults)
 item.mekfarm_animal_age_filter_baby.name=Animal Filter (baby)
 item.mekfarm_liquidxp_collector.name=XP Orb Collector Addon
+item.mekfarm_addon_range_tier1.name=Range Addon I
+item.mekfarm_addon_range_tier2.name=Range Addon II
 
 tile.mekfarm_animal_farm.name=Animal Farm
 tile.mekfarm_animal_releaser.name=Animal Releaser
@@ -16,6 +18,9 @@ tile.mekfarm_animal_gym.name=Animal Gym
 tile.mekfarm_tree_farm.name=Tree Farm
 tile.mekfarm_sewer.name=Sewer
 tile.mekfarm_liquidxp_storage.name=Liquid XP Storage
+
+tile.mekfarm_dung_block.name=Dung Block
+tile.mekfarm_dung_bricks.name=Dung Bricks
 
 fluid.sewage=Sewage
 fluid.liquidxp=Liquid XP

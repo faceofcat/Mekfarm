@@ -9,18 +9,5 @@ import net.ndrei.teslacorelib.items.RegisteredItem;
 public abstract class BaseItem extends RegisteredItem {
     public BaseItem(String registryName) {
         super(MekfarmMod.MODID, MekfarmMod.creativeTab, registryName);
-
-//        this.setRegistryName(registryName);
-//        this.setUnlocalizedName(MekfarmMod.MODID + "_" + registryName);
-//        this.setCreativeTab(MekfarmMod.creativeTab);
-//
-//        IRecipe recipe = this.getRecipe();
-//        if (recipe != null) {
-//            CraftingManager.getInstance().addRecipe(recipe);
-//        }
     }
-
-//    protected IRecipe getRecipe() {
-//        return null;
-//    }
 }

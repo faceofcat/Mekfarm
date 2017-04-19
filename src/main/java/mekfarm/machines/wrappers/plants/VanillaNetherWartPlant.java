@@ -5,14 +5,10 @@ import mekfarm.MekfarmMod;
 import mekfarm.common.BlockPosUtils;
 import mekfarm.common.FakeMekPlayer;
 import mekfarm.machines.wrappers.IPlantWrapper;
-import net.minecraft.block.Block;
-import net.minecraft.block.IGrowable;
+import net.minecraft.block.BlockNetherWart;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -21,30 +17,27 @@ import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
 import java.util.List;
 
 /**
- * Created by CF on 2016-12-10.
+ * Created by CF on 2017-04-07.
  */
-public class VanillaGenericPlant implements IPlantWrapper {
+public class VanillaNetherWartPlant implements IPlantWrapper {
     private IBlockState state;
-    private Block block;
     private World world;
     private BlockPos pos;
 
-    private IGrowable growable;
-
-    public VanillaGenericPlant(Block block, IBlockState state, World world, BlockPos pos) {
+    public VanillaNetherWartPlant(IBlockState state, World world, BlockPos pos) {
         this.state = state;
-        this.growable = (IGrowable)(this.block = block);
         this.world = world;
         this.pos = pos;
     }
 
     @Override
     public boolean canBeHarvested() {
-        return !this.growable.canGrow(this.world, this.pos, this.state, false);
+        return this.state.getValue(BlockNetherWart.AGE) == 3;
     }
 
     @Override
     public List<ItemStack> harvest(int fortune) {
+        // return Blocks.NETHER_WART.getDrops(this.world, this.pos, this.state, fortune);
         FakeMekPlayer player = MekfarmMod.getFakePlayer(this.world);
         this.state.getBlock().harvestBlock(this.world, player, this.pos, this.state, null, ItemStackUtil.getEmptyStack());
         this.world.setBlockState(this.pos, this.state.getBlock().getDefaultState());
@@ -74,22 +67,11 @@ public class VanillaGenericPlant implements IPlantWrapper {
 
     @Override
     public boolean canUseFertilizer() {
-        return !this.canBeHarvested();
+        return false;
     }
 
     @Override
     public int useFertilizer(ItemStack fertilizer) {
-        return VanillaGenericPlant.useFertilizer(this.world, this.pos, fertilizer);
-    }
-
-    public static int useFertilizer(World world, BlockPos pos, ItemStack fertilizer) {
-        FakeMekPlayer player = MekfarmMod.getFakePlayer(world);
-        if (player != null) {
-            player.setItemInUse(fertilizer.copy());
-            EnumActionResult result = player.getHeldItem(EnumHand.MAIN_HAND).onItemUse(player, world, pos, EnumHand.MAIN_HAND, EnumFacing.UP, .5f, .5f, .5f);
-            player.setItemInUse(ItemStackUtil.getEmptyStack());
-            return 1;
-        }
         return 0;
     }
 }

@@ -64,7 +64,7 @@ public class AnimalReleaserEntity extends ElectricMekfarmMachine {
                             ea.readEntityFromNBT(animal);
 
                             EnumFacing facing = super.getFacing().getOpposite();
-                            BlockCube cube = BlockPosUtils.getCube(this.getPos().offset(facing, 1), facing, 2, 1);
+                            BlockCube cube = BlockPosUtils.getCube(this.getPos().offset(facing, 1), facing, this.getRange() - 1, 1);
                             BlockPos pos = cube.getRandomInside(this.getWorld().rand);
                             ea.setPosition(pos.getX(), pos.getY(), pos.getZ());
 
