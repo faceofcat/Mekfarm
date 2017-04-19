@@ -19,5 +19,8 @@ tile.mekfarm_tree_farm.name=Tree Farm
 tile.mekfarm_sewer.name=Sewer
 tile.mekfarm_liquidxp_storage.name=Liquid XP Storage
 
+tile.mekfarm_dung_block.name=Dung Block
+tile.mekfarm_dung_bricks.name=Dung Bricks
+
 fluid.sewage=Sewage
 fluid.liquidxp=Liquid XP

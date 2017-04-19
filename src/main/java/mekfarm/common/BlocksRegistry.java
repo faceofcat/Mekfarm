@@ -1,6 +1,8 @@
 package mekfarm.common;
 
 import mekfarm.MekfarmMod;
+import mekfarm.blocks.DungBlock;
+import mekfarm.blocks.DungBricks;
 import mekfarm.machines.*;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.MaterialLiquid;
@@ -31,6 +33,9 @@ public final class BlocksRegistry {
 
     public static BlockFluidFinite sewageBlock;
     public static BlockFluidFinite liquidXpBlock;
+
+    public static DungBlock dungBlock;
+    public static DungBricks dungBricks;
 
     static void createBlocks() {
         (BlocksRegistry.animalFarmBlock = new AnimalFarmBlock()).register();
@@ -77,5 +82,8 @@ public final class BlocksRegistry {
         BlocksRegistry.liquidXpBlock.setCreativeTab(MekfarmMod.creativeTab);
         BlocksRegistry.liquidXpBlock.setRenderLayer(BlockRenderLayer.SOLID);
         GameRegistry.register(BlocksRegistry.liquidXpBlock);
+
+        (BlocksRegistry.dungBlock = new DungBlock()).register();
+        (BlocksRegistry.dungBricks = new DungBricks()).register();
     }
 }
