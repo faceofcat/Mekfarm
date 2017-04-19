@@ -74,6 +74,9 @@ public class VanillaGenericAnimal implements IAnimalWrapper {
 
     @Override
     public boolean canBeShearedWith(ItemStack stack) {
+        if (ItemStackUtil.isEmpty(stack) || (stack.getItem() != Items.SHEARS)) {
+            return false;
+        }
         boolean isShearable = false;
         EntityAnimal animal = this.getAnimal();
         if (this.shearable() && (animal instanceof IShearable)) {
