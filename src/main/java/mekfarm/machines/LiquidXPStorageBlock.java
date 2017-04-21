@@ -3,7 +3,6 @@ package mekfarm.machines;
 import mekfarm.client.LiquidXPStorageSpecialRenderer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -30,8 +29,9 @@ public class LiquidXPStorageBlock extends BaseOrientedBlock<LiquidXPStorageEntit
                 " s ", "wcw", "wgw",
                 's', Items.EXPERIENCE_BOTTLE,
                 'c', TeslaCoreLib.machineCase,
-                'w', Blocks.PLANKS,
-                'g', TeslaCoreLib.gearIron);
+                'w', "plankWood", // Blocks.PLANKS,
+                'g', "gearIron" // TeslaCoreLib.gearIron
+        );
     }
 
     @Override

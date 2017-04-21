@@ -8,7 +8,6 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -49,9 +48,10 @@ public class AnimalPackageItem extends BaseItem {
     protected IRecipe getRecipe() {
         return new ShapedOreRecipe(new ItemStack(this, 1),
                 "xyx", "yzy", "xyx",
-                'x', Blocks.PLANKS,
+                'x', "plankWood", // Blocks.PLANKS,
                 'y', Blocks.IRON_BARS,
-                'z', Items.REDSTONE);
+                'z', "dustRedstone" // Items.REDSTONE
+        );
     }
 
     @Override
@@ -63,7 +63,7 @@ public class AnimalPackageItem extends BaseItem {
     @Override
     public String getUnlocalizedName(ItemStack stack)
     {
-        if (this.hasAnimal(stack) == true) {
+        if (this.hasAnimal(stack)) {
             return "item.mekfarm_animal_package_full";
         }
         return this.getUnlocalizedName();

@@ -60,7 +60,7 @@ public class MekfarmMod
                 return fakePlayers.get(key);
             }
 
-            if (world instanceof  WorldServer) {
+            if (world instanceof WorldServer) {
                 FakeMekPlayer player = new FakeMekPlayer((WorldServer) world);
 //                BlockPos spawn = world.getSpawnPoint();
 //                if (spawn == null) {

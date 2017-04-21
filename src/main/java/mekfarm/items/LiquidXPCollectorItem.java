@@ -44,7 +44,7 @@ public class LiquidXPCollectorItem extends BaseAddon {
         return new ShapedOreRecipe(new ItemStack(this, 1),
                 " x ", "gyg", "bbb",
                 'x', Items.EXPERIENCE_BOTTLE,
-                'g', TeslaCoreLib.gearIron,
+                'g', "gearIron", // TeslaCoreLib.gearIron,
                 'y', TeslaCoreLib.baseAddon,
                 'b', Items.GLASS_BOTTLE);
     }

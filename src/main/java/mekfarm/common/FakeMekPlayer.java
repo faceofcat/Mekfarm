@@ -3,12 +3,10 @@ package mekfarm.common;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketClientSettings;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.stats.StatBase;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
@@ -16,7 +14,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.common.util.FakePlayer;
 import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
 
 import java.util.UUID;
@@ -28,12 +26,14 @@ import java.util.UUID;
  * not using FakePlayer as base class because of 'roots' mod and someone asking for me to allow automating that.
  * TODO: figure out if not using FakePlayer is a bad idea in general
  */
-public class FakeMekPlayer extends EntityPlayerMP {
+public class FakeMekPlayer extends FakePlayer { // extends EntityPlayerMP {
     public ItemStack previousItem = ItemStackUtil.getEmptyStack();
 
-    public FakeMekPlayer(WorldServer world, GameProfile name)
-    {
-        super(FMLCommonHandler.instance().getMinecraftServerInstance(), world, name, new PlayerInteractionManager(world));
+    public FakeMekPlayer(WorldServer world, GameProfile name) {
+        super(/*FMLCommonHandler.instance().getMinecraftServerInstance(),*/
+                world,
+                new GameProfile(UUID.randomUUID(), "MekfarmPlayer")
+                /*name, new PlayerInteractionManager(world)*/);
         this.addedToChunk = false;
         this.onGround = true;
     }

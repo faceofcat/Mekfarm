@@ -1,6 +1,5 @@
 package mekfarm.machines;
 
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -22,10 +21,11 @@ public class CropFarmBlock extends BaseOrientedBlock<CropFarmEntity> {
                 'x', Items.WHEAT_SEEDS,
                 'y', Items.DIAMOND_HOE,
                 'z', Items.WHEAT_SEEDS,
-                'a', Items.CARROT,
-                'b', Items.POTATO,
+                'a', "cropCarrot", // Items.CARROT,
+                'b', "cropPotato", // Items.POTATO,
                 'c', TeslaCoreLib.machineCase,
-                'w', Blocks.PLANKS,
-                'g', TeslaCoreLib.gearStone);
+                'w', "plankWood", // Blocks.PLANKS,
+                'g', "gearStone" // TeslaCoreLib.gearStone
+        );
     }
 }

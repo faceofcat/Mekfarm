@@ -5,7 +5,6 @@ import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -36,12 +35,13 @@ public class CropClonerBlock extends BaseOrientedBlock<CropClonerEntity> {
     protected IRecipe getRecipe() {
         return new ShapedOreRecipe(new ItemStack(this, 1),
                 "rhr", "dcd", "wgw",
-                'r', Blocks.REDSTONE_BLOCK,
+                'r', "blockRedstone", // Blocks.REDSTONE_BLOCK,
                 'h', Items.DIAMOND_HOE,
-                'd', Blocks.DIRT,
+                'd', "dirt", // Blocks.DIRT,
                 'c', TeslaCoreLib.machineCase,
-                'w', Blocks.PLANKS,
-                'g', TeslaCoreLib.gearIron);
+                'w', "plankWood", // Blocks.PLANKS,
+                'g', "gearIron" // TeslaCoreLib.gearIron
+        );
     }
 
     public static void setState(IBlockState newState, World worldIn, BlockPos pos)

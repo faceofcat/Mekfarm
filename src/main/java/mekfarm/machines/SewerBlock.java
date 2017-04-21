@@ -20,7 +20,8 @@ public class SewerBlock extends BaseOrientedBlock<SewerEntity> {
                 "xxx", "wcw", "wgw",
                 'x', Blocks.IRON_BARS,
                 'c', TeslaCoreLib.machineCase,
-                'w', Blocks.PLANKS,
-                'g', TeslaCoreLib.gearStone);
+                'w', "plankWood", // Blocks.PLANKS,
+                'g', "gearStone" // TeslaCoreLib.gearStone
+        );
     }
 }

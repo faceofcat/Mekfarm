@@ -1,6 +1,5 @@
 package mekfarm.machines;
 
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -18,9 +17,10 @@ public class TreeFarmBlock extends BaseOrientedBlock<TreeFarmEntity> {
     protected IRecipe getRecipe() {
         return new ShapedOreRecipe(new ItemStack(this, 1),
                 "sss", "wcw", "wgw",
-                's', Blocks.SAPLING,
+                's', "treeSapling", // Blocks.SAPLING,
                 'c', TeslaCoreLib.machineCase,
-                'w', Blocks.PLANKS,
-                'g', TeslaCoreLib.gearStone);
+                'w', "plankWood", // Blocks.PLANKS,
+                'g', "gearStone" // TeslaCoreLib.geaStone
+        );
     }
 }

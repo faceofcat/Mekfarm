@@ -1,6 +1,5 @@
 package mekfarm.machines;
 
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -19,7 +18,8 @@ public class ElectricButcherBlock extends BaseOrientedBlock<ElectricButcherEntit
                 "wxw", "wcw", "wgw",
                 'x', Items.DIAMOND_SWORD,
                 'c', TeslaCoreLib.machineCase,
-                'w', Blocks.PLANKS,
-                'g', TeslaCoreLib.gearIron);
+                'w', "plankWood", // Blocks.PLANKS,
+                'g', "gearIron" // TeslaCoreLib.gearIron
+        );
     }
 }

@@ -2,7 +2,6 @@ package mekfarm.items;
 
 import mekfarm.common.ItemsRegistry;
 import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -25,7 +24,8 @@ public class AnimalAgeAdultFilterItem extends BaseAnimalFilterItem {
     protected IRecipe getRecipe() {
         return new ShapedOreRecipe(new ItemStack(this, 1),
                 "xxx", " y ", "   ",
-                'x', Items.REDSTONE,
-                'y', ItemsRegistry.animalFilter);
+                'x', "dustRedstone", // Items.REDSTONE,
+                'y', ItemsRegistry.animalFilter
+        );
     }
 }
