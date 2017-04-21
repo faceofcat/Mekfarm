@@ -1,6 +1,5 @@
 package mekfarm.items;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -18,7 +17,8 @@ public class AnimalFilterItem extends BaseItem {
     protected IRecipe getRecipe() {
         return new ShapedOreRecipe(new ItemStack(this, 1),
                 "x x", " y ", "x x",
-                'x', Items.WHEAT,
-                'y', TeslaCoreLib.baseAddon);
+                'x', "cropWheat", // Items.WHEAT,
+                'y', TeslaCoreLib.baseAddon
+        );
     }
 }

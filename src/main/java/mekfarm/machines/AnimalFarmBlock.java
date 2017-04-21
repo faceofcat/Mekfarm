@@ -1,7 +1,5 @@
 package mekfarm.machines;
 
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -19,11 +17,12 @@ public class AnimalFarmBlock extends BaseOrientedBlock<AnimalFarmEntity> {
     protected IRecipe getRecipe() {
         return new ShapedOreRecipe(new ItemStack(this, 1),
                 "xyz", "wcw", "wgw",
-                'x', Items.WHEAT,
-                'y', Items.CARROT,
-                'z', Items.WHEAT,
+                'x', "cropWheat", // Items.WHEAT,
+                'y', "cropCarrot", // Items.CARROT,
+                'z', "cropWheat", // Items.WHEAT,
                 'c', TeslaCoreLib.machineCase,
-                'w', Blocks.PLANKS,
-                'g', TeslaCoreLib.gearStone);
+                'w', "plankWood", // Blocks.PLANKS,
+                'g', "gearStone" // TeslaCoreLib.gearStone
+        );
     }
 }

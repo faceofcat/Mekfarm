@@ -1,7 +1,6 @@
 package mekfarm.items;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
-import com.sun.glass.ui.View;
 import mekfarm.MekfarmMod;
 import mekfarm.common.FluidsRegistry;
 import mekfarm.common.ILiquidXPCollector;
@@ -45,7 +44,7 @@ public class LiquidXPCollectorItem extends BaseAddon {
         return new ShapedOreRecipe(new ItemStack(this, 1),
                 " x ", "gyg", "bbb",
                 'x', Items.EXPERIENCE_BOTTLE,
-                'g', TeslaCoreLib.gearIron,
+                'g', "gearIron", // TeslaCoreLib.gearIron,
                 'y', TeslaCoreLib.baseAddon,
                 'b', Items.GLASS_BOTTLE);
     }

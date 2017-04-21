@@ -20,7 +20,8 @@ public class AnimalGymBlock extends BaseOrientedBlock<AnimalGymEntity> {
                 "xgx", "wcw", "wgw",
                 'x', Blocks.IRON_BARS,
                 'c', TeslaCoreLib.machineCase,
-                'w', Blocks.PLANKS,
-                'g', TeslaCoreLib.gearIron);
+                'w', "plankWood", // Blocks.PLANKS,
+                'g', "gearIron" // TeslaCoreLib.gearIron
+        );
     }
 }

@@ -18,7 +18,8 @@ public class AnimalReleaserBlock extends BaseOrientedBlock<AnimalReleaserEntity>
                 "wxw", "wcw", "wgw",
                 'x', Blocks.DISPENSER,
                 'c', TeslaCoreLib.machineCase,
-                'w', Blocks.PLANKS,
-                'g', TeslaCoreLib.gearStone);
+                'w', "plankWood", // Blocks.PLANKS,
+                'g', "gearStone" // TeslaCoreLib.gearStone
+        );
     }
 }
