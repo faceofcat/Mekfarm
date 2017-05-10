@@ -111,7 +111,7 @@ public class MooFluidCow implements IAnimalWrapper {
         FakeMekPlayer player = MekfarmMod.getFakePlayer(this.cow.getEntityWorld());
         player.setActiveHand(EnumHand.MAIN_HAND);
         player.setItemInHand(new ItemStack(Items.BUCKET));
-        if (this.cow.processInteract(player, EnumHand.MAIN_HAND, player.getHeldItemMainhand())) {
+        if (this.cow.processInteract(player, EnumHand.MAIN_HAND)) {
             return player.getHeldItemMainhand();
         }
         return ItemStackUtil.getEmptyStack();

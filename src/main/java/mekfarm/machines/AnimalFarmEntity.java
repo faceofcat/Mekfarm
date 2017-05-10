@@ -185,7 +185,7 @@ public class AnimalFarmEntity extends BaseXPCollectingMachine implements IAnimal
                                 ItemStack stillThere = ItemHandlerHelper.insertItem(this.outStackHandler, loot.get(j),false);
                                 if (!ItemStackUtil.isEmpty(stillThere)) {
                                     BlockPos pos = wrapper.getAnimal().getPosition();
-                                    this.getWorld().spawnEntityInWorld(new EntityItem(this.getWorld(), pos.getX(), pos.getY(), pos.getZ(), stillThere));
+                                    this.getWorld().spawnEntity(new EntityItem(this.getWorld(), pos.getX(), pos.getY(), pos.getZ(), stillThere));
                                 }
                             }
 
