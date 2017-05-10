@@ -8,11 +8,10 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.items.ItemStackHandler;
 import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
@@ -139,8 +138,8 @@ public class LiquidXPStorageEntity extends SidedTileEntity {
 
     private boolean isValidInContainer(ItemStack stack) {
         if (!ItemStackUtil.isEmpty(stack)) {
-            if (stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)) {
-                IFluidHandlerItem handler = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
+            if (stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
+                IFluidHandler handler = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
                 if (handler != null) {
                     IFluidTankProperties[] tanks = handler.getTankProperties();
                     if ((tanks != null) && (tanks.length > 0)) {
@@ -166,8 +165,8 @@ public class LiquidXPStorageEntity extends SidedTileEntity {
                 return true;
             }
 
-            if (stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)) {
-                IFluidHandlerItem handler = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
+            if (stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
+                IFluidHandler handler = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
                 if (handler != null) {
                     IFluidTankProperties[] tanks = handler.getTankProperties();
                     if ((tanks != null) && (tanks.length > 0)) {
@@ -225,11 +224,11 @@ public class LiquidXPStorageEntity extends SidedTileEntity {
         ItemStack stack = this.inputItems.getStackInSlot(0);
         int capacity = this.xpTank.getCapacity() - this.xpTank.getFluidAmount();
         if (!ItemStackUtil.isEmpty(stack) && (capacity > 0)) {
-            if (stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)) {
+            if (stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
                 int initial = this.xpTank.getFluidAmount();
-                FluidActionResult result = FluidUtil.tryEmptyContainer(stack, this.fluidHandler, Fluid.BUCKET_VOLUME, null, true);
-                if (result.isSuccess() && !ItemStack.areItemStacksEqual(result.getResult(), stack)) {
-                    this.inputItems.setStackInSlot(0, stack = result.getResult());
+                ItemStack result = FluidUtil.tryEmptyContainer(stack, this.fluidHandler, Fluid.BUCKET_VOLUME, null, true);
+                if (!ItemStackUtil.isEmpty(result) && !ItemStack.areItemStacksEqual(result, stack)) {
+                    this.inputItems.setStackInSlot(0, stack = result);
                     if (!ItemStackUtil.isEmpty(stack) && this.isEmptyFluidContainer(stack)) {
                         this.inputItems.setStackInSlot(0, this.inputItems.insertItem(1, stack, false));
                     }
@@ -273,13 +272,13 @@ public class LiquidXPStorageEntity extends SidedTileEntity {
 
                 //#endregion
             }
-            else if (stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)/*
+            else if (stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)/*
                     && ItemStackUtil.isEmpty(this.outputItems.getStackInSlot(1))*/) {
                 int toFill = Math.max(maxDrain, Fluid.BUCKET_VOLUME);
                 int initial = this.xpTank.getFluidAmount();
-                FluidActionResult result = FluidUtil.tryFillContainer(stack, this.fluidHandler, toFill, null, true);
-                if (result.isSuccess()) {
-                    this.outputItems.setStackInSlot(0, stack = result.getResult());
+                ItemStack result = FluidUtil.tryFillContainer(stack, this.fluidHandler, toFill, null, true);
+                if (!ItemStackUtil.isEmpty(result)) {
+                    this.outputItems.setStackInSlot(0, stack = result);
 
                     transferred += (initial - this.xpTank.getFluidAmount());
                 }

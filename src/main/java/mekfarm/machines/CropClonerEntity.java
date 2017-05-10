@@ -175,7 +175,7 @@ public class CropClonerEntity extends ElectricMekfarmMachine {
 
     private PropertyInteger getAgeProperty(IBlockState thing) {
         if (thing != null) {
-            for (IProperty p : thing.getPropertyKeys()) {
+            for (IProperty p : thing.getPropertyNames()) {
                 if ((p instanceof PropertyInteger) && (p.getName() == "age")) {
                     return (PropertyInteger) p;
                 }

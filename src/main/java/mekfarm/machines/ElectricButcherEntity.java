@@ -42,8 +42,8 @@ public class ElectricButcherEntity extends BaseXPCollectingMachine implements IA
         if (slot == 0) {
             // test for weapon
             Multimap<String, AttributeModifier> map = stack.getAttributeModifiers(EntityEquipmentSlot.MAINHAND);
-            if (map.containsKey(SharedMonsterAttributes.ATTACK_DAMAGE.getName())) {
-                Collection<AttributeModifier> modifiers = map.get(SharedMonsterAttributes.ATTACK_DAMAGE.getName());
+            if (map.containsKey(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName())) {
+                Collection<AttributeModifier> modifiers = map.get(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName());
                 for(AttributeModifier modifier : modifiers) {
                     if (modifier.getAmount() > 0) {
                         return true;

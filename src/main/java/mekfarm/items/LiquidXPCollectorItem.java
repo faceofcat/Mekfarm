@@ -17,7 +17,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.ndrei.teslacorelib.TeslaCoreLib;
@@ -139,7 +139,7 @@ public class LiquidXPCollectorItem extends BaseAddon {
         return new LiquidXPHolderCapability(stack);
     }
 
-    private class LiquidXPHolderCapability implements ICapabilityProvider, IFluidHandlerItem {
+    private class LiquidXPHolderCapability implements ICapabilityProvider, IFluidHandler {
         private ItemStack stack;
 
         public LiquidXPHolderCapability(ItemStack stack) {
@@ -148,23 +148,17 @@ public class LiquidXPCollectorItem extends BaseAddon {
 
         @Override
         public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-            return (capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY);
+            return (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
         }
 
         @Nullable
         @Override
         @SuppressWarnings("unchecked")
         public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-            if (capability == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY) {
+            if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
                 return (T)this;
             }
             return null;
-        }
-
-        @Nonnull
-        @Override
-        public ItemStack getContainer() {
-            return this.stack;
         }
 
         @Override

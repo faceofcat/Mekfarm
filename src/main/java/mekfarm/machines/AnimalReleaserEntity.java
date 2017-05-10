@@ -73,7 +73,7 @@ public class AnimalReleaserEntity extends ElectricMekfarmMachine {
                             int inserted = ItemStackUtil.getSize(stack) - ItemStackUtil.getSize(finalStack);
                             if (inserted > 0) {
                                 this.inStackHandler.extractItem(stackIndex, inserted, false);
-                                this.getWorld().spawnEntity(ea);
+                                this.getWorld().spawnEntityInWorld(ea);
                                 return 1.0f;
                             }
                         }

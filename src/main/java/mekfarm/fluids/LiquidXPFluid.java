@@ -4,13 +4,8 @@ import mekfarm.MekfarmMod;
 import mekfarm.common.BlocksRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fluids.Fluid;
@@ -40,19 +35,19 @@ public class LiquidXPFluid extends Fluid {
     @SideOnly(Side.CLIENT)
     public void registerRenderer() {
         IFluidBlock block = BlocksRegistry.liquidXpBlock;
-        Item item = Item.getItemFromBlock((Block)block);
-        assert (item == Items.AIR);
-
-        ModelBakery.registerItemVariants(item);
+//        Item item = Item.getItemFromBlock((Block)block);
+//        assert (item == Items.AIR);
+//
+//        ModelBakery.registerItemVariants(item);
 
         ModelResourceLocation modelResourceLocation = new ModelResourceLocation(MekfarmMod.MODID + ":fluids", this.getName());
 
-        ModelLoader.setCustomMeshDefinition(item, new ItemMeshDefinition() {
-            @Override
-            public ModelResourceLocation getModelLocation(ItemStack stack) {
-                return modelResourceLocation;
-            }
-        });
+//        ModelLoader.setCustomMeshDefinition(item, new ItemMeshDefinition() {
+//            @Override
+//            public ModelResourceLocation getModelLocation(ItemStack stack) {
+//                return modelResourceLocation;
+//            }
+//        });
 
         ModelLoader.setCustomStateMapper((Block) block, new StateMapperBase() {
             @Override

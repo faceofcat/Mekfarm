@@ -5,7 +5,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.ndrei.teslacorelib.compatibility.FontRendererUtil;
 import net.ndrei.teslacorelib.gui.BasicRenderedGuiPiece;
@@ -44,10 +43,10 @@ public class AnimalGymInfoPiece extends BasicRenderedGuiPiece {
         if (a != null) {
             container.mc.getTextureManager().bindTexture(Gui.ICONS);
             float f = a.getMaxHealth();
-            int i = MathHelper.ceil(a.getHealth());
+            int i = (int)Math.round(Math.ceil(a.getHealth()));
             int j1 = 80;
 
-            for (int j5 = MathHelper.ceil(f / 2.0F) - 1; j5 >= 0; --j5) {
+            for (int j5 = (int)Math.round(Math.ceil(f / 2.0F)) - 1; j5 >= 0; --j5) {
                 int textureX = 16;
 
                 int x = j5 % 10 * 10;
