@@ -1,8 +1,11 @@
 package mekfarm.machines.wrappers;
 
+import mekfarm.machines.wrappers.animals.MooFluidCow;
 import mekfarm.machines.wrappers.animals.VanillaGenericAnimal;
 import mekfarm.machines.wrappers.animals.VanillaHorse;
-import net.minecraft.entity.passive.*;
+import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.passive.EntityCow;
+import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.item.Item;
 
 import java.util.List;
@@ -22,6 +25,10 @@ public class AnimalWrapperFactory {
 
         if (entity instanceof EntityHorse) {
             wrapper = new VanillaHorse((EntityHorse) entity);
+        }
+
+        if ((entity instanceof EntityCow) && entity.getClass().getName().equals("com.robrit.moofluids.common.entity.EntityFluidCow")) {
+            wrapper = new MooFluidCow((EntityCow)entity);
         }
 
         if (wrapper == null) {
