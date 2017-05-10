@@ -5,13 +5,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -88,8 +86,9 @@ public class CropClonerEntity extends ElectricMekfarmMachine {
                         for (ItemStack s : stacks) {
                             ItemStack remaining = ItemHandlerHelper.insertItem(this.outStackHandler, s, false);
                             if (!ItemStackUtil.isEmpty(remaining)) {
-                                BlockPos spawnPos = this.pos.offset(facing);
-                                world.spawnEntity(new EntityItem(this.getWorld(), spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), remaining));
+//                                BlockPos spawnPos = this.pos.offset(facing);
+//                                world.spawnEntity(new EntityItem(this.getWorld(), spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), remaining));
+                                super.spawnOverloadedItem(remaining);
                             }
                         }
                     }

@@ -1,5 +1,6 @@
 package mekfarm.machines;
 
+import mekfarm.MekfarmMod;
 import mekfarm.common.BlockCube;
 import mekfarm.common.BlockPosUtils;
 import mekfarm.items.MachineRangeAddonTier1;
@@ -9,6 +10,7 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.ndrei.teslacorelib.containers.BasicTeslaContainer;
 import net.ndrei.teslacorelib.containers.FilteredSlot;
@@ -26,6 +28,7 @@ import java.util.List;
  */
 public abstract class ElectricMekfarmMachine extends ElectricMachine {
     protected ItemStackHandler inStackHandler;
+    protected IItemHandler filteredInStackHandler;
     protected ItemStackHandler outStackHandler;
 
     protected ElectricMekfarmMachine(int typeId) {
@@ -55,7 +58,7 @@ public abstract class ElectricMekfarmMachine extends ElectricMachine {
                     ElectricMekfarmMachine.this.markDirty();
                 }
             };
-            super.addInventory(new ColoredItemHandler(this.inStackHandler, EnumDyeColor.GREEN, "Input Items", this.getInputInventoryBounds(this.inStackHandler.getSlots(), 1)) {
+            super.addInventory(this.filteredInStackHandler = new ColoredItemHandler(this.inStackHandler, EnumDyeColor.GREEN, "Input Items", this.getInputInventoryBounds(this.inStackHandler.getSlots(), 1)) {
                 @Override
                 public boolean canInsertItem(int slot, ItemStack stack) {
                     return ElectricMekfarmMachine.this.acceptsInputStack(slot, stack);
@@ -228,5 +231,12 @@ public abstract class ElectricMekfarmMachine extends ElectricMachine {
 
     protected BlockCube getWorkArea(EnumFacing facing, int height) {
         return BlockPosUtils.getCube(this.getPos(), facing, this.getRange(), height);
+    }
+
+    protected boolean spawnOverloadedItem(ItemStack stack) {
+        if (MekfarmMod.config.allowMachinesToSpawnItems()) {
+            return (null != super.spawnItemFromFrontSide(stack));
+        }
+        return false;
     }
 }

@@ -133,14 +133,18 @@ public class TreeFarmEntity extends ElectricMekfarmMachine {
 
         if (items.size() > 0) {
             for (ItemStack stack : items) {
-                ItemStack remaining = ItemStackUtil.insertItemInExistingStacks(this.inStackHandler, stack, false);
+                // ItemStack remaining = ItemStackUtil.insertItemInExistingStacks(this.inStackHandler, stack, false);
+                ItemStack remaining = (this.filteredInStackHandler == null)
+                        ? ItemStackUtil.insertItemInExistingStacks(this.inStackHandler, stack, false)
+                        : ItemHandlerHelper.insertItemStacked(this.filteredInStackHandler, stack, false);
                 if (!ItemStackUtil.isEmpty(remaining)) {
                     remaining = ItemHandlerHelper.insertItem(this.outStackHandler, stack, false);
                 }
                 if (!ItemStackUtil.isEmpty(remaining)) {
 //                    BlockPos spawnPos = this.pos.offset(facing);
 //                    world.spawnEntity(new EntityItem(this.getWorld(), spawnPos.getX() + .5, spawnPos.getY() + .5, spawnPos.getZ() + .5, remaining));
-                    super.spawnItemFromFrontSide(remaining);
+//                    super.spawnItemFromFrontSide(remaining);
+                    super.spawnOverloadedItem(remaining);
                 }
             }
         }

@@ -9,7 +9,6 @@ import mekfarm.items.AnimalPackageItem;
 import mekfarm.items.BaseAnimalFilterItem;
 import mekfarm.machines.wrappers.AnimalWrapperFactory;
 import mekfarm.machines.wrappers.IAnimalWrapper;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -20,7 +19,6 @@ import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
 
@@ -184,8 +182,9 @@ public class AnimalFarmEntity extends BaseXPCollectingMachine implements IAnimal
                             for (int j = 0; j < loot.size(); j++) {
                                 ItemStack stillThere = ItemHandlerHelper.insertItem(this.outStackHandler, loot.get(j),false);
                                 if (!ItemStackUtil.isEmpty(stillThere)) {
-                                    BlockPos pos = wrapper.getAnimal().getPosition();
-                                    this.getWorld().spawnEntity(new EntityItem(this.getWorld(), pos.getX(), pos.getY(), pos.getZ(), stillThere));
+//                                    BlockPos pos = wrapper.getAnimal().getPosition();
+//                                    this.getWorld().spawnEntity(new EntityItem(this.getWorld(), pos.getX(), pos.getY(), pos.getZ(), stillThere));
+                                    super.spawnOverloadedItem(stillThere);
                                 }
                             }
 

@@ -30,6 +30,8 @@ public class MekfarmMod
     @Mod.Instance
     public static MekfarmMod instance;
 
+    public static MekfarmConfig config;
+
     public static Logger logger;
 
 //    public static ITeslaCorePackets network = new TeslaCorePackets(MODID);
@@ -73,7 +75,9 @@ public class MekfarmMod
     }
 
     @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event){
+    public void preInit(FMLPreInitializationEvent event) {
+        MekfarmMod.config = new MekfarmConfig(event.getSuggestedConfigurationFile());
+
         MekfarmMod.logger = event.getModLog();
         MekfarmMod.logger.info("MekfarmMod::preInit");
 

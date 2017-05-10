@@ -7,7 +7,6 @@ import mekfarm.machines.wrappers.ISeedWrapper;
 import mekfarm.machines.wrappers.PlantWrapperFactory;
 import net.minecraft.block.BlockFarmland;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemHoe;
@@ -72,13 +71,17 @@ public class CropFarmEntity extends ElectricMekfarmMachine {
             if (plant.canBeHarvested() && ((1.0f - result) >= .45f)) {
                 List<ItemStack> loot = plant.harvest(0);
                 for(ItemStack lootStack : loot) {
-                    ItemStack remaining = ItemStackUtil.insertItemInExistingStacks(this.inStackHandler, lootStack, false);
+                    // ItemStack remaining = ItemStackUtil.insertItemInExistingStacks(this.inStackHandler, lootStack, false);
+                    ItemStack remaining = (this.filteredInStackHandler == null)
+                            ? ItemStackUtil.insertItemInExistingStacks(this.inStackHandler, lootStack, false)
+                            : ItemHandlerHelper.insertItemStacked(this.filteredInStackHandler, lootStack, false);
                     if (!ItemStackUtil.isEmpty(remaining)) {
                         remaining = ItemHandlerHelper.insertItem(this.outStackHandler, lootStack, false);
                     }
                     if (!ItemStackUtil.isEmpty(remaining)) {
-                        BlockPos spawnPos = this.pos.offset(facing);
-                        world.spawnEntity(new EntityItem(this.getWorld(), spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), remaining));
+//                        BlockPos spawnPos = this.pos.offset(facing);
+//                        world.spawnEntity(new EntityItem(this.getWorld(), spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), remaining));
+                        super.spawnOverloadedItem(remaining);
                     }
                 }
                 result += 0.45f;
