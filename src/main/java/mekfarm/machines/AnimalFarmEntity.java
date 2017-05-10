@@ -185,7 +185,7 @@ public class AnimalFarmEntity extends BaseXPCollectingMachine implements IAnimal
                                 ItemStack stillThere = ItemHandlerHelper.insertItem(this.outStackHandler, loot.get(j),false);
                                 if (!ItemStackUtil.isEmpty(stillThere)) {
                                     BlockPos pos = wrapper.getAnimal().getPosition();
-                                    this.getWorld().spawnEntity(new EntityItem(this.getWorld(), pos.getX(), pos.getY(), pos.getZ(), stillThere));
+                                    this.getWorld().spawnEntityInWorld(new EntityItem(this.getWorld(), pos.getX(), pos.getY(), pos.getZ(), stillThere));
                                 }
                             }
 
@@ -207,12 +207,14 @@ public class AnimalFarmEntity extends BaseXPCollectingMachine implements IAnimal
                         ItemStack stack = this.inStackHandler.extractItem(b, 1, true);
                         if ((ItemStackUtil.getSize(stack) == 1) && (stack.getItem() == Items.BUCKET)) {
                             ItemStack milk = wrapper.milk();
-                            milk = ItemHandlerHelper.insertItem(this.outStackHandler, milk,false);
-                            if (ItemStackUtil.isEmpty(milk)) {
-                                this.inStackHandler.extractItem(b, 1, false);
+                            if (!ItemStackUtil.isEmpty(milk)) {
+                                milk = ItemHandlerHelper.insertItem(this.outStackHandler, milk, false);
+                                if (ItemStackUtil.isEmpty(milk)) {
+                                    this.inStackHandler.extractItem(b, 1, false);
 
-                                result += ENERGY_MILK;
-                                break;
+                                    result += ENERGY_MILK;
+                                    break;
+                                }
                             }
                         }
                     }
