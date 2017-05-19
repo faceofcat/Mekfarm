@@ -59,6 +59,10 @@ public class PlantWrapperFactory {
         IBlockState state = world.getBlockState(pos);
         Block block = state.getBlock();
 
+        if (block.getClass().getName().startsWith("com.infinityraider.agricraft.blocks")) {
+            return new AgricraftPlantWrapper(block, state, world, pos);
+        }
+
         if ((block == Blocks.MELON_STEM) || (block == Blocks.PUMPKIN_STEM)) {
             return new VanillaMelonPlant(block, state, world, pos);
         }

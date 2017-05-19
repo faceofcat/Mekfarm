@@ -24,10 +24,10 @@ import java.util.List;
  * Created by CF on 2016-12-10.
  */
 public class VanillaGenericPlant implements IPlantWrapper {
-    private IBlockState state;
-    private Block block;
-    private World world;
-    private BlockPos pos;
+    protected IBlockState state;
+    protected Block block;
+    protected World world;
+    protected BlockPos pos;
 
     private IGrowable growable;
 
@@ -50,6 +50,10 @@ public class VanillaGenericPlant implements IPlantWrapper {
         this.world.setBlockState(this.pos, this.state.getBlock().getDefaultState());
         this.world.destroyBlock(this.pos,false); // <-- to force replanting
 
+        return this.harvestDrops();
+    }
+
+    protected List<ItemStack> harvestDrops() {
         List<ItemStack> items = Lists.newArrayList();
         AxisAlignedBB aabb = BlockPosUtils
                 .getCube(this.pos, null, 1, 1)
