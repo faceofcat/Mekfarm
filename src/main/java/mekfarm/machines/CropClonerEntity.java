@@ -8,13 +8,11 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.items.ItemHandlerHelper;
 import net.ndrei.teslacorelib.capabilities.hud.HudInfoLine;
 import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
 import net.ndrei.teslacorelib.inventory.BoundingRectangle;
@@ -73,7 +71,7 @@ public class CropClonerEntity extends ElectricMekfarmMachine {
     @Override
     protected float performWork() {
         float result = 0.0f;
-        EnumFacing facing = super.getFacing();
+        // EnumFacing facing = super.getFacing();
 
         if (this.plantedThing != null) {
             PropertyInteger ageProperty = this.getAgeProperty(this.plantedThing);
@@ -82,24 +80,27 @@ public class CropClonerEntity extends ElectricMekfarmMachine {
                 Integer[] ages = ageProperty.getAllowedValues().toArray(new Integer[0]);
                 if (age == ages[ages.length - 1]) {
                     List<ItemStack> stacks = this.plantedThing.getBlock().getDrops(this.getWorld(), this.getPos(), this.plantedThing, 0);
-                    if (stacks != null) {
-                        for (ItemStack s : stacks) {
-                            ItemStack remaining = ItemHandlerHelper.insertItem(this.outStackHandler, s, false);
-                            if (!ItemStackUtil.isEmpty(remaining)) {
-//                                BlockPos spawnPos = this.pos.offset(facing);
-//                                world.spawnEntity(new EntityItem(this.getWorld(), spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), remaining));
-                                super.spawnOverloadedItem(remaining);
-                            }
-                        }
+//                    if (stacks != null) {
+//                        for (ItemStack s : stacks) {
+//                            ItemStack remaining = ItemHandlerHelper.insertItem(this.outStackHandler, s, false);
+//                            if (!ItemStackUtil.isEmpty(remaining)) {
+////                                BlockPos spawnPos = this.pos.offset(facing);
+////                                world.spawnEntity(new EntityItem(this.getWorld(), spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), remaining));
+//                                super.spawnOverloadedItem(remaining);
+//                            }
+//                        }
+//                    }
+                    if (super.outputItems(stacks)) {
+                        this.plantedThing = null;
+                        result += .85f;
                     }
-                    this.plantedThing = null;
-
                 } else {
                     this.plantedThing = this.plantedThing.withProperty(ageProperty, ++age);
+                    result += .85f;
                 }
                 this.onPlantedThingChanged();
             }
-            result += .85f;
+//            result += .85f;
         }
 
         if ((this.plantedThing == null) && (this.waterTank != null) && (this.waterTank.getFluidAmount() >= 250)) {

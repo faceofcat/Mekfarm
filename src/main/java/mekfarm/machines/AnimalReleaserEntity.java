@@ -11,7 +11,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.items.ItemHandlerHelper;
 import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
 
 /**
@@ -69,10 +68,11 @@ public class AnimalReleaserEntity extends ElectricMekfarmMachine {
                             ea.setPosition(pos.getX(), pos.getY(), pos.getZ());
 
                             stackCopy.setTagCompound(null);
-                            ItemStack finalStack = ItemHandlerHelper.insertItem(this.outStackHandler, stackCopy, false);
-                            int inserted = ItemStackUtil.getSize(stack) - ItemStackUtil.getSize(finalStack);
-                            if (inserted > 0) {
-                                this.inStackHandler.extractItem(stackIndex, inserted, false);
+//                            ItemStack finalStack = ItemHandlerHelper.insertItem(this.outStackHandler, stackCopy, false);
+//                            int inserted = ItemStackUtil.getSize(stack) - ItemStackUtil.getSize(finalStack);
+//                            if (inserted > 0) {
+                            if (super.outputItems(stackCopy)) {
+                                this.inStackHandler.extractItem(stackIndex, 1, false);
                                 this.getWorld().spawnEntity(ea);
                                 return 1.0f;
                             }

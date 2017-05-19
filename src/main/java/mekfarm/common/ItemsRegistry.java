@@ -14,6 +14,8 @@ public final class ItemsRegistry {
     public static MachineRangeAddonTier1 machineRangeAddonTier1;
     public static MachineRangeAddonTier2 machineRangeAddonTier2;
 
+    public static FruitPickerAddon fruitPickerAddon;
+
     public static final void createItems() {
         (ItemsRegistry.animalPackage = new AnimalPackageItem()).register();
         (ItemsRegistry.animalFilter = new AnimalFilterItem()).register();
@@ -22,5 +24,6 @@ public final class ItemsRegistry {
         (ItemsRegistry.liquidXPCollectorItem = new LiquidXPCollectorItem()).register();
         (ItemsRegistry.machineRangeAddonTier1 = new MachineRangeAddonTier1()).register();
         (ItemsRegistry.machineRangeAddonTier2 = new MachineRangeAddonTier2()).register();
+        (ItemsRegistry.fruitPickerAddon = new FruitPickerAddon()).register();
     }
 }

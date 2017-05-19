@@ -2,6 +2,7 @@ package mekfarm.machines;
 
 import com.google.common.collect.Lists;
 import mekfarm.common.BlockCube;
+import mekfarm.common.IAdditionalProcessingAddon;
 import mekfarm.machines.wrappers.IPlantWrapper;
 import mekfarm.machines.wrappers.ISeedWrapper;
 import mekfarm.machines.wrappers.PlantWrapperFactory;
@@ -15,9 +16,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.items.ItemHandlerHelper;
 import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
 import net.ndrei.teslacorelib.inventory.BoundingRectangle;
+import net.ndrei.teslacorelib.items.BaseAddon;
 
 import java.util.List;
 
@@ -70,20 +71,21 @@ public class CropFarmEntity extends ElectricMekfarmMachine {
 
             if (plant.canBeHarvested() && ((1.0f - result) >= .45f)) {
                 List<ItemStack> loot = plant.harvest(0);
-                for(ItemStack lootStack : loot) {
-                    // ItemStack remaining = ItemStackUtil.insertItemInExistingStacks(this.inStackHandler, lootStack, false);
-                    ItemStack remaining = (this.filteredInStackHandler == null)
-                            ? ItemStackUtil.insertItemInExistingStacks(this.inStackHandler, lootStack, false)
-                            : ItemHandlerHelper.insertItemStacked(this.filteredInStackHandler, lootStack, false);
-                    if (!ItemStackUtil.isEmpty(remaining)) {
-                        remaining = ItemHandlerHelper.insertItem(this.outStackHandler, lootStack, false);
-                    }
-                    if (!ItemStackUtil.isEmpty(remaining)) {
-//                        BlockPos spawnPos = this.pos.offset(facing);
-//                        world.spawnEntity(new EntityItem(this.getWorld(), spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), remaining));
-                        super.spawnOverloadedItem(remaining);
-                    }
-                }
+//                for(ItemStack lootStack : loot) {
+//                    // ItemStack remaining = ItemStackUtil.insertItemInExistingStacks(this.inStackHandler, lootStack, false);
+//                    ItemStack remaining = (this.filteredInStackHandler == null)
+//                            ? ItemStackUtil.insertItemInExistingStacks(this.inStackHandler, lootStack, false)
+//                            : ItemHandlerHelper.insertItemStacked(this.filteredInStackHandler, lootStack, false);
+//                    if (!ItemStackUtil.isEmpty(remaining)) {
+//                        remaining = ItemHandlerHelper.insertItem(this.outStackHandler, lootStack, false);
+//                    }
+//                    if (!ItemStackUtil.isEmpty(remaining)) {
+////                        BlockPos spawnPos = this.pos.offset(facing);
+////                        world.spawnEntity(new EntityItem(this.getWorld(), spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), remaining));
+//                        super.spawnOverloadedItem(remaining);
+//                    }
+//                }
+                super.outputItems(loot);
                 result += 0.45f;
             }
             else if (plant.canBlockNeighbours()) {
@@ -216,6 +218,15 @@ public class CropFarmEntity extends ElectricMekfarmMachine {
                     }
                     tries--;
                 }
+            }
+        }
+
+        for(BaseAddon addon: this.getAddons()) {
+            if (addon instanceof IAdditionalProcessingAddon) {
+                float available = 1.0f - result;
+                result += Math.min(
+                        ((IAdditionalProcessingAddon) addon).processAddon(this, available),
+                        available);
             }
         }
 

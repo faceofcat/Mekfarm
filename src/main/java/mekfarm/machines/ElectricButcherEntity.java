@@ -109,6 +109,7 @@ public class ElectricButcherEntity extends BaseXPCollectingMachine implements IA
         if (!items.isEmpty()) {
             for (EntityItem item: items) {
                 ItemStack original = item.getEntityItem();
+                // TODO: add a method for picking up EntityItems at super class
                 ItemStack remaining = ItemHandlerHelper.insertItem(this.outStackHandler, original, false);
                 if (ItemStackUtil.isEmpty(remaining)) {
                     this.getWorld().removeEntity(item);
