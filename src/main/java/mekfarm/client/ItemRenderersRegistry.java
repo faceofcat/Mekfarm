@@ -20,8 +20,10 @@ public final class ItemRenderersRegistry {
         ItemRenderersRegistry.registerItemRenderer(ItemsRegistry.liquidXPCollectorItem);
         ItemRenderersRegistry.registerItemRenderer(ItemsRegistry.machineRangeAddonTier1);
         ItemRenderersRegistry.registerItemRenderer(ItemsRegistry.machineRangeAddonTier2);
+        ItemRenderersRegistry.registerItemRenderer(ItemsRegistry.fruitPickerAddon);
     }
 
+    @SideOnly(Side.CLIENT)
     private static void registerItemRenderer(Item item) {
         ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
     }

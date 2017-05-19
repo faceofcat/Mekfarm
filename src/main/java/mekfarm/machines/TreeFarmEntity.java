@@ -9,7 +9,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.items.ItemHandlerHelper;
 import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
 
 import java.util.ArrayList;
@@ -132,21 +131,23 @@ public class TreeFarmEntity extends ElectricMekfarmMachine {
         }
 
         if (items.size() > 0) {
-            for (ItemStack stack : items) {
-                // ItemStack remaining = ItemStackUtil.insertItemInExistingStacks(this.inStackHandler, stack, false);
-                ItemStack remaining = (this.filteredInStackHandler == null)
-                        ? ItemStackUtil.insertItemInExistingStacks(this.inStackHandler, stack, false)
-                        : ItemHandlerHelper.insertItemStacked(this.filteredInStackHandler, stack, false);
-                if (!ItemStackUtil.isEmpty(remaining)) {
-                    remaining = ItemHandlerHelper.insertItem(this.outStackHandler, stack, false);
-                }
-                if (!ItemStackUtil.isEmpty(remaining)) {
-//                    BlockPos spawnPos = this.pos.offset(facing);
-//                    world.spawnEntity(new EntityItem(this.getWorld(), spawnPos.getX() + .5, spawnPos.getY() + .5, spawnPos.getZ() + .5, remaining));
-//                    super.spawnItemFromFrontSide(remaining);
-                    super.spawnOverloadedItem(remaining);
-                }
-            }
+//            for (ItemStack stack : items) {
+//                // ItemStack remaining = ItemStackUtil.insertItemInExistingStacks(this.inStackHandler, stack, false);
+//                ItemStack remaining = (this.filteredInStackHandler == null)
+//                        ? ItemStackUtil.insertItemInExistingStacks(this.inStackHandler, stack, false)
+//                        : ItemHandlerHelper.insertItemStacked(this.filteredInStackHandler, stack, false);
+//                if (!ItemStackUtil.isEmpty(remaining)) {
+//                    remaining = ItemHandlerHelper.insertItem(this.outStackHandler, stack, false);
+//                }
+//                if (!ItemStackUtil.isEmpty(remaining)) {
+////                    BlockPos spawnPos = this.pos.offset(facing);
+////                    world.spawnEntity(new EntityItem(this.getWorld(), spawnPos.getX() + .5, spawnPos.getY() + .5, spawnPos.getZ() + .5, remaining));
+////                    super.spawnItemFromFrontSide(remaining);
+//                    super.spawnOverloadedItem(remaining);
+//                }
+//            }
+            // TODO: find a way to not lose the items
+            super.outputItems(items);
         }
 
         //#endregion

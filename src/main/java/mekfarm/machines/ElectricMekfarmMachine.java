@@ -1,5 +1,6 @@
 package mekfarm.machines;
 
+import com.google.common.collect.Lists;
 import mekfarm.MekfarmMod;
 import mekfarm.common.BlockCube;
 import mekfarm.common.BlockPosUtils;
@@ -11,7 +12,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
+import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
 import net.ndrei.teslacorelib.containers.BasicTeslaContainer;
 import net.ndrei.teslacorelib.containers.FilteredSlot;
 import net.ndrei.teslacorelib.gui.BasicTeslaGuiContainer;
@@ -233,10 +236,41 @@ public abstract class ElectricMekfarmMachine extends ElectricMachine {
         return BlockPosUtils.getCube(this.getPos(), facing, this.getRange(), height);
     }
 
+    public BlockCube getGroundArea() {
+        return this.getWorkArea(this.getFacing().getOpposite(), 1);
+    }
+
     protected boolean spawnOverloadedItem(ItemStack stack) {
         if (MekfarmMod.config.allowMachinesToSpawnItems()) {
             return (null != super.spawnItemFromFrontSide(stack));
         }
         return false;
+    }
+
+    public boolean outputItems(ItemStack loot) {
+        if (ItemStackUtil.isEmpty(loot)) {
+            return true;
+        }
+
+        List<ItemStack> list = Lists.newArrayList();
+        list.add(loot);
+        return this.outputItems(list);
+    }
+
+    public boolean outputItems(List<ItemStack> loot) {
+        if ((loot != null) && (loot.size() > 0)) {
+            for (ItemStack lootStack : loot) {
+                ItemStack remaining = (this.filteredInStackHandler == null)
+                        ? ItemStackUtil.insertItemInExistingStacks(this.inStackHandler, lootStack, false)
+                        : ItemHandlerHelper.insertItemStacked(this.filteredInStackHandler, lootStack, false);
+                if (!ItemStackUtil.isEmpty(remaining)) {
+                    remaining = ItemHandlerHelper.insertItem(this.outStackHandler, lootStack, false);
+                }
+                if (!ItemStackUtil.isEmpty(remaining)) {
+                    return this.spawnOverloadedItem(remaining);
+                }
+            }
+        }
+        return true;
     }
 }

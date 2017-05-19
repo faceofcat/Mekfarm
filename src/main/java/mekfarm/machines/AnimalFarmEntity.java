@@ -19,7 +19,6 @@ import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraftforge.items.ItemHandlerHelper;
 import net.ndrei.teslacorelib.compatibility.ItemStackUtil;
 
 import java.util.ArrayList;
@@ -112,11 +111,12 @@ public class AnimalFarmEntity extends BaseXPCollectingMachine implements IAnimal
                 EntityAnimal animal = animalToPackage.getAnimal();
                 ItemStack stackCopy = AnimalFarmEntity.packageAnimal(packageStack, animal);
 
-                ItemStack finalStack = ItemHandlerHelper.insertItem(this.outStackHandler, stackCopy, false);
-                int inserted = ItemStackUtil.getSize(packageStack) - ItemStackUtil.getSize(finalStack);
-                if (inserted > 0) {
+//                ItemStack finalStack = ItemHandlerHelper.insertItem(this.outStackHandler, stackCopy, false);
+//                int inserted = ItemStackUtil.getSize(packageStack) - ItemStackUtil.getSize(finalStack);
+//                if (inserted > 0) {
+                if (!ItemStackUtil.isEmpty(stackCopy) && super.outputItems(stackCopy)) {
                     this.getWorld().removeEntity(animalToPackage.getAnimal());
-                    this.inStackHandler.extractItem(packageSlot, inserted, false);
+                    this.inStackHandler.extractItem(packageSlot, 1, false);
                     animalToPackage = null;
                     result += ENERGY_PACKAGE;
                 }
@@ -125,7 +125,7 @@ public class AnimalFarmEntity extends BaseXPCollectingMachine implements IAnimal
 
         if (animalToPackage != null) {
             toProcess.add(animalToPackage);
-            animalToPackage = null;
+//            animalToPackage = null;
         }
 
         //endregion
@@ -179,14 +179,15 @@ public class AnimalFarmEntity extends BaseXPCollectingMachine implements IAnimal
                         ItemStack shears = this.inStackHandler.getStackInSlot(shearsSlot);
                         List<ItemStack> loot = wrapper.shear(shears, 0);
                         if ((loot != null) && (loot.size() > 0)) {
-                            for (int j = 0; j < loot.size(); j++) {
-                                ItemStack stillThere = ItemHandlerHelper.insertItem(this.outStackHandler, loot.get(j),false);
-                                if (!ItemStackUtil.isEmpty(stillThere)) {
-//                                    BlockPos pos = wrapper.getAnimal().getPosition();
-//                                    this.getWorld().spawnEntity(new EntityItem(this.getWorld(), pos.getX(), pos.getY(), pos.getZ(), stillThere));
-                                    super.spawnOverloadedItem(stillThere);
-                                }
-                            }
+//                            for (int j = 0; j < loot.size(); j++) {
+//                                ItemStack stillThere = ItemHandlerHelper.insertItem(this.outStackHandler, loot.get(j),false);
+//                                if (!ItemStackUtil.isEmpty(stillThere)) {
+////                                    BlockPos pos = wrapper.getAnimal().getPosition();
+////                                    this.getWorld().spawnEntity(new EntityItem(this.getWorld(), pos.getX(), pos.getY(), pos.getZ(), stillThere));
+//                                    super.spawnOverloadedItem(stillThere);
+//                                }
+//                            }
+                            super.outputItems(loot); // TODO: test if successful
 
                             if (shears.attemptDamageItem(1, this.getWorld().rand)) {
                                 this.inStackHandler.setStackInSlot(shearsSlot, ItemStackUtil.getEmptyStack());
@@ -206,14 +207,19 @@ public class AnimalFarmEntity extends BaseXPCollectingMachine implements IAnimal
                         ItemStack stack = this.inStackHandler.extractItem(b, 1, true);
                         if ((ItemStackUtil.getSize(stack) == 1) && (stack.getItem() == Items.BUCKET)) {
                             ItemStack milk = wrapper.milk();
-                            if (!ItemStackUtil.isEmpty(milk)) {
-                                milk = ItemHandlerHelper.insertItem(this.outStackHandler, milk, false);
-                                if (ItemStackUtil.isEmpty(milk)) {
-                                    this.inStackHandler.extractItem(b, 1, false);
-
-                                    result += ENERGY_MILK;
-                                    break;
-                                }
+//                            if (!ItemStackUtil.isEmpty(milk)) {
+//                                milk = ItemHandlerHelper.insertItem(this.outStackHandler, milk, false);
+//                                if (ItemStackUtil.isEmpty(milk)) {
+//                                    this.inStackHandler.extractItem(b, 1, false);
+//
+//                                    result += ENERGY_MILK;
+//                                    break;
+//                                }
+//                            }
+                            if (super.outputItems(milk)) {
+                                this.inStackHandler.extractItem(b, 1, false);
+                                result += ENERGY_MILK;
+                                break;
                             }
                         }
                     }
@@ -228,10 +234,15 @@ public class AnimalFarmEntity extends BaseXPCollectingMachine implements IAnimal
                         ItemStack stack = this.inStackHandler.extractItem(b, 1, true);
                         if ((ItemStackUtil.getSize(stack) == 1) && (stack.getItem() == Items.BOWL)) {
                             ItemStack stew = wrapper.bowl();
-                            stew = ItemHandlerHelper.insertItem(this.outStackHandler, stew,false);
-                            if (ItemStackUtil.isEmpty(stew)) {
+//                            stew = ItemHandlerHelper.insertItem(this.outStackHandler, stew,false);
+//                            if (ItemStackUtil.isEmpty(stew)) {
+//                                this.inStackHandler.extractItem(b, 1, false);
+//
+//                                result += ENERGY_MILK;
+//                                break;
+//                            }
+                            if (!ItemStackUtil.isEmpty(stew) && super.outputItems(stew)) {
                                 this.inStackHandler.extractItem(b, 1, false);
-
                                 result += ENERGY_MILK;
                                 break;
                             }
